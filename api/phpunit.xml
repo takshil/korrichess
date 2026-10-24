@@ -1,0 +1,11 @@
+{
+    "$schema": "vendor/phpunit/phpunit/phpunit.xsd",
+    "phpunit": {
+        "bootstrap": "vendor/autoload.php",
+        "testsuites": {
+            "Feature": {
+                "directories": ["tests/Feature"]
+            }
+        }
+    }
+}
