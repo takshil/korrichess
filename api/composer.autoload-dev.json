@@ -1,0 +1,9 @@
+{
+    "autoload": {
+        "classmap": ["app/", "migrations/"],
+        "files": ["app/support.php"]
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}

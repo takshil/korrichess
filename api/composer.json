@@ -1,0 +1,19 @@
+{
+    "name": "korrichess/api",
+    "description": "API back-end Korrichess (PHP, sans framework lourd)",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.1",
+        "ext-pdo": "*",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Korrichess\\Api\\": "app/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}
