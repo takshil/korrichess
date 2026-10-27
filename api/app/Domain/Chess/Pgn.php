@@ -26,19 +26,22 @@ final class Pgn
         $movesSection = str_replace([';', "\n", "\r"], ' ', $movesSection);
         $tokens = preg_split('/\s+/', trim($movesSection)) ?: [];
         $moves = [];
+        $unknown = [];
         foreach ($tokens as $token) {
             $token = trim($token, '.');
-            if ($token === '' || $token === '*' || str_starts_with($token, '$')) {
+            if ($token === '' || str_starts_with($token, '$')) {
                 continue;
             }
-            if (in_array($token, ['1-0', '0-1', '1/2-1/2'], true)) {
+            if ($token === '*' || in_array($token, ['1-0', '0-1', '1/2-1/2'], true)) {
                 continue;
             }
-            if (preg_match('/^([a-hKQRBNO][^\s]*)$/', $token)) {
+            if (preg_match('/^[a-hKQRBN][a-h1-8x+#=QRBN]{0,5}$/', $token) || preg_match('/^O-O(-O)?$/', $token)) {
                 $moves[] = $token;
+            } else {
+                $unknown[] = $token;
             }
         }
-        return ['headers' => $headers, 'moves' => $moves];
+        return ['headers' => $headers, 'moves' => $moves, 'unknown' => $unknown];
     }
 
     /**
@@ -48,6 +51,9 @@ final class Pgn
     public static function movesToUci(string $pgn): ?array
     {
         $parsed = self::parse($pgn);
+        if (($parsed['unknown'] ?? []) !== []) {
+            return null;
+        }
         $board = Board::start();
         $uci = [];
         foreach ($parsed['moves'] as $san) {

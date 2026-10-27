@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/../bootstrap-dev.php';
+
 use Korrichess\Api\Core\Database;
 use Korrichess\Api\Core\Migration;
 

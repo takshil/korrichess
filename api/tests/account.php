@@ -78,14 +78,15 @@ $u2 = $settings->update(1, ['theme' => 'fluorescent']);
 check('paramètres: valeur hors liste refusée', $u2['status'] === 422);
 
 // Export et suppression RGPD (C4)
-$auth->register('carol@example.com', 'pw123456', null, null);
-$accounts->linkAccount(3, 'lichess', 'carol_l');
-$export = $accounts->exportData(3);
+$carol = $auth->register('carol@example.com', 'pw123456', null, null);
+$carolId = $carol['body']['user_id'];
+$accounts->linkAccount($carolId, 'lichess', 'carol_l');
+$export = $accounts->exportData($carolId);
 check('export: contient profil et pseudos', isset($export['profile'][0]['club']) && $export['linked_accounts'][0]['username'] === 'carol_l');
-$accounts->deleteAccount(3);
-check('suppression: utilisateur effacé', Database::one('SELECT id FROM users WHERE id = 3') === null);
-check('suppression: pseudos effacés', Database::one('SELECT id FROM linked_accounts WHERE user_id = 3') === null);
-check('suppression: profil effacé', Database::one('SELECT user_id FROM player_profiles WHERE user_id = 3') === null);
+$accounts->deleteAccount($carolId);
+check('suppression: utilisateur effacé', Database::one('SELECT id FROM users WHERE id = :i', ['i' => $carolId]) === null);
+check('suppression: pseudos effacés', Database::one('SELECT id FROM linked_accounts WHERE user_id = :i', ['i' => $carolId]) === null);
+check('suppression: profil effacé', Database::one('SELECT user_id FROM player_profiles WHERE user_id = :i', ['i' => $carolId]) === null);
 
 // Routes
 $router = new Router();

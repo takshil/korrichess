@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Korrichess\Api\Core;
 
+use PDO;
+
 final class Queue
 {
     private const MAX_ATTEMPTS = 5;

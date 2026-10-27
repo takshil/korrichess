@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Korrichess\Api\Core;
 
+use PDO;
+
 final class Migration
 {
     /** @return array<string, array{id: string, class: string}> sorted by id */
@@ -12,11 +14,15 @@ final class Migration
         $found = [];
         foreach (glob(__DIR__ . '/../../migrations/*.php') ?: [] as $file) {
             $base = basename($file, '.php');
-            $id = substr($base, 0, 14);
-            if (!preg_match('/^\d{8}_\d{4}$/', $id)) {
+            if (!preg_match('/^(\d{8}_\d{4})_/', $base, $m)) {
                 continue;
             }
-            $class = 'Korrichess\\Api\\Migrations\\' . str_replace('.', '\\', $base);
+            $id = $m[1];
+            $src = (string) file_get_contents($file);
+            if (!preg_match('/\b(?:class|interface)\s+(\w+)/', $src, $cm)) {
+                continue;
+            }
+            $class = 'Korrichess\\Api\\Migrations\\' . $cm[1];
             $found[$id] = ['id' => $id, 'class' => $class];
         }
         ksort($found);

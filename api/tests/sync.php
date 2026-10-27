@@ -38,8 +38,8 @@ $r2 = $service->sync(1, 'lichess', 'alice');
 check('sync: incrémentale sans nouveauté', $r2['body']['imported'] === 0);
 check('sync: état mémorisé', $service->state(1, 'lichess', 'alice')['last_game_at'] === '2025-03-13T22:00:00Z');
 
-// L6 : doublons détectés et ignorés
-$client->games[] = ['external_id' => 'g2', 'pgn' => $game2, 'played_at' => '2025-03-12T21:00:00Z'];
+// L6 : doublons détectés et ignorés (la plateforme renvoie la même partie, horodatage rafraîchi)
+$client->games[] = ['external_id' => 'g2', 'pgn' => $game2, 'played_at' => '2025-03-14T08:00:00Z'];
 $r3 = $service->sync(1, 'lichess', 'alice');
 check('sync: doublon ignoré', $r3['body']['duplicates_ignores'] === 1 && $r3['body']['imported'] === 0);
 

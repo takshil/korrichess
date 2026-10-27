@@ -125,8 +125,9 @@ final class AccountService
             if ($exists === null) {
                 continue;
             }
-            $params = str_contains($where, 'IN (SELECT') ? ['user_id' => $userId] : ['user_id' => $userId];
-            $export[$key] = Database::all("SELECT * FROM $table WHERE $where", $params);
+            $isSubQuery = str_contains($where, 'IN (SELECT');
+            $condition = $isSubQuery ? $where : "$where = :user_id";
+            $export[$key] = Database::all("SELECT * FROM $table WHERE $condition", ['user_id' => $userId]);
         }
         return $export;
     }
@@ -139,10 +140,13 @@ final class AccountService
                 $this->storage->delete((string) $row['storage_key']);
             }
         }
+        $analysesExists = Database::one("SELECT name FROM sqlite_master WHERE type='table' AND name = 'game_analyses'") !== null;
+        if ($analysesExists) {
+            Database::run('DELETE FROM game_analyses WHERE game_id IN (SELECT id FROM games WHERE user_id = :u)', ['u' => $userId]);
+        }
         foreach (['games', 'player_profiles', 'linked_accounts', 'user_settings', 'consents'] as $table) {
             Database::run("DELETE FROM $table WHERE user_id = :u", ['u' => $userId]);
         }
-        Database::run('DELETE FROM game_analyses WHERE game_id IN (SELECT id FROM games WHERE user_id = :u)', ['u' => $userId]);
         Database::run('DELETE FROM auth_tokens WHERE user_id = :u', ['u' => $userId]);
         Database::run('DELETE FROM users WHERE id = :u', ['u' => $userId]);
     }

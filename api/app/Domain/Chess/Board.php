@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Korrichess\Api\Domain\Chess;
 
+use function ctype_digit;
+use function ctype_upper;
+
 final class Board
 {
     /** cases 'a1'..'h8' => 'wP','bK',... */
@@ -193,6 +196,9 @@ final class Board
                     }
                     $san .= $sameFile && !$sameRank ? $from[1] : $from[0];
                 }
+                if ($isCapture) {
+                    $san .= 'x';
+                }
             } elseif ($isCapture) {
                 $san .= $from[0] . 'x';
             }
@@ -242,10 +248,60 @@ final class Board
             return false;
         }
         $opponent = $color === 'w' ? 'b' : 'w';
-        $backup = clone $this;
-        $backup->turn = $opponent;
-        foreach ($backup->legalMovesUci() as $uci) {
-            if (substr($uci, 2, 2) === $kingSquare) {
+        $kf = ord($kingSquare[0]) - 96;
+        $kr = (int) $kingSquare[1];
+        $attackDirs = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]];
+        foreach ($attackDirs as [$df, $dr]) {
+            $dist = 1;
+            while (true) {
+                $nf = $kf + $df * $dist;
+                $nr = $kr + $dr * $dist;
+                if ($nf < 1 || $nf > 8 || $nr < 1 || $nr > 8) {
+                    break;
+                }
+                $target = chr(96 + $nf) . $nr;
+                $piece = $this->pieceAt($target);
+                if ($piece === null) {
+                    $dist++;
+                    continue;
+                }
+                $slidingTypes = ($df === 0 || $dr === 0) ? ['R', 'Q'] : ['B', 'Q'];
+                if ($piece[0] === $opponent && in_array($piece[1], $slidingTypes, true)) {
+                    return true;
+                }
+                break;
+            }
+        }
+        foreach ([[1, 2], [2, 1], [-1, 2], [-2, 1], [1, -2], [2, -1], [-1, -2], [-2, -1]] as [$df, $dr]) {
+            $nf = $kf + $df;
+            $nr = $kr + $dr;
+            if ($nf < 1 || $nf > 8 || $nr < 1 || $nr > 8) {
+                continue;
+            }
+            $piece = $this->pieceAt(chr(96 + $nf) . $nr);
+            if ($piece === $opponent . 'N') {
+                return true;
+            }
+        }
+        $pawnRank = (int) $kingSquare[1] + ($color === 'w' ? -1 : 1);
+        if ($pawnRank >= 1 && $pawnRank <= 8) {
+            foreach ([-1, 1] as $df) {
+                $nf = $kf + $df;
+                if ($nf < 1 || $nf > 8) {
+                    continue;
+                }
+                if ($this->pieceAt(chr(96 + $nf) . $pawnRank) === $opponent . 'P') {
+                    return true;
+                }
+            }
+        }
+        foreach ($attackDirs as [$df, $dr]) {
+            $nf = $kf + $df;
+            $nr = $kr + $dr;
+            if ($nf < 1 || $nf > 8 || $nr < 1 || $nr > 8) {
+                continue;
+            }
+            if ($this->pieceAt(chr(96 + $nf) . $nr) === $opponent . 'K') {
                 return true;
             }
         }
@@ -290,6 +346,9 @@ final class Board
 
     private function isLegal(string $from, string $to, ?string $promo): bool
     {
+        if ($promo === '') {
+            $promo = null;
+        }
         if (!isset($this->squares[$from])) {
             return false;
         }
@@ -321,7 +380,7 @@ final class Board
         $type = $piece[1];
         $file = ord($from[0]) - 96;
         $rank = (int) $from[1];
-        $add = static function (int $df, int $dr) use (&$moves, $from, $file, $rank): ?array {
+        $add = function (int $df, int $dr) use (&$moves, $from, $file, $rank): ?array {
             $nf = $file + $df;
             $nr = $rank + $dr;
             if ($nf < 1 || $nf > 8 || $nr < 1 || $nr > 8) {
@@ -331,9 +390,8 @@ final class Board
             $moves[] = [$from, $target, ''];
             return [$target, $this->pieceAt($target)];
         };
-        $add = \Closure::bind($add, $this, self::class);
 
-        $sliding = static function (array $dirs) use ($add, $color): void {
+        $sliding = static function (array $dirs) use ($add, $color, &$moves): void {
             foreach ($dirs as [$df, $dr]) {
                 $dist = 1;
                 while (true) {
@@ -343,15 +401,13 @@ final class Board
                     }
                     [$target, $captured] = $res;
                     if ($captured !== null) {
-                        if ($captured[0] !== $color) {
-                            break;
+                        if ($captured[0] === $color) {
+                            array_pop($moves);
                         }
-                        array_pop($GLOBALS['zz']);
-                    }
-                    $dist++;
-                    if ($captured !== null) {
+                        $dist++;
                         break;
                     }
+                    $dist++;
                 }
             }
         };
@@ -446,7 +502,8 @@ final class Board
                     if ($this->pieceAt($rookSq) !== $color . 'R') {
                         continue;
                     }
-                    $between = $key === strtoupper($key) ? ['f' . $homeRank, 'g' . $homeRank] : ['d' . $homeRank, 'c' . $homeRank, 'b' . $homeRank];
+                    $kingside = $key === 'K' || $key === 'k';
+                    $between = $kingside ? ['f' . $homeRank, 'g' . $homeRank] : ['d' . $homeRank, 'c' . $homeRank, 'b' . $homeRank];
                     $clear = true;
                     foreach ($between as $sq) {
                         if ($this->pieceAt($sq) !== null) {
@@ -457,8 +514,8 @@ final class Board
                     if (!$clear) {
                         continue;
                     }
-                    $kingTo = ($key === strtoupper($key) ? 'g' : 'c') . $homeRank;
-                    $path = $key === strtoupper($key) ? ['e' . $homeRank, 'f' . $homeRank, 'g' . $homeRank] : ['e' . $homeRank, 'd' . $homeRank, 'c' . $homeRank];
+                    $kingTo = ($kingside ? 'g' : 'c') . $homeRank;
+                    $path = $kingside ? ['e' . $homeRank, 'f' . $homeRank, 'g' . $homeRank] : ['e' . $homeRank, 'd' . $homeRank, 'c' . $homeRank];
                     $safe = true;
                     foreach ($path as $sq) {
                         $probe = clone $this;

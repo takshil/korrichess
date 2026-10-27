@@ -15,7 +15,12 @@ function korri_classmap_autoload(string $class): void
         $map = [];
         $files = [];
         foreach ($conf['autoload']['classmap'] ?? [] as $dir) {
-            foreach (glob(rtrim(__DIR__, '/') . '/' . $dir . '/*.php') ?: [] as $path) {
+            $it = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(rtrim(__DIR__, '/') . '/' . trim($dir, '/')));
+            foreach ($it as $info) {
+                if (!$info instanceof \SplFileInfo || $info->getExtension() !== 'php') {
+                    continue;
+                }
+                $path = $info->getPathname();
                 $src = (string) file_get_contents($path);
                 if (preg_match('/\bnamespace\s+([^;]+);/', $src, $ns) && preg_match_all('/\b(?:class|interface|trait)\s+(\w+)/', $src, $types)) {
                     foreach ($types[1] as $type) {
@@ -32,10 +37,13 @@ function korri_classmap_autoload(string $class): void
         require_once $map[$class];
         return;
     }
-    $bare = str_replace('\\', '/', $class);
-    $candidate = __DIR__ . '/app/' . $bare . '.php';
-    if (is_file($candidate)) {
-        require_once $candidate;
+    $prefix = 'Korrichess\\Api\\';
+    if (str_starts_with($class, $prefix)) {
+        $relative = str_replace('\\', '/', substr($class, strlen($prefix)));
+        $candidate = __DIR__ . '/app/' . $relative . '.php';
+        if (is_file($candidate)) {
+            require_once $candidate;
+        }
     }
 }
 
