@@ -210,8 +210,8 @@ final class Board
         $clone = clone $this;
         $clone->applyUnchecked($from, $to, $promo);
         if ($withCheck) {
-            if ($clone->isCheck($this->turn)) {
-                $san .= $clone->isCheckmate($this->turn) ? '#' : '+';
+            if ($clone->isCheck($clone->turn())) {
+                $san .= $clone->isCheckmate($clone->turn()) ? '#' : '+';
             }
         }
         return $san;
