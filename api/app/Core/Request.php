@@ -55,6 +55,12 @@ final class Request
         return $this->body[$key] ?? $default;
     }
 
+    /** Corps complet de la requete. @return array<string,mixed> */
+    public function all(): array
+    {
+        return is_array($this->body) ? $this->body : [];
+    }
+
     public function bearerToken(): ?string
     {
         $header = $this->headers['authorization'] ?? '';
