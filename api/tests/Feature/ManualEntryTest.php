@@ -103,13 +103,13 @@ final class ManualEntryTest extends TestCase
         $body = $this->registerUser();
 
         $r = $this->withToken($body['token'])
-            ->postJson('/api/v1/games/manual/preview', ['moves' => ['e2e4', 'e7e5', 'Ke2']]);
+            ->postJson('/api/v1/games/manual/preview', ['moves' => ['e2e4', 'e7e5', 'Ke3']]);
 
         $r->assertStatus(200);
         $this->assertSame(2, $r->json('invalid_ply'));
-        $this->assertSame('Ke2', $r->json('invalid_move'));
+        $this->assertSame('Ke3', $r->json('invalid_move'));
         $this->assertSame(['e4', 'e5'], $r->json('moves_san'));
-        $this->assertStringContainsString(' b ', $r->json('fen')); // position avant le coup fautif
+        $this->assertStringContainsString(' w ', $r->json('fen')); // position avant le coup fautif : aux blancs
     }
 
     // ------------------------------------------------- S5 : enregistrement vérifié
@@ -168,14 +168,14 @@ final class ManualEntryTest extends TestCase
         $body = $this->registerUser();
 
         $r = $this->withToken($body['token'])->postJson('/api/v1/games/manual', [
-            'moves' => ['e2e4', 'e7e5', 'Ke2', 'Qd8'],
+            'moves' => ['e2e4', 'e7e5', 'Ke3', 'Qd8'], // Ke3 : roi e1 -> e3, impossible
             'validate_moves' => false,
         ] + self::FICHE);
 
         $r->assertStatus(201);
         $this->assertTrue($r->json('needs_review'));
         $this->assertSame(['e2e4', 'e7e5'], $r->json('moves_uci'));
-        $this->assertSame(['e2e4', 'e7e5', 'Ke2', 'Qd8'], $r->json('raw_moves'));
+        $this->assertSame(['e2e4', 'e7e5', 'Ke3', 'Qd8'], $r->json('raw_moves'));
 
         // Le rejeu s'arrête au premier coup douteux.
         $rejeu = $this->withToken($body['token'])->getJson('/api/v1/games/' . $r->json('id') . '/replay');
