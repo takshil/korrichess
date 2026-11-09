@@ -68,9 +68,18 @@ quit
 LFTP
 
 if [ -n "$DOCROOT" ]; then
+    echo ">>> Publication de la vitrine dans la racine web ($DOCROOT)"
+    # Mirror sans --delete : la racine web peut contenir d'autres fichiers de
+    # l'hébergeur ; index.php et .htaccess sont reposés juste après.
+    lftp -u "$FTP_USER" -p "$FTP_PORT" "$FTP_HOST" <<LFTP
+set ftp:ssl-allow $FTP_TLS
+mirror --reverse --no-perms --verbose --exclude-glob 'README.md' "$CI_PROJECT_DIR/web" "$DOCROOT"
+quit
+LFTP
+
     echo ">>> Publication du point d'entrée dans la racine web ($DOCROOT)"
     # L'application vit hors racine web ; ce contrôleur minimal la sert
-    # pour toutes les URL /api/* (la vitrine viendra s'ajouter à la racine).
+    # pour toutes les URL /api/* (la vitrine est déjà dans la racine).
     cat > "$CI_PROJECT_DIR/docroot-index.php" <<PHPEOF
 <?php
 
@@ -80,6 +89,9 @@ require __DIR__ . '/../$FTP_API_DIR/public/index.php';
 PHPEOF
     cat > "$CI_PROJECT_DIR/docroot-htaccess" <<'HTACCESS'
 # Korrichess — routes /api/* vers l'application Laravel (ADR-003).
+# La vitrine (index.html) est servie en priorité à la racine.
+DirectoryIndex index.html index.php
+ErrorDocument 404 /404.html
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteCond %{REQUEST_URI} ^/api(/|$)
