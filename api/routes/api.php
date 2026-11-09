@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\ConsentController;
 use App\Http\Controllers\Api\V1\GameController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\LinkedAccountController;
+use App\Http\Controllers\Api\V1\ManualEntryController;
 use App\Http\Controllers\Api\V1\MeController;
 use App\Http\Controllers\Api\V1\SettingsController;
 use App\Http\Controllers\Api\V1\SyncController;
@@ -67,6 +68,11 @@ Route::prefix('v1')->group(function (): void {
         Route::patch('/games/{game}', [GameController::class, 'update'])->whereNumber('game')->name('games.update');
         Route::post('/games/export', [GameController::class, 'export'])->name('games.export');
         Route::post('/games/search-position', [GameController::class, 'searchPosition'])->name('games.search-position');
+
+        // Saisie manuelle des parties de tournoi (S5 + S7, issue #25).
+        Route::post('/games/manual', [ManualEntryController::class, 'store'])->name('games.manual.store');
+        Route::post('/games/manual/preview', [ManualEntryController::class, 'preview'])->name('games.manual.preview');
+        Route::put('/games/{game}/manual', [ManualEntryController::class, 'update'])->whereNumber('game')->name('games.manual.update');
 
         // Rejeu et analyse des parties (issue #5, ADR-002).
         Route::get('/games/{game}/replay', [AnalysisController::class, 'replay'])->whereNumber('game')->name('games.replay');

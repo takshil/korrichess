@@ -2,7 +2,7 @@
 
 API REST JSON consommée par l'application mobile (`app/`) et le site (`web/`).
 
-## Périmètre actuel (V1 fonctionnelle : moteur, compte, sync, bibliothèque, analyse)
+## Périmètre actuel (V1 fonctionnelle : moteur, compte, sync, bibliothèque, saisie manuelle, analyse)
 
 - Routes versionnées sous **`/api/v1`** (`routes/api.php`).
 - Endpoint `GET /api/v1/health` (sonde de disponibilité).
@@ -54,6 +54,23 @@ API REST JSON consommée par l'application mobile (`app/`) et le site (`web/`).
     positions de chaque partie sont indexées à la demande dans
     `game_positions` via le moteur maison (B6) ;
   - isolation stricte par utilisateur sur toutes les routes.
+- **Saisie manuelle des parties de tournoi** (issue #25, tranches S5/S7) :
+  - `POST /api/v1/games/manual/preview` — rejoue une liste de coups (UCI
+    `e2e4` ou SAN `Nf3`, mélangés au besoin) et renvoie la position
+    (FEN, trait, échec/mat/pat), les coups en SAN et les coups légaux
+    suivants en UCI ; `invalid_ply` signale le premier coup injouable,
+    le reste est renvoyé tel quel ;
+  - `POST /api/v1/games/manual` — enregistre la partie avec sa fiche
+    (date, adversaire, classement adverse, couleur, résultat, cadence,
+    tournoi, ronde) ; avec `validate_moves: true` un coup illégal est
+    refusé (`422 coup_invalide`, numéro du coup en cause) ;
+  - avec `validate_moves: false` la partie est enregistrée telle quelle,
+    marquée `needs_review` : la saisie d'origine est conservée dans
+    `raw_moves` (utile quand la feuille de tournoi contient une erreur,
+    S6 tolérant) et `moves_uci` ne garde que le préfixe rejouable ;
+  - `PUT /api/v1/games/{id}/manual` — remplace la saisie d'une partie
+    manuelle (404 `pas_une_saisie_manuelle` pour une partie importée) ;
+  - le PGN de la partie est reconstruit via le moteur maison (`Pgn`).
 - **Rejeu et analyse des parties** (issue #5, ADR-002) :
   - `GET /api/v1/games/{id}/replay` — rejeu : SAN, UCI et FEN de chaque
     position, prêts pour un échiquier interactif (A1) ;
@@ -99,7 +116,10 @@ API REST JSON consommée par l'application mobile (`app/`) et le site (`web/`).
   incrémental, curseur, doublons, filtres, sync auto en file, API `/sync`),
   bibliothèque (liste, filtres, tri, pagination, recherche texte, détail,
   annotations, export PGN, recherche par position, isolation, routes
-  `/games`) et analyse (rejeu, demande et exécution asynchrones, courbe,
+  `/games`), saisie manuelle (prévisualisation UCI et SAN, coup fautif
+  signalé, fiche incomplète refusée, enregistrement vérifié ou tolérant
+  `needs_review`, correction, partie d'autrui invisible, routes
+  `/games/manual`) et analyse (rejeu, demande et exécution asynchrones, courbe,
   classements, explications, ouverture et sortie de théorie, exploration,
   isolation, routes `/replay`, `/analyse`, `/explore`)
   — `php artisan test --testsuite Feature`. Les tests n'ont pas besoin de
