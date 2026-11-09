@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://korrichess.fr/</loc><priority>1.0</priority></url>
+  <url><loc>https://korrichess.fr/fonctionnalites.html</loc><priority>0.9</priority></url>
+  <url><loc>https://korrichess.fr/tarifs.html</loc><priority>0.9</priority></url>
+  <url><loc>https://korrichess.fr/faq.html</loc><priority>0.8</priority></url>
+  <url><loc>https://korrichess.fr/blog.html</loc><priority>0.6</priority></url>
+  <url><loc>https://korrichess.fr/contact.html</loc><priority>0.7</priority></url>
+  <url><loc>https://korrichess.fr/mentions-legales.html</loc><priority>0.3</priority></url>
+  <url><loc>https://korrichess.fr/cgu.html</loc><priority>0.3</priority></url>
+  <url><loc>https://korrichess.fr/confidentialite.html</loc><priority>0.3</priority></url>
+</urlset>
