@@ -11,6 +11,13 @@ return [
         'token_ttl_days' => (int) env('AUTH_TOKEN_TTL_DAYS', 30),
     ],
 
+    'deploy' => [
+        // Jeton secret qui autorise la CI à déclencher les migrations
+        // via POST /api/deploy/migrate (déploiement FTP mutualisé, ADR-003).
+        // Vide par défaut : la route répond alors 404.
+        'deploy_token' => env('DEPLOY_TOKEN', ''),
+    ],
+
     'analysis' => [
         // Chemin du binaire UCI (Stockfish) — jamais embarqué ni distribué
         // par le dépôt (ADR-002). En son absence, le moteur heuristique

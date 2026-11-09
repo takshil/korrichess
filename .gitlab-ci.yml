@@ -1,0 +1,83 @@
+# CI Korrichess (ADR-003) :
+#  - api:tests  → PHPUnit sur l'API Laravel (toutes les MR et branches) ;
+#  - api:build  → vendor optimisé --no-dev (main uniquement) ;
+#  - api:deploy → déploiement FTP mutualisé via lftp, puis migrations
+#                 déclenchées par POST /api/deploy/migrate.
+#
+# Les secrets (FTP, BDD, jeton de déploiement) vivent dans les variables
+# CI/CD du projet (Settings → CI/CD → Variables), jamais dans le dépôt.
+# Procédure complète : docs/deploiement-ftp.md
+
+stages:
+  - test
+  - build
+  - deploy
+
+workflow:
+  rules:
+    # Une seule pipeline par MR (on évite le doublon branche + MR).
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
+
+variables:
+  COMPOSER_CACHE_DIR: "$CI_PROJECT_DIR/.composer-cache"
+
+default:
+  cache:
+    key: composer-cache
+    paths:
+      - .composer-cache/
+
+.php:
+  image: php:8.3-cli
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq git unzip curl ca-certificates >/dev/null
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+api:tests:
+  extends: .php
+  stage: test
+  script:
+    - cd api
+    - composer install --no-interaction --prefer-dist --no-progress
+    - cp .env.example .env
+    - php artisan key:generate --force
+    - php artisan test
+  # composer.lock n'est pas encore versionné : on l'expose pour pouvoir
+  # le committer après une première installation réussie.
+  artifacts:
+    when: always
+    paths:
+      - api/composer.lock
+    expire_in: 1 week
+
+api:build:
+  extends: .php
+  stage: build
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  script:
+    - cd api
+    - composer install --no-dev --no-interaction --prefer-dist --no-progress --optimize-autoloader
+    - rm -f .env
+    - rm -rf tests phpunit.xml
+  artifacts:
+    paths:
+      - api/
+    expire_in: 3 days
+
+api:deploy:
+  stage: deploy
+  image: alpine:3.20
+  needs: ["api:build"]
+  # Ne tourne que si les secrets FTP sont configurés ; sinon le job est
+  # simplement ignoré (premiers déploiements de test inclus).
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" && $FTP_HOST'
+  before_script:
+    - apk add --no-cache lftp curl bash
+  script:
+    - bash scripts/deploy-ftp.sh

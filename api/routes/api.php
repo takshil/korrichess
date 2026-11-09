@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\DeployController;
 use App\Http\Controllers\Api\V1\AnalysisController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ConsentController;
@@ -10,6 +11,17 @@ use App\Http\Controllers\Api\V1\MeController;
 use App\Http\Controllers\Api\V1\SettingsController;
 use App\Http\Controllers\Api\V1\SyncController;
 use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Déclenchement des migrations par la CI (ADR-003)
+|--------------------------------------------------------------------------
+| En hébergement mutualisé FTP, la CI ne peut pas lancer `php artisan
+| migrate` sur le serveur : elle appelle cette route avec un jeton secret.
+| Sans jeton configuré (en local, par exemple), la route répond 404
+| comme si elle n'existait pas.
+*/
+Route::post('/deploy/migrate', [DeployController::class, 'migrate'])->name('deploy.migrate');
 
 /*
 |--------------------------------------------------------------------------
