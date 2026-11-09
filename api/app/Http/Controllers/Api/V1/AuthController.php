@@ -19,24 +19,24 @@ final class AuthController extends Controller
 
     public function register(RegisterRequest $request): JsonResponse
     {
-        [$status, $body] = $this->auth->register(
+        $result = $this->auth->register(
             (string) $request->validated('email'),
             $request->validated('password'),
             $request->validated('google_sub'),
             $request->validated('apple_sub'),
         );
 
-        return response()->json($body, $status);
+        return response()->json($result['body'], $result['status']);
     }
 
     public function login(LoginRequest $request): JsonResponse
     {
-        [$status, $body] = $this->auth->login(
+        $result = $this->auth->login(
             (string) $request->validated('email'),
             $request->validated('password'),
         );
 
-        return response()->json($body, $status);
+        return response()->json($result['body'], $result['status']);
     }
 
     public function logout(Request $request): JsonResponse

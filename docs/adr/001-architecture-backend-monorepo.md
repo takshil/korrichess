@@ -1,6 +1,6 @@
 # ADR-001 — Choix de l'architecture back-end et du monorepo
 
-- Statut : accepté
+- Statut : accepté — **partiellement remplacé par l'ADR-004** (passage à Laravel 13 le 9 novembre 2026, pour raisons de sécurité)
 - Date : 2025 (issue #14 — Architecture back-end et infrastructure)
 - Contexte : cahier des charges Korrichess v1.1, section 6.1
 
@@ -26,10 +26,12 @@ mineur : sécurité et RGPD par défaut.
 ## Décision
 
 - **Monorepo** avec `app/` (Flutter), `api/` (PHP), `web/`, `docs/` (ADR).
-- **PHP / Laravel 11** pour l'API : écosystème mature (migrations
+- **PHP / Laravel** pour l'API : écosystème mature (migrations
   versionnées, file de tâches via base de données, Eloquent), aligné avec la
   contrainte « PHP » du cahier des charges. Symfony a été écarté pour la
-  productivité « batteries incluses » de Laravel sur un MVP.
+  productivité « batteries incluses » de Laravel sur un MVP. ~~Laravel 11~~
+  → **Laravel 13 depuis le 9 novembre 2026** (ADR-004 : Laravel 11 hors
+  support de sécurité depuis mars 2026).
 - **API REST + JSON**, versionnée sous `/api/v1` ; mobile et web sont des
   clients de cette unique API.
 - **Authentification e-mail + mot de passe** via Laravel Sanctum (jetons) ;
@@ -48,4 +50,4 @@ mineur : sécurité et RGPD par défaut.
 - Le monorepo impose de documenter les conventions par dossier (README de
   `app/`, `api/`, `web/`) — fait dès cette issue.
 - L'ajout d'un service OCR dédié reste possible plus tard (V2, issue #20)
-  sans toucher à l'API publique.
+  sans toucher l'API publique.

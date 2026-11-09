@@ -25,11 +25,11 @@ final class SettingsController extends Controller
     /** PATCH /api/v1/me/settings — mise à jour des paramètres (issue #10). */
     public function update(UpdateSettingsRequest $request): JsonResponse
     {
-        [$status, $body] = $this->settings->update(
+        $result = $this->settings->update(
             (int) $request->user()->id,
             $request->validated(),
         );
 
-        return response()->json($body, $status);
+        return response()->json($result['body'], $result['status']);
     }
 }

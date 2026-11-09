@@ -283,6 +283,9 @@ final class LibraryTest extends TestCase
             ->assertJsonPath('total', 1)
             ->assertJsonPath('games.0.opponent', 'dave');
 
+        // withToken() persiste dans defaultHeaders : on les efface pour que
+        // la requête suivante parte réellement sans jeton.
+        $this->flushHeaders();
         $this->getJson('/api/v1/games')->assertStatus(401);
     }
 

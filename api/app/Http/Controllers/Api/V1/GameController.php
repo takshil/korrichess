@@ -33,7 +33,7 @@ final class GameController extends Controller
             }
         }
 
-        [$status, $body] = $this->library->list(
+        $result = $this->library->list(
             (int) $request->user()->id,
             $filters,
             (int) ($q['limit'] ?? 50),
@@ -42,44 +42,44 @@ final class GameController extends Controller
             (string) ($q['order'] ?? 'desc'),
         );
 
-        return response()->json($body, $status);
+        return response()->json($result['body'], $result['status']);
     }
 
     /** GET /api/v1/games/{game} — détail d'une partie, PGN inclus (B1). */
     public function show(Request $request, int $game): JsonResponse
     {
-        [$status, $body] = $this->library->detail((int) $request->user()->id, $game);
+        $result = $this->library->detail((int) $request->user()->id, $game);
 
-        return response()->json($body, $status);
+        return response()->json($result['body'], $result['status']);
     }
 
     /** PATCH /api/v1/games/{game} — note, étiquettes, favori (B4). */
     public function update(AnnotateGameRequest $request, int $game): JsonResponse
     {
-        [$status, $body] = $this->library->annotate((int) $request->user()->id, $game, $request->validated());
+        $result = $this->library->annotate((int) $request->user()->id, $game, $request->validated());
 
-        return response()->json($body, $status);
+        return response()->json($result['body'], $result['status']);
     }
 
     /** POST /api/v1/games/export — export PGN d'une sélection (B5). */
     public function export(ExportGamesRequest $request): JsonResponse
     {
-        [$status, $body] = $this->library->exportPgn(
+        $result = $this->library->exportPgn(
             (int) $request->user()->id,
             array_map('intval', (array) $request->validated('game_ids')),
         );
 
-        return response()->json($body, $status);
+        return response()->json($result['body'], $result['status']);
     }
 
     /** POST /api/v1/games/search-position — recherche par position (B6). */
     public function searchPosition(SearchPositionRequest $request): JsonResponse
     {
-        [$status, $body] = $this->library->searchByPosition(
+        $result = $this->library->searchByPosition(
             (int) $request->user()->id,
             (string) $request->validated('fen'),
         );
 
-        return response()->json($body, $status);
+        return response()->json($result['body'], $result['status']);
     }
 }
