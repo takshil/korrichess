@@ -29,6 +29,8 @@ class Game extends Model
         'moves_uci',
         'status',
         'storage_key',
+        'needs_review',
+        'raw_moves',
     ];
 
     protected $attributes = [

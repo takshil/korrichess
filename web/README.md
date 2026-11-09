@@ -26,18 +26,30 @@ et le slogan « Dalc'h mat » à faire valider par un bretonnant (issue #19).
 
 `espace/` — application monopage (SPA) JavaScript sans framework, routage
 par hash (`#/tableau-de-bord`, `#/bibliotheque`, `#/rejeu/{id}`,
-`#/compte`) et appels à `/api/v1` avec le jeton Sanctum (`Authorization:
-Bearer`). Échappement HTML systématique avant tout rendu.
+`#/saisie`, `#/saisie/{id}`, `#/compte`) et appels à `/api/v1` avec le
+jeton Sanctum (`Authorization: Bearer`). Échappement HTML systématique
+avant tout rendu.
 
 - `espace/index.html` — coquille (en-tête, conteneur `#vue`, pied),
   `<meta name="robots" content="noindex">`, thème mémorisé appliqué
   avant le rendu ;
 - `espace/espace.css` — styles propres (authentification, statistiques,
-  filtres, liste de coups, cartes de compte, zone dangereuse) ;
+  filtres, liste de coups, échiquier de saisie, cartes de compte, zone
+  dangereuse) ;
 - `espace/app.js` — connexion/inscription (W1), tableau de bord avec
   synchronisation (W2), bibliothèque filtrable et paginée (W3), rejeu
   coup par coup au clavier (W4), compte : profil, pseudos liés,
-  préférences, export RGPD, suppression (W7/W8).
+  préférences, export RGPD, suppression (W7/W8) ;
+- saisie manuelle d'une partie papier (S5/S7, issue #25) : échiquier
+  cliquable (sélection, destinations, promotion) ou saisie texte SAN,
+  troncature en un clic, retrait du dernier coup, fiche de la partie
+  (date, adversaire, classement, couleur, résultat, cadence, tournoi,
+  ronde). La vérification des coups est assurée par l'API
+  (`POST /api/v1/games/manual/preview` après chaque coup) et peut être
+  désactivée si la feuille contient une erreur : la partie est alors
+  enregistrée telle quelle, marquée `needs_review`, et la saisie
+  d'origine est conservée (`raw_moves`). Correction possible depuis la
+  bibliothèque (`✎ corriger`, `PUT /api/v1/games/{id}/manual`).
 
 L'analyse moteur n'y est pas exposée : les workers de file ne tournent
 pas en mutualisé (ADR-003), le rejeu seul est disponible.
