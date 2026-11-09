@@ -45,9 +45,9 @@ api:tests:
     - composer install --no-interaction --prefer-dist --no-progress
     - cp .env.example .env
     - php artisan key:generate --force
-    - php artisan test
-  # composer.lock n'est pas encore versionné : on l'expose pour pouvoir
-  # le committer après une première installation réussie.
+    - vendor/bin/phpunit --colors=never
+  # composer.lock est versionné ; l'artefact reste un filet de sécurité pour
+  # diagnostiquer une éventuelle dérive des dépendances.
   artifacts:
     when: always
     paths:
