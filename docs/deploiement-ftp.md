@@ -21,7 +21,7 @@ qu'elle n'est pas configurée, le pipeline s'arrête après les tests, sans
 
 ## 2. Prérequis côté hébergeur
 
-1. **PHP ≥ 8.2** activé pour le domaine (contrainte Laravel 11).
+1. **PHP ≥ 8.3** activé pour le domaine (contrainte Laravel 13).
 2. **Apache avec `mod_rewrite`** (le `.htaccess` publié route `/api/*`).
 3. **Une base de données MySQL** créée depuis le panel, avec son
    utilisateur et son mot de passe. Note le nom d'hôte SQL du panel
