@@ -1,0 +1,114 @@
+/* Korrichess — styles propres à l'espace web (issue #12).
+   S'appuie sur ../assets/css/korrichess.css (variables, thème, composants). */
+
+.vue-prose { max-width: 46rem; }
+.vue-prose p { margin: 0 0 1rem; }
+
+/* ---------- Authentification ---------- */
+
+.authencarte {
+    max-width: 26rem;
+    margin: 3rem auto;
+    background: var(--carte);
+    border: 1px solid var(--bord);
+    border-radius: 0.9rem;
+    padding: 1.6rem 1.8rem;
+}
+.authencarte h1 { margin: 0 0 0.8rem; font-size: 1.4rem; }
+.authent-onglets { display: flex; gap: 0.5rem; margin-bottom: 1.2rem; }
+.authent-onglets button {
+    flex: 1;
+    padding: 0.45rem;
+    border: 1px solid var(--bord);
+    background: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font: inherit;
+    color: var(--encre);
+}
+.authent-onglets button[aria-selected="true"] { background: var(--vert-fonce); color: #fff; border-color: var(--vert-fonce); }
+
+/* ---------- Cartes de statistiques ---------- */
+
+.stat-grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.9rem; margin-bottom: 1.6rem; }
+.stat-carte { background: var(--carte); border: 1px solid var(--bord); border-radius: 0.8rem; padding: 1rem 1.1rem; text-align: center; }
+.stat-carte .valeur { font-size: 1.9rem; font-weight: 700; display: block; }
+.stat-carte .libelle { color: var(--encre-doux); font-size: 0.9rem; }
+
+/* ---------- Filtres de bibliothèque ---------- */
+
+.filtres {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.8rem;
+    background: var(--carte);
+    border: 1px solid var(--bord);
+    border-radius: 0.8rem;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1.2rem;
+}
+.filtres .champ { margin: 0; }
+.filtres-actions { grid-column: 1 / -1; display: flex; gap: 0.6rem; }
+
+/* ---------- Liste de coups / rejeu ---------- */
+
+.rejeu-disposition {
+    display: grid;
+    grid-template-columns: minmax(0, 520px) minmax(220px, 1fr);
+    gap: 1.6rem;
+    align-items: start;
+}
+.rejeu-controles { display: flex; justify-content: center; gap: 0.5rem; margin-top: 0.8rem; }
+.rejeu-controles button {
+    font-size: 1.05rem;
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--bord);
+    background: var(--carte);
+    color: var(--encre);
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+.rejeu-position { text-align: center; color: var(--encre-doux); margin-top: 0.5rem; }
+
+.coups {
+    background: var(--carte);
+    border: 1px solid var(--bord);
+    border-radius: 0.8rem;
+    padding: 0.9rem 1rem;
+    max-height: 520px;
+    overflow-y: auto;
+}
+.coups ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 2.2rem 1fr 1fr; gap: 0.15rem; }
+.coups li.numero { color: var(--encre-doux); text-align: right; padding-right: 0.4rem; align-self: center; }
+.coups button {
+    text-align: left;
+    border: 0;
+    background: none;
+    color: var(--encre);
+    font: inherit;
+    padding: 0.15rem 0.45rem;
+    border-radius: 0.35rem;
+    cursor: pointer;
+}
+.coups button.courant { background: var(--vert-fonce); color: #fff; }
+
+/* ---------- Compte ---------- */
+
+.compte-grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.4rem; }
+.compte-carte { background: var(--carte); border: 1px solid var(--bord); border-radius: 0.8rem; padding: 1.2rem 1.4rem; }
+.compte-carte h2 { margin: 0 0 0.9rem; font-size: 1.1rem; }
+.compte-carte ul { list-style: none; padding: 0; margin: 0 0 0.8rem; }
+.compte-carte ul li { display: flex; justify-content: space-between; gap: 0.6rem; padding: 0.3rem 0; border-bottom: 1px solid var(--bord); }
+.zone-danger { border: 1px solid var(--erreur); }
+.zone-danger h2 { color: var(--erreur); }
+
+.carree { display: flex; gap: 0.5rem; align-items: center; }
+.carree input[type="checkbox"] { width: auto; }
+
+@media (max-width: 800px) {
+    .rejeu-disposition { grid-template-columns: 1fr; }
+}
+
+/* Masque la navigation tant qu'on n'est pas connecté. */
+body.sans-session #nav-espace a,
+body.sans-session #nav-espace #deconnexion { display: none; }
