@@ -1,1 +1,115 @@
-PD9waHAKCmRlY2xhcmUoc3RyaWN0X3R5cGVzPTEpOwoKbmFtZXNwYWNlIEFwcFxEb21haW5cQ2hlc3M7CgpmaW5hbCBjbGFzcyBQZ24KewogICAgLyoqCiAgICAgKiBQYXJzZSB1biBQR04gKHTDqnRlcyArIGNvdXBzKSBldCByZXRvdXJuZSBsYSBsaXN0ZSBkZXMgY291cHMgZW4gU0FOIHB1ciwKICAgICAqIHNhbnMgcmVqb3VlciBzdXIgdW4gw6ljaGlxdWllciAodXRpbGUgcG91ciBsJ2FmZmljaGFnZSkuCiAgICAgKgogICAgICogTGVzIGNvbW1lbnRhaXJlcyB7Li4ufSBldCBsZXMgdmFyaWFudGVzICguLi4pIHNvbnQgaWdub3LDqXMgOyB0b3V0IGpldG9uCiAgICAgKiBub24gcmVjb25udSAobmkgY291cCwgbmkgbnVtw6lybywgbmkgcsOpc3VsdGF0KSBtYXJxdWUgbGUgUEdOIGNvbW1lIGludmFsaWRlLgogICAgICoKICAgICAqIEByZXR1cm4gYXJyYXl7aGVhZGVyczphcnJheTxzdHJpbmcsc3RyaW5nPixtb3ZlczphcnJheTxpbnQsc3RyaW5nPixpbnZhbGlkOmJvb2x9CiAgICAgKi8KICAgIHB1YmxpYyBzdGF0aWMgZnVuY3Rpb24gcGFyc2Uoc3RyaW5nICRwZ24pOiBhcnJheQogICAgewogICAgICAgICRoZWFkZXJzID0gW107CiAgICAgICAgaWYgKHByZWdfbWF0Y2hfYWxsKCcvXFsoXHcrKVxzKyIoW14iXSopIlxdLycsICRwZ24sICRtLCBQUkVHX1NFVF9PUkRFUikpIHsKICAgICAgICAgICAgZm9yZWFjaCAoJG0gYXMgJGgpIHsKICAgICAgICAgICAgICAgICRoZWFkZXJzWyRoWzFdXSA9ICRoWzJdOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgICRtb3Zlc1NlY3Rpb24gPSBwcmVnX3JlcGxhY2UoJy9cW1teXF1dKlxdLycsICcnLCAkcGduKSA/PyAnJzsKICAgICAgICAkbW92ZXNTZWN0aW9uID0gcHJlZ19yZXBsYWNlKCcvXHtbXn1dKlx9LycsICcnLCAkbW92ZXNTZWN0aW9uKSA/PyAnJzsKICAgICAgICAvLyB2YXJpYW50ZXMgZW50cmUgcGFyZW50aMOoc2VzIChpbWJyaXF1w6llcyA6IG9uIHJldGlyZSBkZSBsJ2ludMOpcmlldXIgdmVycyBsJ2V4dMOpcmlldXIpCiAgICAgICAgJHByZXZpb3VzID0gbnVsbDsKICAgICAgICB3aGlsZSAoJHByZXZpb3VzICE9PSAkbW92ZXNTZWN0aW9uKSB7CiAgICAgICAgICAgICRwcmV2aW91cyA9ICRtb3Zlc1NlY3Rpb247CiAgICAgICAgICAgICRtb3Zlc1NlY3Rpb24gPSBwcmVnX3JlcGxhY2UoJy9cKFteKCldKlwpLycsICcgJywgJG1vdmVzU2VjdGlvbikgPz8gJG1vdmVzU2VjdGlvbjsKICAgICAgICB9CiAgICAgICAgJG1vdmVzU2VjdGlvbiA9IHByZWdfcmVwbGFjZSgnL1xkK1wuXC5cLi8nLCAnICcsICRtb3Zlc1NlY3Rpb24pID8/ICcnOwogICAgICAgICRtb3Zlc1NlY3Rpb24gPSBwcmVnX3JlcGxhY2UoJy9cZCtcLi8nLCAnICcsICRtb3Zlc1NlY3Rpb24pID8/ICcnOwogICAgICAgICRtb3Zlc1NlY3Rpb24gPSBzdHJfcmVwbGFjZShbJzsnLCAiXG4iLCAiXHIiXSwgJyAnLCAkbW92ZXNTZWN0aW9uKTsKICAgICAgICAkdG9rZW5zID0gcHJlZ19zcGxpdCgnL1xzKy8nLCB0cmltKCRtb3Zlc1NlY3Rpb24pKSA/OiBbXTsKICAgICAgICAkbW92ZXMgPSBbXTsKICAgICAgICAkaW52YWxpZCA9IGZhbHNlOwogICAgICAgIGZvcmVhY2ggKCR0b2tlbnMgYXMgJHRva2VuKSB7CiAgICAgICAgICAgICR0b2tlbiA9IHRyaW0oJHRva2VuLCAnLicpOwogICAgICAgICAgICBpZiAoJHRva2VuID09PSAnJyB8fCAkdG9rZW4gPT09ICcqJyB8fCBzdHJfc3RhcnRzX3dpdGgoJHRva2VuLCAnJCcpKSB7CiAgICAgICAgICAgICAgICBjb250aW51ZTsKICAgICAgICAgICAgfQogICAgICAgICAgICBpZiAoaW5fYXJyYXkoJHRva2VuLCBbJzEtMCcsICcwLTEnLCAnMS8yLTEvMiddLCB0cnVlKSkgewogICAgICAgICAgICAgICAgY29udGludWU7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgaWYgKHByZWdfbWF0Y2goJy9eKFthLWhLUVJCTk9dW15cc10qKSQvJywgJHRva2VuKSkgewogICAgICAgICAgICAgICAgJG1vdmVzW10gPSAkdG9rZW47CiAgICAgICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgICAgICAkaW52YWxpZCA9IHRydWU7CiAgICAgICAgICAgIH0KICAgICAgICB9CgogICAgICAgIHJldHVybiBbJ2hlYWRlcnMnID0+ICRoZWFkZXJzLCAnbW92ZXMnID0+ICRtb3ZlcywgJ2ludmFsaWQnID0+ICRpbnZhbGlkXTsKICAgIH0KCiAgICAvKioKICAgICAqIFJlam91ZSBsZXMgY291cHMgU0FOIHN1ciB1biDDqWNoaXF1aWVyIDsgcmVudm9pZSBsZXMgY291cHMgVUNJIG91IG51bGwgc2kgdW4gY291cCBlc3QgaWxsw6lnYWwuCiAgICAgKgogICAgICogQHJldHVybiBhcnJheTxpbnQsc3RyaW5nPnxudWxsCiAgICAgKi8KICAgIHB1YmxpYyBzdGF0aWMgZnVuY3Rpb24gbW92ZXNUb1VjaShzdHJpbmcgJHBnbik6ID9hcnJheQogICAgewogICAgICAgICRwYXJzZWQgPSBzZWxmOjpwYXJzZSgkcGduKTsKICAgICAgICBpZiAoJHBhcnNlZFsnaW52YWxpZCddKSB7CiAgICAgICAgICAgIHJldHVybiBudWxsOwogICAgICAgIH0KICAgICAgICAkYm9hcmQgPSBCb2FyZDo6c3RhcnQoKTsKICAgICAgICAkdWNpID0gW107CiAgICAgICAgZm9yZWFjaCAoJHBhcnNlZFsnbW92ZXMnXSBhcyAkc2FuKSB7CiAgICAgICAgICAgICRtb3ZlID0gJGJvYXJkLT5zYW5Ub1VjaSgkc2FuKTsKICAgICAgICAgICAgaWYgKCRtb3ZlID09PSBudWxsKSB7CiAgICAgICAgICAgICAgICByZXR1cm4gbnVsbDsKICAgICAgICAgICAgfQogICAgICAgICAgICAkYm9hcmQtPmFwcGx5VWNpKCRtb3ZlKTsKICAgICAgICAgICAgJHVjaVtdID0gJG1vdmU7CiAgICAgICAgfQoKICAgICAgICByZXR1cm4gJHVjaTsKICAgIH0KCiAgICAvKioKICAgICAqIEfDqW7DqHJlIHVuIFBHTiBtaW5pbWFsLgogICAgICoKICAgICAqIEBwYXJhbSBhcnJheTxzdHJpbmcsc3RyaW5nPiAkaGVhZGVycwogICAgICogQHBhcmFtIGFycmF5PGludCxzdHJpbmc+ICAgICRtb3Zlc1VjaQogICAgICovCiAgICBwdWJsaWMgc3RhdGljIGZ1bmN0aW9uIGJ1aWxkKGFycmF5ICRoZWFkZXJzLCBhcnJheSAkbW92ZXNVY2ksIHN0cmluZyAkcmVzdWx0ID0gJyonKTogc3RyaW5nCiAgICB7CiAgICAgICAgJGxpbmVzID0gW107CiAgICAgICAgZm9yZWFjaCAoJGhlYWRlcnMgYXMgJGtleSA9PiAkdmFsdWUpIHsKICAgICAgICAgICAgJGxpbmVzW10gPSBzcHJpbnRmKCdbJXMgIiVzIl0nLCAka2V5LCAkdmFsdWUpOwogICAgICAgIH0KICAgICAgICAkYm9hcmQgPSBCb2FyZDo6c3RhcnQoKTsKICAgICAgICAkc2FuTW92ZXMgPSBbXTsKICAgICAgICBmb3JlYWNoICgkbW92ZXNVY2kgYXMgJHVjaSkgewogICAgICAgICAgICAkc2FuTW92ZXNbXSA9ICRib2FyZC0+dWNpVG9TYW4oJHVjaSk7CiAgICAgICAgICAgICRib2FyZC0+YXBwbHlVY2koJHVjaSk7CiAgICAgICAgfQogICAgICAgICRib2R5ID0gJyc7CiAgICAgICAgJG51bSA9IDE7CiAgICAgICAgZm9yICgkaSA9IDA7ICRpIDwgY291bnQoJHNhbk1vdmVzKTsgJGkgKz0gMikgewogICAgICAgICAgICAkYm9keSAuPSAkbnVtIC4gJy4gJyAuICRzYW5Nb3Zlc1skaV07CiAgICAgICAgICAgIGlmIChpc3NldCgkc2FuTW92ZXNbJGkgKyAxXSkpIHsKICAgICAgICAgICAgICAgICRib2R5IC49ICcgJyAuICRzYW5Nb3Zlc1skaSArIDFdOwogICAgICAgICAgICB9CiAgICAgICAgICAgICRib2R5IC49ICcgJzsKICAgICAgICAgICAgJG51bSsrOwogICAgICAgIH0KICAgICAgICAkbGluZXNbXSA9IHRyaW0oJGJvZHkpIC4gJyAnIC4gJHJlc3VsdDsKCiAgICAgICAgcmV0dXJuIGltcGxvZGUoIlxuIiwgJGxpbmVzKSAuICJcbiI7CiAgICB9Cn0K
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domain\Chess;
+
+final class Pgn
+{
+    /**
+     * Parse un PGN (têtes + coups) et retourne la liste des coups en SAN pur,
+     * sans rejouer sur un échiquier (utile pour l'affichage).
+     *
+     * Les commentaires {...} et les variantes (...) sont ignorés ; tout jeton
+     * non reconnu (ni coup, ni numéro, ni résultat) marque le PGN comme invalide.
+     *
+     * @return array{headers:array<string,string>,moves:array<int,string>,invalid:bool}
+     */
+    public static function parse(string $pgn): array
+    {
+        $headers = [];
+        if (preg_match_all('/\[(\w+)\s+"([^"]*)"\]/', $pgn, $m, PREG_SET_ORDER)) {
+            foreach ($m as $h) {
+                $headers[$h[1]] = $h[2];
+            }
+        }
+        $movesSection = preg_replace('/\[[^\]]*\]/', '', $pgn) ?? '';
+        $movesSection = preg_replace('/\{[^}]*\}/', '', $movesSection) ?? '';
+        // variantes entre parenthèses (imbriquées : on retire de l'intérieur vers l'extérieur)
+        $previous = null;
+        while ($previous !== $movesSection) {
+            $previous = $movesSection;
+            $movesSection = preg_replace('/\([^()]*\)/', ' ', $movesSection) ?? $movesSection;
+        }
+        $movesSection = preg_replace('/\d+\.\.\./', ' ', $movesSection) ?? '';
+        $movesSection = preg_replace('/\d+\./', ' ', $movesSection) ?? '';
+        $movesSection = str_replace([';', "\n", "\r"], ' ', $movesSection);
+        $tokens = preg_split('/\s+/', trim($movesSection)) ?: [];
+        $moves = [];
+        $invalid = false;
+        foreach ($tokens as $token) {
+            $token = trim($token, '.');
+            if ($token === '' || $token === '*' || str_starts_with($token, '$')) {
+                continue;
+            }
+            if (in_array($token, ['1-0', '0-1', '1/2-1/2'], true)) {
+                continue;
+            }
+            if (preg_match('/^([a-hKQRBNO][^\s]*)$/', $token)) {
+                $moves[] = $token;
+            } else {
+                $invalid = true;
+            }
+        }
+
+        return ['headers' => $headers, 'moves' => $moves, 'invalid' => $invalid];
+    }
+
+    /**
+     * Rejoue les coups SAN sur un échiquier ; renvoie les coups UCI ou null si un coup est illégal.
+     *
+     * @return array<int,string>|null
+     */
+    public static function movesToUci(string $pgn): ?array
+    {
+        $parsed = self::parse($pgn);
+        if ($parsed['invalid']) {
+            return null;
+        }
+        $board = Board::start();
+        $uci = [];
+        foreach ($parsed['moves'] as $san) {
+            $move = $board->sanToUci($san);
+            if ($move === null) {
+                return null;
+            }
+            $board->applyUci($move);
+            $uci[] = $move;
+        }
+
+        return $uci;
+    }
+
+    /**
+     * Génère un PGN minimal.
+     *
+     * @param array<string,string> $headers
+     * @param array<int,string>    $movesUci
+     */
+    public static function build(array $headers, array $movesUci, string $result = '*'): string
+    {
+        $lines = [];
+        foreach ($headers as $key => $value) {
+            $lines[] = sprintf('[%s "%s"]', $key, $value);
+        }
+        $board = Board::start();
+        $sanMoves = [];
+        foreach ($movesUci as $uci) {
+            $sanMoves[] = $board->uciToSan($uci);
+            $board->applyUci($uci);
+        }
+        $body = '';
+        $num = 1;
+        for ($i = 0; $i < count($sanMoves); $i += 2) {
+            $body .= $num . '. ' . $sanMoves[$i];
+            if (isset($sanMoves[$i + 1])) {
+                $body .= ' ' . $sanMoves[$i + 1];
+            }
+            $body .= ' ';
+            $num++;
+        }
+        $lines[] = trim($body) . ' ' . $result;
+
+        return implode("\n", $lines) . "\n";
+    }
+}

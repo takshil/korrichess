@@ -1,1 +1,25 @@
-ewogICAgIiRzY2hlbWEiOiAidmVuZG9yL3BocHVuaXQvcGhwdW5pdC9waHB1bml0LnhzZCIsCiAgICAicGhwdW5pdCI6IHsKICAgICAgICAiYm9vdHN0cmFwIjogInZlbmRvci9hdXRvbG9hZC5waHAiLAogICAgICAgICJ0ZXN0c3VpdGVzIjogewogICAgICAgICAgICAiVW5pdCI6IHsKICAgICAgICAgICAgICAgICJkaXJlY3RvcmllcyI6IFsidGVzdHMvVW5pdCJdCiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJGZWF0dXJlIjogewogICAgICAgICAgICAgICAgImRpcmVjdG9yaWVzIjogWyJ0ZXN0cy9GZWF0dXJlIl0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQo=
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+>
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory>tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>app</directory>
+        </include>
+    </source>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="DB_CONNECTION" value="sqlite"/>
+        <env name="DB_DATABASE" value=":memory:"/>
+    </php>
+</phpunit>
