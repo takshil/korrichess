@@ -26,6 +26,7 @@ return new class extends Migration
             $table->text('variation_uci')->nullable();
             $table->string('classification', 20);
             $table->text('explanation')->nullable();
+            $table->timestamps();
             $table->unique(['analysis_id', 'ply']);
         });
     }

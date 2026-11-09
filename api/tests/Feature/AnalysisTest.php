@@ -278,6 +278,9 @@ final class AnalysisTest extends TestCase
         $response = $this->withToken($body['token'])->getJson('/api/v1/games/1/replay');
         $response->assertStatus(200)->assertJsonCount(7, 'positions');
 
+        // withToken() persiste dans defaultHeaders : on les efface pour que
+        // la requête suivante parte réellement sans jeton.
+        $this->flushHeaders();
         $this->getJson('/api/v1/games/1/replay')->assertStatus(401);
     }
 

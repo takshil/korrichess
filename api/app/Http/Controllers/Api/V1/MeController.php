@@ -25,12 +25,12 @@ final class MeController extends Controller
     /** PATCH /api/v1/me — mise à jour du profil (C2). */
     public function update(UpdateProfileRequest $request): JsonResponse
     {
-        [$status, $body] = $this->accounts->updateProfile(
+        $result = $this->accounts->updateProfile(
             (int) $request->user()->id,
             $request->validated(),
         );
 
-        return response()->json($body, $status);
+        return response()->json($result['body'], $result['status']);
     }
 
     /** GET /api/v1/me/export — export RGPD (C4 / #18). */

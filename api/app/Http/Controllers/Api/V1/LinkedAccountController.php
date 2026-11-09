@@ -19,13 +19,13 @@ final class LinkedAccountController extends Controller
     /** POST /api/v1/me/linked-accounts — lier un pseudo (C3). */
     public function store(LinkAccountRequest $request): JsonResponse
     {
-        [$status, $body] = $this->accounts->linkAccount(
+        $result = $this->accounts->linkAccount(
             (int) $request->user()->id,
             (string) $request->validated('platform'),
             (string) $request->validated('username'),
         );
 
-        return response()->json($body, $status);
+        return response()->json($result['body'], $result['status']);
     }
 
     /** DELETE /api/v1/me/linked-accounts — délier un pseudo (C3). */

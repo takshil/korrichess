@@ -18,13 +18,13 @@ final class SyncController extends Controller
     {
         $validated = $request->validated();
 
-        [$status, $body] = $service->sync(
+        $result = $service->sync(
             (int) $request->user()->id,
             (string) $validated['platform'],
             (string) $validated['username'],
             $request->filters(),
         );
 
-        return response()->json($body, $status);
+        return response()->json($result['body'], $result['status']);
     }
 }
