@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\LinkedAccountController;
 use App\Http\Controllers\Api\V1\MeController;
 use App\Http\Controllers\Api\V1\SettingsController;
+use App\Http\Controllers\Api\V1\SyncController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,5 +43,8 @@ Route::prefix('v1')->group(function (): void {
         // Paramètres du joueur (issue #10).
         Route::get('/me/settings', [SettingsController::class, 'show'])->name('settings.show');
         Route::patch('/me/settings', [SettingsController::class, 'update'])->name('settings.update');
+
+        // Synchronisation des parties Lichess / Chess.com (issue #3).
+        Route::post('/sync', [SyncController::class, 'store'])->name('sync.store');
     });
 });

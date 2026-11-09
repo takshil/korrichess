@@ -2,7 +2,7 @@
 
 API REST JSON consommée par l'application mobile (`app/`) et le site (`web/`).
 
-## Périmètre actuel (issue #14 + moteur d'échecs + compte joueur)
+## Périmètre actuel (issue #14 + moteur d'échecs + compte joueur + sync)
 
 - Routes versionnées sous **`/api/v1`** (`routes/api.php`).
 - Endpoint `GET /api/v1/health` (sonde de disponibilité).
@@ -26,8 +26,23 @@ API REST JSON consommée par l'application mobile (`app/`) et le site (`web/`).
     compte (fichiers compris), clés étrangères en cascade ;
   - `GET/PATCH /api/v1/me/settings` — langue (fr/en), thème clair/sombre,
     styles d'échiquier et de pièces, notifications désactivables.
+- **Synchronisation des parties** (issue #3) :
+  - `POST /api/v1/sync` — import incrémental des parties d'un pseudo
+    Lichess / Chess.com : seules les parties plus récentes que la dernière
+    sync mémorisée sont récupérées, les plus récentes d'abord (L3/L4) ;
+  - filtres de cadence (`time_controls`) et de période (`period_start`) (L5) ;
+  - import idempotent : clé unique `(user_id, source, external_id)` dans
+    `games`, les doublons sont ignorés (L6) ; un PGN invalide est ignoré
+    sans faire échouer la sync (L8) ;
+  - métadonnées extraites du PGN (adversaire et couleur déduits du pseudo,
+    date, cadence, ouverture ECO, résultat, événement) et coups convertis en
+    UCI via le moteur maison ;
+  - sync automatique en file via `SyncPlatformJob` (L7), limite de débit par
+    plateforme (`RateLimiter`) et clients plateforme remplaçables
+    (`PlatformClient` ; aucun client HTTP réel pour l'instant, les tests
+    injectent un client en mémoire).
 - Modèles Eloquent dans `app/Models/` (`User`, `PlayerProfile`,
-  `LinkedAccount`, `UserSetting`) ; migrations versionnées dans
+  `LinkedAccount`, `UserSetting`, `Game`) ; migrations versionnées dans
   `database/migrations/`.
 
 ## Conventions
@@ -46,7 +61,9 @@ API REST JSON consommée par l'application mobile (`app/`) et le site (`web/`).
   pat, ambiguïtés SAN, perft Kiwipete, PGN) — `php artisan test --testsuite Unit`.
 - Suite `Feature` : API HTTP — santé, hachage du mot de passe, compte joueur
   (inscription, connexion, jetons, profil, pseudos liés, consentements,
-  paramètres, export et suppression RGPD) — `php artisan test --testsuite Feature`.
+  paramètres, export et suppression RGPD) et synchronisation (import
+  incrémental, curseur, doublons, filtres, sync auto en file, API `/sync`)
+  — `php artisan test --testsuite Feature`.
 
 ## Installation (nécessite PHP ≥ 8.2 et Composer)
 
