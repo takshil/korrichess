@@ -12,9 +12,12 @@ final class InMemoryPlatformClient implements PlatformClient
 {
     /**
      * @param array<int,array{external_id:string,pgn:string,played_at:?string}> $games
+     * @param array<int,string> $knownUsers pseudos renvoyés comme existants par userExists()
      */
-    public function __construct(public array $games = [])
-    {
+    public function __construct(
+        public array $games = [],
+        public array $knownUsers = [],
+    ) {
     }
 
     public function fetchGames(string $username, array $filters): array
@@ -26,5 +29,18 @@ final class InMemoryPlatformClient implements PlatformClient
         }
 
         return $games;
+    }
+
+    public function userExists(string $username): bool
+    {
+        $username = strtolower(trim($username));
+
+        foreach ($this->knownUsers as $known) {
+            if (strtolower(trim((string) $known)) === $username) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

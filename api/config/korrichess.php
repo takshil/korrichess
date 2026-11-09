@@ -18,6 +18,16 @@ return [
         'deploy_token' => env('DEPLOY_TOKEN', ''),
     ],
 
+    'sync' => [
+        // Clients des plateformes : 'http' (Lichess et Chess.com réels)
+        // ou 'memory' (clients en mémoire, développement sans réseau).
+        'mode' => env('KORRI_SYNC_MODE', 'http'),
+        'lichess_base_url' => env('KORRI_LICHESS_URL', 'https://lichess.org'),
+        'chesscom_base_url' => env('KORRI_CHESSCOM_URL', 'https://api.chess.com'),
+        // Plafond d'archives mensuelles Chess.com interrogées par sync.
+        'chesscom_max_archives' => (int) env('KORRI_CHESSCOM_MAX_ARCHIVES', 24),
+    ],
+
     'analysis' => [
         // Chemin du binaire UCI (Stockfish) — jamais embarqué ni distribué
         // par le dépôt (ADR-002). En son absence, le moteur heuristique
