@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AnalysisController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ConsentController;
 use App\Http\Controllers\Api\V1\GameController;
@@ -54,5 +55,11 @@ Route::prefix('v1')->group(function (): void {
         Route::patch('/games/{game}', [GameController::class, 'update'])->whereNumber('game')->name('games.update');
         Route::post('/games/export', [GameController::class, 'export'])->name('games.export');
         Route::post('/games/search-position', [GameController::class, 'searchPosition'])->name('games.search-position');
+
+        // Rejeu et analyse des parties (issue #5, ADR-002).
+        Route::get('/games/{game}/replay', [AnalysisController::class, 'replay'])->whereNumber('game')->name('games.replay');
+        Route::post('/games/{game}/analyse', [AnalysisController::class, 'request'])->whereNumber('game')->name('games.analyse.request');
+        Route::get('/games/{game}/analyse', [AnalysisController::class, 'result'])->whereNumber('game')->name('games.analyse.result');
+        Route::post('/games/{game}/explore', [AnalysisController::class, 'explore'])->whereNumber('game')->name('games.explore');
     });
 });

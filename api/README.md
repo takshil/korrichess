@@ -2,7 +2,7 @@
 
 API REST JSON consommée par l'application mobile (`app/`) et le site (`web/`).
 
-## Périmètre actuel (issue #14 + moteur + compte + sync + bibliothèque)
+## Périmètre actuel (V1 fonctionnelle : moteur, compte, sync, bibliothèque, analyse)
 
 - Routes versionnées sous **`/api/v1`** (`routes/api.php`).
 - Endpoint `GET /api/v1/health` (sonde de disponibilité).
@@ -54,9 +54,28 @@ API REST JSON consommée par l'application mobile (`app/`) et le site (`web/`).
     positions de chaque partie sont indexées à la demande dans
     `game_positions` via le moteur maison (B6) ;
   - isolation stricte par utilisateur sur toutes les routes.
+- **Rejeu et analyse des parties** (issue #5, ADR-002) :
+  - `GET /api/v1/games/{id}/replay` — rejeu : SAN, UCI et FEN de chaque
+    position, prêts pour un échiquier interactif (A1) ;
+  - `POST /api/v1/games/{id}/analyse` — analyse à la demande, asynchrone :
+    le job `AnalyseGameJob` est placé en file (`php artisan queue:work`),
+    résultats persistés dans `game_analyses` / `analysis_moves` (A10) ;
+  - `GET /api/v1/games/{id}/analyse` — résultats : évaluation par position
+    en centipions (A2), courbe d'évaluation (A3), classement des coups
+    meilleur/bon/imprécision/erreur/gaffe (A4), moment décisif (A5),
+    meilleur coup et variante (A6), explications en français (A7),
+    ouverture et sortie de théorie (A9) ;
+  - `POST /api/v1/games/{id}/explore` — essayer un autre coup depuis une
+    position de la partie, sans la modifier (A8) ;
+  - moteur d'analyse remplaçable via `EngineClient` : `UciEngine` (Stockfish
+    en processus externe UCI, chemin `korrichess.analysis.stockfish_path`,
+    jamais embarqué — GPL v3) ou `HeuristicEngine` déterministe (tests et
+    environnements sans moteur), choisi dans `AppServiceProvider` ;
+  - échecs isolés : une analyse qui plante passe en `failed` sans polluer
+    les résultats précédents.
 - Modèles Eloquent dans `app/Models/` (`User`, `PlayerProfile`,
-  `LinkedAccount`, `UserSetting`, `Game`) ; migrations versionnées dans
-  `database/migrations/`.
+  `LinkedAccount`, `UserSetting`, `Game`, `GameAnalysis`, `AnalysisMove`) ;
+  migrations versionnées dans `database/migrations/`.
 
 ## Conventions
 
@@ -67,6 +86,8 @@ API REST JSON consommée par l'application mobile (`app/`) et le site (`web/`).
   erreurs métier en clés françaises (`email_deja_utilise`, `deja_lie`…).
 - Mots de passe hachés ; minimisation des données RGPD dès la conception
   (date de naissance facultative, aucun mot de passe en clair).
+- Travaux différés via les jobs Laravel (`app/Jobs/`), exécutés par
+  `php artisan queue:work`.
 
 ## Tests
 
@@ -75,10 +96,15 @@ API REST JSON consommée par l'application mobile (`app/`) et le site (`web/`).
 - Suite `Feature` : API HTTP — santé, hachage du mot de passe, compte joueur
   (inscription, connexion, jetons, profil, pseudos liés, consentements,
   paramètres, export et suppression RGPD), synchronisation (import
-  incrémental, curseur, doublons, filtres, sync auto en file, API `/sync`)
-  et bibliothèque (liste, filtres, tri, pagination, recherche texte, détail,
+  incrémental, curseur, doublons, filtres, sync auto en file, API `/sync`),
+  bibliothèque (liste, filtres, tri, pagination, recherche texte, détail,
   annotations, export PGN, recherche par position, isolation, routes
-  `/games`) — `php artisan test --testsuite Feature`.
+  `/games`) et analyse (rejeu, demande et exécution asynchrones, courbe,
+  classements, explications, ouverture et sortie de théorie, exploration,
+  isolation, routes `/replay`, `/analyse`, `/explore`)
+  — `php artisan test --testsuite Feature`. Les tests n'ont pas besoin de
+  Stockfish : `HeuristicEngine` garantit des résultats reproductibles
+  (ADR-002).
 
 ## Installation (nécessite PHP ≥ 8.2 et Composer)
 
@@ -89,3 +115,7 @@ php artisan key:generate
 php artisan migrate
 php artisan test
 ```
+
+Analyse en production : installer Stockfish séparément (paquet système ou
+téléchargement officiel) et renseigner `KORRI_STOCKFISH_PATH` (ADR-002),
+puis lancer `php artisan queue:work` pour exécuter les analyses en file.
