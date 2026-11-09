@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mon espace — Korrichess</title>
+<meta name="description" content="Espace personnel Korrichess : tableau de bord, bibliothèque de parties et rejeu sur grand écran.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../assets/img/korrigan.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/korrichess.css">
+<link rel="stylesheet" href="espace.css">
+<script>
+/* Thème mémorisé appliqué avant le rendu pour éviter un flash (partagé
+   avec la vitrine via la clé localStorage korrichess_theme). */
+(function () {
+    try {
+        var t = localStorage.getItem('korrichess_theme');
+        if (t === 'clair' || t === 'sombre') { document.documentElement.setAttribute('data-theme', t); }
+    } catch (e) { /* stockage indisponible */ }
+}());
+window.KORRICHESS_API = window.KORRICHESS_API || '/api/v1';
+</script>
+</head>
+<body>
+<a class="evitement" href="#contenu">Aller au contenu</a>
+<header class="entete">
+  <div class="entete-conteneur">
+    <a class="marque" href="../index.html">
+      <svg width="34" height="34" viewBox="0 0 64 64" role="img" aria-label="Korrigann, mascotte de Korrichess"><path d="M12 31 L24 11 L36 31 Z" fill="#1f5d3a"/><circle cx="24" cy="37" r="11" fill="#1f5d3a"/><circle cx="20" cy="35" r="2.4" fill="#faf6ec"/><circle cx="28" cy="35" r="2.4" fill="#faf6ec"/><circle cx="20.8" cy="35.4" r="1.1" fill="#26241c"/><circle cx="28.8" cy="35.4" r="1.1" fill="#26241c"/><path d="M19.5 42 q4.5 3 9 0" stroke="#faf6ec" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+      <span>Korrichess</span>
+    </a>
+    <nav class="navigation" id="nav-espace" aria-label="Navigation de l'espace">
+      <a href="#/tableau-de-bord">Tableau de bord</a>
+      <a href="#/bibliotheque">Bibliothèque</a>
+      <a href="#/compte">Compte</a>
+      <button id="deconnexion" class="bouton bouton-secondaire" type="button">Se déconnecter</button>
+      <button class="theme-bascule" aria-label="Basculer entre thème clair et sombre">🌓</button>
+    </nav>
+  </div>
+</header>
+
+<main id="contenu">
+  <div id="vue" class="section" aria-live="polite"></div>
+</main>
+
+<footer class="pied">
+  <div class="pied-conteneur">
+    <p>Korrichess — <a href="../index.html">retour à la vitrine</a></p>
+  </div>
+</footer>
+<noscript><p class="encart">L'espace personnel nécessite JavaScript. Active-le pour te connecter, ou écris-nous via la <a href="../contact.html">page contact</a>.</p></noscript>
+<script src="../assets/js/korrichess.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

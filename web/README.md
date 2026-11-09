@@ -24,8 +24,23 @@ et le slogan « Dalc'h mat » à faire valider par un bretonnant (issue #19).
 
 ## Espace personnel (issue #12)
 
-`espace/` — application JavaScript légère appelant `/api/v1` (connexion,
-tableau de bord, bibliothèque, rejeu, compte). Livrée dans la MR dédiée.
+`espace/` — application monopage (SPA) JavaScript sans framework, routage
+par hash (`#/tableau-de-bord`, `#/bibliotheque`, `#/rejeu/{id}`,
+`#/compte`) et appels à `/api/v1` avec le jeton Sanctum (`Authorization:
+Bearer`). Échappement HTML systématique avant tout rendu.
+
+- `espace/index.html` — coquille (en-tête, conteneur `#vue`, pied),
+  `<meta name="robots" content="noindex">`, thème mémorisé appliqué
+  avant le rendu ;
+- `espace/espace.css` — styles propres (authentification, statistiques,
+  filtres, liste de coups, cartes de compte, zone dangereuse) ;
+- `espace/app.js` — connexion/inscription (W1), tableau de bord avec
+  synchronisation (W2), bibliothèque filtrable et paginée (W3), rejeu
+  coup par coup au clavier (W4), compte : profil, pseudos liés,
+  préférences, export RGPD, suppression (W7/W8).
+
+L'analyse moteur n'y est pas exposée : les workers de file ne tournent
+pas en mutualisé (ADR-003), le rejeu seul est disponible.
 
 ## Déploiement
 
