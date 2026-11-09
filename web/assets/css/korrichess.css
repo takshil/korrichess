@@ -1,0 +1,332 @@
+/* Korrichess — feuille de style partagée (vitrine + espace web).
+   Thème clair par défaut, thème sombre via [data-theme="sombre"] ou
+   prefers-color-scheme. Contrastes vérifiés AA. */
+
+:root {
+    --vert: #1f5d3a;
+    --vert-fonce: #12401f;
+    --vert-clair: #e3efe6;
+    --creme: #faf6ec;
+    --encre: #26241c;
+    --encre-doux: #5a564a;
+    --or: #b08a2e;
+    --fond: #faf6ec;
+    --carte: #ffffff;
+    --bord: #e3dcc8;
+    --case-claire: #f0d9b5;
+    --case-foncee: #b58863;
+    --erreur: #a1301f;
+    --ok: #1f5d3a;
+    --lien: #175a37;
+}
+
+[data-theme="sombre"] {
+    --vert: #7fbf9a;
+    --vert-fonce: #a3d1b7;
+    --vert-clair: #1c2a22;
+    --creme: #141815;
+    --encre: #ece7d8;
+    --encre-doux: #b5ae9c;
+    --or: #d3b15f;
+    --fond: #14181a;
+    --carte: #1d2224;
+    --bord: #33393b;
+    --case-claire: #8f7a5c;
+    --case-foncee: #5d4c37;
+    --erreur: #e07a68;
+    --ok: #7fbf9a;
+    --lien: #9ed0b4;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="clair"]) {
+        --vert: #7fbf9a;
+        --vert-fonce: #a3d1b7;
+        --vert-clair: #1c2a22;
+        --creme: #141815;
+        --encre: #ece7d8;
+        --encre-doux: #b5ae9c;
+        --or: #d3b15f;
+        --fond: #14181a;
+        --carte: #1d2224;
+        --bord: #33393b;
+        --case-claire: #8f7a5c;
+        --case-foncee: #5d4c37;
+        --erreur: #e07a68;
+        --ok: #7fbf9a;
+        --lien: #9ed0b4;
+    }
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--fond);
+    color: var(--encre);
+    line-height: 1.65;
+}
+
+/* Accessibilité : lien d'évitement + focus visible. */
+.evitement {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--vert-fonce);
+    color: #fff;
+    padding: 0.6rem 1rem;
+    z-index: 100;
+}
+.evitement:focus { left: 0; }
+
+a { color: var(--lien); }
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 3px solid var(--or);
+    outline-offset: 2px;
+}
+
+/* ---------- En-tête ---------- */
+
+.entete {
+    background: var(--carte);
+    border-bottom: 1px solid var(--bord);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.entete-conteneur {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0.7rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.marque {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    text-decoration: none;
+    color: var(--encre);
+    font-weight: 700;
+    font-size: 1.15rem;
+}
+.marque svg { display: block; }
+
+.navigation {
+    display: flex;
+    gap: 1.1rem;
+    align-items: center;
+    margin-left: auto;
+    flex-wrap: wrap;
+}
+
+.navigation a { text-decoration: none; font-weight: 500; }
+.navigation a[aria-current="page"] { text-decoration: underline; text-underline-offset: 4px; }
+
+.bouton {
+    display: inline-block;
+    border-radius: 0.55rem;
+    padding: 0.55rem 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    font-size: 1rem;
+    font-family: inherit;
+}
+.bouton-principal { background: var(--vert-fonce); color: #fff; }
+.bouton-principal:hover { background: var(--vert); }
+[data-theme="sombre"] .bouton-principal, :root:not([data-theme="clair"]) .bouton-principal { }
+.bouton-secondaire { background: transparent; color: var(--lien); border-color: var(--bord); }
+.bouton-secondaire:hover { background: var(--vert-clair); }
+.bouton-danger { background: var(--erreur); color: #fff; }
+
+.theme-bascule {
+    background: none;
+    border: 1px solid var(--bord);
+    border-radius: 0.55rem;
+    padding: 0.35rem 0.6rem;
+    cursor: pointer;
+    font-size: 1.05rem;
+    line-height: 1;
+}
+
+.menu-bascule { display: none; background: none; border: 0; font-size: 1.4rem; cursor: pointer; color: var(--encre); }
+
+/* ---------- Héros ---------- */
+
+.heros {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 3.2rem 1.2rem 2.4rem;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 2.5rem;
+    align-items: center;
+}
+.heros h1 { font-size: clamp(1.9rem, 4vw, 2.7rem); line-height: 1.2; margin: 0 0 0.9rem; }
+.heros p.accroche { font-size: 1.15rem; color: var(--encre-doux); margin: 0 0 1.4rem; max-width: 34rem; }
+.heros-actions { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+.heros-visuel { text-align: center; }
+
+.tagline { color: var(--encre-doux); font-style: italic; margin-top: 1.2rem; }
+
+/* ---------- Sections ---------- */
+
+.section { max-width: 1080px; margin: 0 auto; padding: 2.4rem 1.2rem; }
+.section h2 { font-size: 1.6rem; margin: 0 0 1.1rem; }
+
+.grille-cartes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.1rem;
+}
+
+.carte {
+    background: var(--carte);
+    border: 1px solid var(--bord);
+    border-radius: 0.8rem;
+    padding: 1.2rem 1.3rem;
+}
+
+.carte h3 { margin: 0 0 0.5rem; font-size: 1.12rem; }
+.carte p { margin: 0; color: var(--encre-doux); }
+
+.etapes { counter-reset: etape; list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; }
+.etape { display: flex; gap: 1rem; align-items: flex-start; }
+.etape::before {
+    counter-increment: etape;
+    content: counter(etape);
+    flex: 0 0 auto;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: var(--vert-fonce);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+}
+
+/* ---------- Tableaux ---------- */
+
+.tableau-wrap { overflow-x: auto; }
+table.tableau { border-collapse: collapse; width: 100%; background: var(--carte); }
+.tableau th, .tableau td { text-align: left; padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--bord); }
+.tableau th { background: var(--vert-clair); }
+
+/* ---------- Formulaires ---------- */
+
+.champ { margin-bottom: 0.9rem; }
+.champ label { display: block; font-weight: 600; margin-bottom: 0.25rem; }
+.champ input, .champ select, .champ textarea {
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--bord);
+    border-radius: 0.45rem;
+    background: var(--carte);
+    color: var(--encre);
+    font: inherit;
+}
+.message-erreur { color: var(--erreur); font-weight: 600; min-height: 1.4em; }
+.message-ok { color: var(--ok); font-weight: 600; min-height: 1.4em; }
+
+/* ---------- FAQ ---------- */
+
+details.faq {
+    background: var(--carte);
+    border: 1px solid var(--bord);
+    border-radius: 0.7rem;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 0.7rem;
+}
+details.faq summary { cursor: pointer; font-weight: 600; }
+details.faq[open] summary { margin-bottom: 0.4rem; }
+
+/* ---------- Échiquier (espace web) ---------- */
+
+.echiquier {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    width: min(100%, 480px);
+    aspect-ratio: 1;
+    border: 3px solid var(--case-foncee);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+.echiquier .case { position: relative; display: grid; place-items: center; font-size: clamp(1.3rem, 5vw, 2.6rem); line-height: 1; }
+.echiquier .case.clair { background: var(--case-claire); }
+.echiquier .case.fonce { background: var(--case-foncee); }
+
+/* ---------- Pied ---------- */
+
+.pied {
+    border-top: 1px solid var(--bord);
+    background: var(--carte);
+    margin-top: 2.5rem;
+}
+.pied-conteneur {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 1.6rem 1.2rem;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--encre-doux);
+    font-size: 0.95rem;
+}
+.pied nav { display: flex; gap: 1.1rem; flex-wrap: wrap; }
+.pied a { color: var(--encre-doux); }
+
+/* ---------- Divers ---------- */
+
+.article-legal h2 { font-size: 1.15rem; margin-top: 1.8rem; }
+.encart {
+    background: var(--vert-clair);
+    border-left: 4px solid var(--vert);
+    border-radius: 0.5rem;
+    padding: 0.9rem 1.1rem;
+    margin: 1.2rem 0;
+}
+.prose { max-width: 46rem; }
+.prose p { margin: 0 0 1rem; }
+.prose ul, .prose ol { margin: 0 0 1rem; padding-left: 1.4rem; }
+.prose li { margin-bottom: 0.4rem; }
+
+.badge {
+    display: inline-block;
+    background: var(--vert-clair);
+    color: var(--vert-fonce);
+    border-radius: 99px;
+    padding: 0.15rem 0.7rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+.badge.bientot { background: var(--bord); color: var(--encre-doux); }
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 800px) {
+    .heros { grid-template-columns: 1fr; padding-top: 2rem; }
+    .heros-visuel { order: -1; }
+    .menu-bascule { display: block; margin-left: auto; }
+    .navigation {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        padding-bottom: 0.8rem;
+    }
+    .navigation.ouverte { display: flex; }
+    .theme-bascule { margin-left: 0; }
+}

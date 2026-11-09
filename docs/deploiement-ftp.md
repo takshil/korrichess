@@ -10,7 +10,7 @@ Chaque push sur `main` déclenche :
 
 ```
 api:tests  →  api:build  →  api:deploy
-(PHPUnit)     (vendor       (lftp mirror vers le serveur,
+(PHPUnit)     (vendor       (vitrine web + API envoyées par lftp,
                --no-dev)     .env régénéré, migrations via
                               POST /api/deploy/migrate)
 ```
@@ -94,8 +94,9 @@ Notes :
 4. Vérifier :
 
 ```sh
-curl -i https://ton-domaine/up              # → 200 OK
-curl -i https://ton-domaine/api/v1/health  # → JSON de santé
+curl -i https://ton-domaine/              # → page d'accueil de la vitrine
+curl -i https://ton-domaine/up            # → 200 OK
+curl -i https://ton-domaine/api/v1/health # → JSON de santé
 ```
 
 5. Les migrations ont été appliquées automatiquement en fin de job. Pour
@@ -111,22 +112,26 @@ curl -X POST https://ton-domaine/api/deploy/migrate \
 ```
 /                        ← racine FTP
 ├── www/                 ← racine web (FTP_DOCROOT)
+│   ├── index.html       ← vitrine (issue #11)
 │   ├── index.php        ← point d'entrée : requiert ../korrichess-api/public/index.php
-│   └── .htaccess        ← route /api/* vers index.php
+│   └── .htaccess        ← route /api/* vers index.php, DirectoryIndex vitrine d'abord
 └── korrichess-api/      ← application complète, hors racine web
     ├── .env             ← régénéré à chaque déploiement depuis les variables CI
     ├── .htaccess        ← défense en profondeur (bloque .env, .git…)
     ├── app/ bootstrap/ config/ database/ routes/ vendor/ storage/ public/
 ```
 
-La vitrine web (W1–W4) viendra se poser dans `www/` sans toucher au
-comportement de `/api/*`.
+La vitrine est posée dans `www/` par un `mirror` lftp sans `--delete`
+(l'entrée `index.php` et le `.htaccess` générés sont reposés juste
+après) ; le `.htaccess` force `DirectoryIndex index.html index.php`
+pour que la vitrine soit servie sans toucher au comportement de
+`/api/*`.
 
 ## 6. Dépannage
 
 | Symptôme | Piste |
 |---|---|
-| Page blanche / erreur 500 partout | Vérifier la version PHP du domaine (≥ 8.2) et que `storage/` et `bootstrap/cache/` sont présents |
+| Page blanche / erreur 500 partout | Vérifier la version PHP du domaine (≥ 8.3) et que `storage/` et `bootstrap/cache/` sont présents |
 | `lftp: Fatal error: Connection lost` | `FTP_TLS` mal réglé : essayer `false`, ou vérifier le port (21 vs 990) |
 | 404 sur `/api/v1/health` | `FTP_DOCROOT` mal nommé, ou `mod_rewrite` désactivé chez l'hébergeur |
 | « could not find driver » sur la base | L'hébergeur ne propose pas `pdo_mysql` : changer d'offre |
