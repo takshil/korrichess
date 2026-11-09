@@ -2,7 +2,7 @@
 
 API REST JSON consommée par l'application mobile (`app/`) et le site (`web/`).
 
-## Périmètre actuel (issue #14 + moteur d'échecs + compte joueur + sync)
+## Périmètre actuel (issue #14 + moteur + compte + sync + bibliothèque)
 
 - Routes versionnées sous **`/api/v1`** (`routes/api.php`).
 - Endpoint `GET /api/v1/health` (sonde de disponibilité).
@@ -41,6 +41,19 @@ API REST JSON consommée par l'application mobile (`app/`) et le site (`web/`).
     plateforme (`RateLimiter`) et clients plateforme remplaçables
     (`PlatformClient` ; aucun client HTTP réel pour l'instant, les tests
     injectent un client en mémoire).
+- **Bibliothèque de parties** (issue #4) :
+  - `GET /api/v1/games` — liste paginée avec source indiquée, filtres
+    (adversaire, ouverture, résultat, couleur, cadence, tournoi, période),
+    tri et recherche texte (B1–B3) ;
+  - `GET /api/v1/games/{id}` — détail d'une partie, PGN et coups UCI inclus ;
+  - `PATCH /api/v1/games/{id}` — note personnelle, étiquettes (max 20) et
+    favori (B4) ;
+  - `POST /api/v1/games/export` — export PGN d'une sélection, note et
+    étiquettes injectées en en-têtes `KorriNote` / `KorriTags` (B5) ;
+  - `POST /api/v1/games/search-position` — recherche par position FEN : les
+    positions de chaque partie sont indexées à la demande dans
+    `game_positions` via le moteur maison (B6) ;
+  - isolation stricte par utilisateur sur toutes les routes.
 - Modèles Eloquent dans `app/Models/` (`User`, `PlayerProfile`,
   `LinkedAccount`, `UserSetting`, `Game`) ; migrations versionnées dans
   `database/migrations/`.
@@ -61,9 +74,11 @@ API REST JSON consommée par l'application mobile (`app/`) et le site (`web/`).
   pat, ambiguïtés SAN, perft Kiwipete, PGN) — `php artisan test --testsuite Unit`.
 - Suite `Feature` : API HTTP — santé, hachage du mot de passe, compte joueur
   (inscription, connexion, jetons, profil, pseudos liés, consentements,
-  paramètres, export et suppression RGPD) et synchronisation (import
+  paramètres, export et suppression RGPD), synchronisation (import
   incrémental, curseur, doublons, filtres, sync auto en file, API `/sync`)
-  — `php artisan test --testsuite Feature`.
+  et bibliothèque (liste, filtres, tri, pagination, recherche texte, détail,
+  annotations, export PGN, recherche par position, isolation, routes
+  `/games`) — `php artisan test --testsuite Feature`.
 
 ## Installation (nécessite PHP ≥ 8.2 et Composer)
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ConsentController;
+use App\Http\Controllers\Api\V1\GameController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\LinkedAccountController;
 use App\Http\Controllers\Api\V1\MeController;
@@ -46,5 +47,12 @@ Route::prefix('v1')->group(function (): void {
 
         // Synchronisation des parties Lichess / Chess.com (issue #3).
         Route::post('/sync', [SyncController::class, 'store'])->name('sync.store');
+
+        // Bibliothèque de parties (issue #4).
+        Route::get('/games', [GameController::class, 'index'])->name('games.index');
+        Route::get('/games/{game}', [GameController::class, 'show'])->whereNumber('game')->name('games.show');
+        Route::patch('/games/{game}', [GameController::class, 'update'])->whereNumber('game')->name('games.update');
+        Route::post('/games/export', [GameController::class, 'export'])->name('games.export');
+        Route::post('/games/search-position', [GameController::class, 'searchPosition'])->name('games.search-position');
     });
 });
