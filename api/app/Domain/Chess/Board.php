@@ -1,1 +1,591 @@
-PD9waHAKCmRlY2xhcmUoc3RyaWN0X3R5cGVzPTEpOwoKbmFtZXNwYWNlIEFwcFxEb21haW5cQ2hlc3M7CgovKioKICogUGxhdGVhdSBkJ8OpY2hlY3MgOiByZXByw6lzZW50YXRpb24gRkVOLCBnw6luw6lyYXRpb24gZGVzIGNvdXBzIGzDqWdhdXgsCiAqIGFwcGxpY2F0aW9uIGRlIGNvdXBzIFVDSS9TQU4sIGTDqXRlY3Rpb24gw6ljaGVjL21hdC9wYXQsIGFtYmlndcOvdMOpcyBTQU4uCiAqCiAqIFJlcHLDqXNlbnRhdGlvbiBpbnRlcm5lIDogY2FzZXMgJ2ExJy4uJ2g4JyA9PiAnd1AnLCdiSycsLi4uCiAqLwpmaW5hbCBjbGFzcyBCb2FyZAp7CiAgICAvKiogQHZhciBhcnJheTxzdHJpbmcsc3RyaW5nPiAqLwogICAgcHJpdmF0ZSBhcnJheSAkc3F1YXJlcyA9IFtdOwoKICAgIHByaXZhdGUgc3RyaW5nICR0dXJuID0gJ3cnOwoKICAgIC8qKiBAdmFyIGFycmF5PHN0cmluZyxib29sPiByb3F1ZXMgZGlzcG9uaWJsZXMgOiAnSycsJ1EnLCdrJywncScgKi8KICAgIHByaXZhdGUgYXJyYXkgJGNhc3RsaW5nOwoKICAgIC8qKiBjYXNlIGRlIHByaXNlIGVuIHBhc3NhbnQgw6lsaWdpYmxlIG91IG51bGwgKi8KICAgIHByaXZhdGUgP3N0cmluZyAkZXBTcXVhcmUgPSBudWxsOwoKICAgIC8qKiBkZW1pLWNvdXBzIGRlcHVpcyBsYSBkZXJuacOocmUgcHJpc2UvYXZhbmNlIGRlIHBpb24gKi8KICAgIHByaXZhdGUgaW50ICRoYWxmbW92ZSA9IDA7CgogICAgcHJpdmF0ZSBpbnQgJGZ1bGxtb3ZlID0gMTsKCiAgICBwcml2YXRlIGZ1bmN0aW9uIF9fY29uc3RydWN0KCkKICAgIHsKICAgIH0KCiAgICBwdWJsaWMgc3RhdGljIGZ1bmN0aW9uIHN0YXJ0KCk6IHNlbGYKICAgIHsKICAgICAgICAkYiA9IG5ldyBzZWxmKCk7CiAgICAgICAgJGItPnNxdWFyZXMgPSBbCiAgICAgICAgICAgICdhMScgPT4gJ3dSJywgJ2IxJyA9PiAnd04nLCAnYzEnID0+ICd3QicsICdkMScgPT4gJ3dRJywgJ2UxJyA9PiAnd0snLCAnZjEnID0+ICd3QicsICdnMScgPT4gJ3dOJywgJ2gxJyA9PiAnd1InLAogICAgICAgICAgICAnYTInID0+ICd3UCcsICdiMicgPT4gJ3dQJywgJ2MyJyA9PiAnd1AnLCAnZDInID0+ICd3UCcsICdlMicgPT4gJ3dQJywgJ2YyJyA9PiAnd1AnLCAnZzInID0+ICd3UCcsICdoMicgPT4gJ3dQJywKICAgICAgICAgICAgJ2E4JyA9PiAnYlInLCAnYjgnID0+ICdiTicsICdjOCcgPT4gJ2JCJywgJ2Q4JyA9PiAnYlEnLCAnZTgnID0+ICdiSycsICdmOCcgPT4gJ2JCJywgJ2c4JyA9PiAnYk4nLCAnaDgnID0+ICdiUicsCiAgICAgICAgICAgICdhNycgPT4gJ2JQJywgJ2I3JyA9PiAnYlAnLCAnYzcnID0+ICdiUCcsICdkNycgPT4gJ2JQJywgJ2U3JyA9PiAnYlAnLCAnZjcnID0+ICdiUCcsICdnNycgPT4gJ2JQJywgJ2g3JyA9PiAnYlAnLAogICAgICAgIF07CiAgICAgICAgJGItPmNhc3RsaW5nID0gWydLJyA9PiB0cnVlLCAnUScgPT4gdHJ1ZSwgJ2snID0+IHRydWUsICdxJyA9PiB0cnVlXTsKCiAgICAgICAgcmV0dXJuICRiOwogICAgfQoKICAgIHB1YmxpYyBzdGF0aWMgZnVuY3Rpb24gZnJvbUZlbihzdHJpbmcgJGZlbik6IHNlbGYKICAgIHsKICAgICAgICAkYiA9IG5ldyBzZWxmKCk7CiAgICAgICAgJHBhcnRzID0gcHJlZ19zcGxpdCgnL1xzKy8nLCB0cmltKCRmZW4pKTsKICAgICAgICBpZiAoJHBhcnRzID09PSBmYWxzZSB8fCBjb3VudCgkcGFydHMpIDwgNCkgewogICAgICAgICAgICB0aHJvdyBuZXcgXEludmFsaWRBcmd1bWVudEV4Y2VwdGlvbignRkVOIGludmFsaWRlJyk7CiAgICAgICAgfQogICAgICAgIFskcGxhY2VtZW50LCAkdHVybiwgJGNhc3RsaW5nLCAkZXBdID0gJHBhcnRzOwogICAgICAgICRiLT5zcXVhcmVzID0gW107CiAgICAgICAgJHJhbmtzID0gZXhwbG9kZSgnLycsICRwbGFjZW1lbnQpOwogICAgICAgIGlmIChjb3VudCgkcmFua3MpICE9PSA4KSB7CiAgICAgICAgICAgIHRocm93IG5ldyBcSW52YWxpZEFyZ3VtZW50RXhjZXB0aW9uKCdGRU4gaW52YWxpZGUgOiA4IHJhbmfDqWVzIGF0dGVuZHVlcycpOwogICAgICAgIH0KICAgICAgICBmb3IgKCRpID0gMDsgJGkgPCA4OyAkaSsrKSB7CiAgICAgICAgICAgICRyYW5rID0gOCAtICRpOwogICAgICAgICAgICAkZmlsZSA9IDE7CiAgICAgICAgICAgIGZvcmVhY2ggKHN0cl9zcGxpdCgkcmFua3NbJGldKSBhcyAkY2gpIHsKICAgICAgICAgICAgICAgIGlmIChjdHlwZV9kaWdpdCgkY2gpKSB7CiAgICAgICAgICAgICAgICAgICAgJGZpbGUgKz0gKGludCkgJGNoOwogICAgICAgICAgICAgICAgICAgIGNvbnRpbnVlOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgJGNvbG9yID0gY3R5cGVfdXBwZXIoJGNoKSA/ICd3JyA6ICdiJzsKICAgICAgICAgICAgICAgICRiLT5zcXVhcmVzW2Nocig5NiArICRmaWxlKSAuICRyYW5rXSA9ICRjb2xvciAuIHN0cnRvdXBwZXIoJGNoKTsKICAgICAgICAgICAgICAgICRmaWxlKys7CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgJGItPnR1cm4gPSAkdHVybiA9PT0gJ2InID8gJ2InIDogJ3cnOwogICAgICAgICRiLT5jYXN0bGluZyA9IFsnSycgPT4gZmFsc2UsICdRJyA9PiBmYWxzZSwgJ2snID0+IGZhbHNlLCAncScgPT4gZmFsc2VdOwogICAgICAgIGlmICgkY2FzdGxpbmcgIT09ICctJykgewogICAgICAgICAgICBmb3JlYWNoIChzdHJfc3BsaXQoJGNhc3RsaW5nKSBhcyAkYykgewogICAgICAgICAgICAgICAgaWYgKGlzc2V0KCRiLT5jYXN0bGluZ1skY10pKSB7CiAgICAgICAgICAgICAgICAgICAgJGItPmNhc3RsaW5nWyRjXSA9IHRydWU7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgJGItPmVwU3F1YXJlID0gKCRlcCAhPT0gJy0nICYmIHByZWdfbWF0Y2goJy9eW2EtaF1bMzZdJC8nLCAkZXApKSA/ICRlcCA6IG51bGw7CiAgICAgICAgJGItPmhhbGZtb3ZlID0gaXNzZXQoJHBhcnRzWzRdKSA/IChpbnQpICRwYXJ0c1s0XSA6IDA7CiAgICAgICAgJGItPmZ1bGxtb3ZlID0gaXNzZXQoJHBhcnRzWzVdKSA/IG1heCgxLCAoaW50KSAkcGFydHNbNV0pIDogMTsKCiAgICAgICAgcmV0dXJuICRiOwogICAgfQoKICAgIHB1YmxpYyBmdW5jdGlvbiBmZW4oKTogc3RyaW5nCiAgICB7CiAgICAgICAgJHJvd3MgPSBbXTsKICAgICAgICBmb3IgKCRyYW5rID0gODsgJHJhbmsgPj0gMTsgJHJhbmstLSkgewogICAgICAgICAgICAkcm93ID0gJyc7CiAgICAgICAgICAgICRlbXB0eSA9IDA7CiAgICAgICAgICAgIGZvciAoJGZpbGUgPSAxOyAkZmlsZSA8PSA4OyAkZmlsZSsrKSB7CiAgICAgICAgICAgICAgICAkcGllY2UgPSAkdGhpcy0+c3F1YXJlc1tjaHIoOTYgKyAkZmlsZSkgLiAkcmFua10gPz8gbnVsbDsKICAgICAgICAgICAgICAgIGlmICgkcGllY2UgPT09IG51bGwpIHsKICAgICAgICAgICAgICAgICAgICAkZW1wdHkrKzsKICAgICAgICAgICAgICAgICAgICBjb250aW51ZTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGlmICgkZW1wdHkgPiAwKSB7CiAgICAgICAgICAgICAgICAgICAgJHJvdyAuPSAkZW1wdHk7CiAgICAgICAgICAgICAgICAgICAgJGVtcHR5ID0gMDsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICRyb3cgLj0gJHBpZWNlWzBdID09PSAndycgPyAkcGllY2VbMV0gOiBzdHJ0b2xvd2VyKCRwaWVjZVsxXSk7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgaWYgKCRlbXB0eSA+IDApIHsKICAgICAgICAgICAgICAgICRyb3cgLj0gJGVtcHR5OwogICAgICAgICAgICB9CiAgICAgICAgICAgICRyb3dzW10gPSAkcm93OwogICAgICAgIH0KICAgICAgICAkY2FzdGxpbmcgPSAnJzsKICAgICAgICBmb3JlYWNoIChbJ0snLCAnUScsICdrJywgJ3EnXSBhcyAkYykgewogICAgICAgICAgICBpZiAoJHRoaXMtPmNhc3RsaW5nWyRjXSkgewogICAgICAgICAgICAgICAgJGNhc3RsaW5nIC49ICRjOwogICAgICAgICAgICB9CiAgICAgICAgfQoKICAgICAgICByZXR1cm4gc3ByaW50ZigKICAgICAgICAgICAgJyVzICVzICVzICVzICVkICVkJywKICAgICAgICAgICAgaW1wbG9kZSgnLycsICRyb3dzKSwKICAgICAgICAgICAgJHRoaXMtPnR1cm4sCiAgICAgICAgICAgICRjYXN0bGluZyA9PT0gJycgPyAnLScgOiAkY2FzdGxpbmcsCiAgICAgICAgICAgICR0aGlzLT5lcFNxdWFyZSA/PyAnLScsCiAgICAgICAgICAgICR0aGlzLT5oYWxmbW92ZSwKICAgICAgICAgICAgJHRoaXMtPmZ1bGxtb3ZlLAogICAgICAgICk7CiAgICB9CgogICAgcHVibGljIGZ1bmN0aW9uIHR1cm4oKTogc3RyaW5nCiAgICB7CiAgICAgICAgcmV0dXJuICR0aGlzLT50dXJuOwogICAgfQoKICAgIHB1YmxpYyBmdW5jdGlvbiBwaWVjZUF0KHN0cmluZyAkc3F1YXJlKTogP3N0cmluZwogICAgewogICAgICAgIHJldHVybiAkdGhpcy0+c3F1YXJlc1skc3F1YXJlXSA/PyBudWxsOwogICAgfQoKICAgIC8qKgogICAgICogQ291cHMgbMOpZ2F1eCBkZSBsYSBwb3NpdGlvbiwgZW4gbm90YXRpb24gVUNJIChleC4gZTJlNCwgZTdlOHEpLgogICAgICoKICAgICAqIEByZXR1cm4gYXJyYXk8aW50LHN0cmluZz4KICAgICAqLwogICAgcHVibGljIGZ1bmN0aW9uIGxlZ2FsTW92ZXNVY2koKTogYXJyYXkKICAgIHsKICAgICAgICAkbW92ZXMgPSBbXTsKICAgICAgICBmb3JlYWNoICgkdGhpcy0+c3F1YXJlcyBhcyAkc3F1YXJlID0+ICRwaWVjZSkgewogICAgICAgICAgICBpZiAoJHBpZWNlWzBdICE9PSAkdGhpcy0+dHVybikgewogICAgICAgICAgICAgICAgY29udGludWU7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgZm9yZWFjaCAoJHRoaXMtPnBzZXVkb01vdmVzKCRwaWVjZSwgJHNxdWFyZSkgYXMgJHRhcmdldCkgewogICAgICAgICAgICAgICAgWyRmcm9tLCAkdG8sICRwcm9tb1N0cl0gPSAkdGFyZ2V0OwogICAgICAgICAgICAgICAgJHByb21vID0gJHByb21vU3RyID09PSAnJyA/IG51bGwgOiAkcHJvbW9TdHI7CiAgICAgICAgICAgICAgICBpZiAoJHRoaXMtPmlzTGVnYWwoJGZyb20sICR0bywgJHByb21vKSkgewogICAgICAgICAgICAgICAgICAgICRtb3Zlc1tdID0gJGZyb20gLiAkdG8gLiAkcHJvbW9TdHI7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgc29ydCgkbW92ZXMpOwoKICAgICAgICByZXR1cm4gJG1vdmVzOwogICAgfQoKICAgIC8qKiBDb252ZXJzaW9uIFNBTiAtPiBVQ0kgcG91ciBsZSBwcm9jaGFpbiBjb3VwLiAqLwogICAgcHVibGljIGZ1bmN0aW9uIHNhblRvVWNpKHN0cmluZyAkc2FuKTogP3N0cmluZwogICAgewogICAgICAgICRzYW4gPSAkdGhpcy0+bm9ybWFsaXplU2FuKCRzYW4pOwogICAgICAgIGZvcmVhY2ggKCR0aGlzLT5sZWdhbE1vdmVzVWNpKCkgYXMgJHVjaSkgewogICAgICAgICAgICBpZiAoJHRoaXMtPnVjaVRvU2FuKCR1Y2kpID09PSAkc2FuIHx8ICR0aGlzLT51Y2lUb1NhbigkdWNpLCBmYWxzZSkgPT09ICRzYW4pIHsKICAgICAgICAgICAgICAgIHJldHVybiAkdWNpOwogICAgICAgICAgICB9CiAgICAgICAgfQoKICAgICAgICByZXR1cm4gbnVsbDsKICAgIH0KCiAgICAvKiogQ29udmVyc2lvbiBVQ0kgLT4gU0FOIGR1IHByb2NoYWluIGNvdXAuICovCiAgICBwdWJsaWMgZnVuY3Rpb24gdWNpVG9TYW4oc3RyaW5nICR1Y2ksIGJvb2wgJHdpdGhDaGVjayA9IHRydWUpOiBzdHJpbmcKICAgIHsKICAgICAgICAkZnJvbSA9IHN1YnN0cigkdWNpLCAwLCAyKTsKICAgICAgICAkdG8gPSBzdWJzdHIoJHVjaSwgMiwgMik7CiAgICAgICAgJHByb21vID0gc3RybGVuKCR1Y2kpID09PSA1ID8gJHVjaVs0XSA6IG51bGw7CiAgICAgICAgJHBpZWNlID0gJHRoaXMtPnBpZWNlQXQoJGZyb20pOwogICAgICAgIGlmICgkcGllY2UgPT09IG51bGwpIHsKICAgICAgICAgICAgcmV0dXJuICR1Y2k7CiAgICAgICAgfQogICAgICAgICRpc0NhcHR1cmUgPSAkdGhpcy0+cGllY2VBdCgkdG8pICE9PSBudWxsIHx8ICgkcGllY2VbMV0gPT09ICdQJyAmJiAkdG8gPT09ICR0aGlzLT5lcFNxdWFyZSk7CiAgICAgICAgJHNhbiA9ICcnOwogICAgICAgIGlmICgkcGllY2VbMV0gPT09ICdLJyAmJiBhYnMob3JkKCRmcm9tWzBdKSAtIG9yZCgkdG9bMF0pKSA9PT0gMikgewogICAgICAgICAgICAkc2FuID0gJHRvWzBdID4gJGZyb21bMF0gPyAnTy1PJyA6ICdPLU8tTyc7CiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgaWYgKCRwaWVjZVsxXSAhPT0gJ1AnKSB7CiAgICAgICAgICAgICAgICAkc2FuIC49ICRwaWVjZVsxXTsKICAgICAgICAgICAgICAgIGlmICgkdGhpcy0+YW1iaWd1b3VzKCRwaWVjZVsxXSwgJGZyb20sICR0bykgIT09IG51bGwpIHsKICAgICAgICAgICAgICAgICAgICAkc2FtZUZpbGUgPSBmYWxzZTsKICAgICAgICAgICAgICAgICAgICAkc2FtZVJhbmsgPSBmYWxzZTsKICAgICAgICAgICAgICAgICAgICAkY2FuZGlkYXRlcyA9IFtdOwogICAgICAgICAgICAgICAgICAgIGZvcmVhY2ggKCR0aGlzLT5zcXVhcmVzIGFzICRzcSA9PiAkcCkgewogICAgICAgICAgICAgICAgICAgICAgICBpZiAoJHAgPT09ICRwaWVjZSAmJiAkc3EgIT09ICRmcm9tICYmICR0aGlzLT5pc0xlZ2FsKCRzcSwgJHRvLCBudWxsKSkgewogICAgICAgICAgICAgICAgICAgICAgICAgICAgJGNhbmRpZGF0ZXNbXSA9ICRzcTsKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICBmb3JlYWNoICgkY2FuZGlkYXRlcyBhcyAkYykgewogICAgICAgICAgICAgICAgICAgICAgICAkc2FtZUZpbGUgPSAkc2FtZUZpbGUgfHwgJGNbMF0gPT09ICRmcm9tWzBdOwogICAgICAgICAgICAgICAgICAgICAgICAkc2FtZVJhbmsgPSAkc2FtZVJhbmsgfHwgJGNbMV0gPT09ICRmcm9tWzFdOwogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAkc2FuIC49ICRzYW1lRmlsZSAmJiAhICRzYW1lUmFuayA/ICRmcm9tWzFdIDogJGZyb21bMF07CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBpZiAoJGlzQ2FwdHVyZSkgewogICAgICAgICAgICAgICAgICAgICRzYW4gLj0gJ3gnOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9IGVsc2VpZiAoJGlzQ2FwdHVyZSkgewogICAgICAgICAgICAgICAgJHNhbiAuPSAkZnJvbVswXSAuICd4JzsKICAgICAgICAgICAgfQogICAgICAgICAgICAkc2FuIC49ICR0bzsKICAgICAgICAgICAgaWYgKCRwcm9tbyAhPT0gbnVsbCkgewogICAgICAgICAgICAgICAgJHNhbiAuPSAnPScgLiBzdHJ0b3VwcGVyKCRwcm9tbyk7CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgJGNsb25lID0gY2xvbmUgJHRoaXM7CiAgICAgICAgJGNsb25lLT5hcHBseVVuY2hlY2tlZCgkZnJvbSwgJHRvLCAkcHJvbW8pOwogICAgICAgIGlmICgkd2l0aENoZWNrKSB7CiAgICAgICAgICAgIGlmICgkY2xvbmUtPmlzQ2hlY2soJHRoaXMtPnR1cm4pKSB7CiAgICAgICAgICAgICAgICAkc2FuIC49ICRjbG9uZS0+aXNDaGVja21hdGUoJHRoaXMtPnR1cm4pID8gJyMnIDogJysnOwogICAgICAgICAgICB9CiAgICAgICAgfQoKICAgICAgICByZXR1cm4gJHNhbjsKICAgIH0KCiAgICBwdWJsaWMgZnVuY3Rpb24gYXBwbHlVY2koc3RyaW5nICR1Y2kpOiBib29sCiAgICB7CiAgICAgICAgaWYgKHN0cmxlbigkdWNpKSA8IDQgfHwgISAkdGhpcy0+aXNMZWdhbChzdWJzdHIoJHVjaSwgMCwgMiksIHN1YnN0cigkdWNpLCAyLCAyKSwgc3RybGVuKCR1Y2kpID09PSA1ID8gJHVjaVs0XSA6IG51bGwpKSB7CiAgICAgICAgICAgIHJldHVybiBmYWxzZTsKICAgICAgICB9CiAgICAgICAgJHRoaXMtPmFwcGx5VW5jaGVja2VkKHN1YnN0cigkdWNpLCAwLCAyKSwgc3Vic3RyKCR1Y2ksIDIsIDIpLCBzdHJsZW4oJHVjaSkgPT09IDUgPyAkdWNpWzRdIDogbnVsbCk7CgogICAgICAgIHJldHVybiB0cnVlOwogICAgfQoKICAgIHB1YmxpYyBmdW5jdGlvbiBhcHBseVNhbihzdHJpbmcgJHNhbik6IGJvb2wKICAgIHsKICAgICAgICAkdWNpID0gJHRoaXMtPnNhblRvVWNpKCRzYW4pOwogICAgICAgIGlmICgkdWNpID09PSBudWxsKSB7CiAgICAgICAgICAgIHJldHVybiBmYWxzZTsKICAgICAgICB9CgogICAgICAgIHJldHVybiAkdGhpcy0+YXBwbHlVY2koJHVjaSk7CiAgICB9CgogICAgLyoqCiAgICAgKiBMZSByb2kgZGUgJGNvbG9yIGVzdC1pbCBhdHRhcXXDqSA/IE9uIHNjYW5uZSBsZXMgcHNldWRvLWNvdXBzIGFkdmVyc2VzCiAgICAgKiBjaWJsYW50IGxhIGNhc2UgZHUgcm9pIDogdW5lIHBpw6hjZSBjbG91w6llIGF0dGFxdWUgcXVhbmQgbcOqbWUsIG9uCiAgICAgKiByYWlzb25uZSBkb25jIGVuIHBzZXVkby1jb3VwcyAoYXR0YXF1ZXMpIGV0IG5vbiBlbiBjb3VwcyBsw6lnYXV4LgogICAgICovCiAgICBwdWJsaWMgZnVuY3Rpb24gaXNDaGVjayhzdHJpbmcgJGNvbG9yKTogYm9vbAogICAgewogICAgICAgICRraW5nU3F1YXJlID0gbnVsbDsKICAgICAgICBmb3JlYWNoICgkdGhpcy0+c3F1YXJlcyBhcyAkc3EgPT4gJHBpZWNlKSB7CiAgICAgICAgICAgIGlmICgkcGllY2UgPT09ICRjb2xvciAuICdLJykgewogICAgICAgICAgICAgICAgJGtpbmdTcXVhcmUgPSAkc3E7CiAgICAgICAgICAgICAgICBicmVhazsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBpZiAoJGtpbmdTcXVhcmUgPT09IG51bGwpIHsKICAgICAgICAgICAgcmV0dXJuIGZhbHNlOwogICAgICAgIH0KICAgICAgICAkb3Bwb25lbnQgPSAkY29sb3IgPT09ICd3JyA/ICdiJyA6ICd3JzsKICAgICAgICBmb3JlYWNoICgkdGhpcy0+c3F1YXJlcyBhcyAkc3F1YXJlID0+ICRwaWVjZSkgewogICAgICAgICAgICBpZiAoJHBpZWNlWzBdICE9PSAkb3Bwb25lbnQpIHsKICAgICAgICAgICAgICAgIGNvbnRpbnVlOwogICAgICAgICAgICB9CiAgICAgICAgICAgIGZvcmVhY2ggKCR0aGlzLT5wc2V1ZG9Nb3ZlcygkcGllY2UsICRzcXVhcmUpIGFzICR0YXJnZXQpIHsKICAgICAgICAgICAgICAgIGlmICgkdGFyZ2V0WzFdID09PSAka2luZ1NxdWFyZSkgewogICAgICAgICAgICAgICAgICAgIHJldHVybiB0cnVlOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQoKICAgICAgICByZXR1cm4gZmFsc2U7CiAgICB9CgogICAgcHVibGljIGZ1bmN0aW9uIGlzQ2hlY2ttYXRlKHN0cmluZyAkY29sb3IpOiBib29sCiAgICB7CiAgICAgICAgcmV0dXJuICR0aGlzLT5pc0NoZWNrKCRjb2xvcikgJiYgJHRoaXMtPmxlZ2FsTW92ZXNVY2koKSA9PT0gW107CiAgICB9CgogICAgcHVibGljIGZ1bmN0aW9uIGlzU3RhbGVtYXRlKCk6IGJvb2wKICAgIHsKICAgICAgICByZXR1cm4gISAkdGhpcy0+aXNDaGVjaygkdGhpcy0+dHVybikgJiYgJHRoaXMtPmxlZ2FsTW92ZXNVY2koKSA9PT0gW107CiAgICB9CgogICAgLyoqIEByZXR1cm4gYXJyYXk8c3RyaW5nLHN0cmluZz4gKi8KICAgIHB1YmxpYyBmdW5jdGlvbiBzcXVhcmVzKCk6IGFycmF5CiAgICB7CiAgICAgICAgcmV0dXJuICR0aGlzLT5zcXVhcmVzOwogICAgfQoKICAgIC8vIC0tLSBpbnRlcm5lIC0tLQoKICAgIHByaXZhdGUgZnVuY3Rpb24gbm9ybWFsaXplU2FuKHN0cmluZyAkc2FuKTogc3RyaW5nCiAgICB7CiAgICAgICAgJHNhbiA9IHN0cl9yZXBsYWNlKFsnMC0wLTAnLCAnMC0wJ10sIFsnTy1PLU8nLCAnTy1PJ10sIHRyaW0oJHNhbikpOwogICAgICAgICRzYW4gPSBzdHJfcmVwbGFjZShbJysnLCAnIycsICchPycsICc/JywgJ+KAoCcsICdlcCddLCAnJywgJHNhbik7CgogICAgICAgIHJldHVybiBwcmVnX3JlcGxhY2UoJy9ccysvJywgJycsICRzYW4pID8/ICcnOwogICAgfQoKICAgIHByaXZhdGUgZnVuY3Rpb24gYW1iaWd1b3VzKHN0cmluZyAkcGllY2VUeXBlLCBzdHJpbmcgJGZyb20sIHN0cmluZyAkdG8pOiA/c3RyaW5nCiAgICB7CiAgICAgICAgJGZvdW5kID0gW107CiAgICAgICAgZm9yZWFjaCAoJHRoaXMtPnNxdWFyZXMgYXMgJHNxID0+ICRwaWVjZSkgewogICAgICAgICAgICBpZiAoJHBpZWNlID09PSAkdGhpcy0+dHVybiAuICRwaWVjZVR5cGUgJiYgJHNxICE9PSAkZnJvbSAmJiAkdGhpcy0+aXNMZWdhbCgkc3EsICR0bywgbnVsbCkpIHsKICAgICAgICAgICAgICAgICRmb3VuZFtdID0gJHNxOwogICAgICAgICAgICB9CiAgICAgICAgfQoKICAgICAgICByZXR1cm4gJGZvdW5kID09PSBbXSA/IG51bGwgOiAnYW1iaWd1b3VzJzsKICAgIH0KCiAgICBwcml2YXRlIGZ1bmN0aW9uIGlzTGVnYWwoc3RyaW5nICRmcm9tLCBzdHJpbmcgJHRvLCA/c3RyaW5nICRwcm9tbyk6IGJvb2wKICAgIHsKICAgICAgICAkcHJvbW8gPSAkcHJvbW8gPT09ICcnID8gbnVsbCA6ICRwcm9tbzsKICAgICAgICBpZiAoISBpc3NldCgkdGhpcy0+c3F1YXJlc1skZnJvbV0pKSB7CiAgICAgICAgICAgIHJldHVybiBmYWxzZTsKICAgICAgICB9CiAgICAgICAgJG9rID0gZmFsc2U7CiAgICAgICAgZm9yZWFjaCAoJHRoaXMtPnBzZXVkb01vdmVzKCR0aGlzLT5zcXVhcmVzWyRmcm9tXSwgJGZyb20pIGFzICRjYW5kaWRhdGUpIHsKICAgICAgICAgICAgaWYgKCRjYW5kaWRhdGVbMF0gPT09ICRmcm9tICYmICRjYW5kaWRhdGVbMV0gPT09ICR0bykgewogICAgICAgICAgICAgICAgaWYgKCRwcm9tbyAhPT0gbnVsbCkgewogICAgICAgICAgICAgICAgICAgIGlmICgkY2FuZGlkYXRlWzJdID09PSAkcHJvbW8pIHsKICAgICAgICAgICAgICAgICAgICAgICAgJG9rID0gdHJ1ZTsKICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSBlbHNlaWYgKCRjYW5kaWRhdGVbMl0gPT09ICcnKSB7CiAgICAgICAgICAgICAgICAgICAgJG9rID0gdHJ1ZTsKICAgICAgICAgICAgICAgICAgICBicmVhazsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBpZiAoISAkb2spIHsKICAgICAgICAgICAgcmV0dXJuIGZhbHNlOwogICAgICAgIH0KICAgICAgICAkY2xvbmUgPSBjbG9uZSAkdGhpczsKICAgICAgICAkY2xvbmUtPmFwcGx5VW5jaGVja2VkKCRmcm9tLCAkdG8sICRwcm9tbyk7CgogICAgICAgIHJldHVybiAhICRjbG9uZS0+aXNDaGVjaygkdGhpcy0+dHVybik7CiAgICB9CgogICAgLyoqCiAgICAgKiBQc2V1ZG8tY291cHMgZGUgbGEgcGnDqGNlIChzYW5zIGZpbHRyYWdlIGR1IHJvaSBlbiDDqWNoZWMpLgogICAgICoKICAgICAqIEByZXR1cm4gYXJyYXk8aW50LGFycmF5ezA6c3RyaW5nLDE6c3RyaW5nLDI6c3RyaW5nfT4gW2Zyb20sIHRvLCBwcm9tb10KICAgICAqLwogICAgcHJpdmF0ZSBmdW5jdGlvbiBwc2V1ZG9Nb3ZlcyhzdHJpbmcgJHBpZWNlLCBzdHJpbmcgJGZyb20pOiBhcnJheQogICAgewogICAgICAgICRtb3ZlcyA9IFtdOwogICAgICAgICRjb2xvciA9ICRwaWVjZVswXTsKICAgICAgICAkdHlwZSA9ICRwaWVjZVsxXTsKICAgICAgICAkZmlsZSA9IG9yZCgkZnJvbVswXSkgLSA5NjsKICAgICAgICAkcmFuayA9IChpbnQpICRmcm9tWzFdOwoKICAgICAgICBzd2l0Y2ggKCR0eXBlKSB7CiAgICAgICAgICAgIGNhc2UgJ1AnOgogICAgICAgICAgICAgICAgJHRoaXMtPmNvbGxlY3RQYXduTW92ZXMoJGZyb20sICRjb2xvciwgJGZpbGUsICRyYW5rLCAkbW92ZXMpOwogICAgICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgICAgIGNhc2UgJ04nOgogICAgICAgICAgICAgICAgJHRoaXMtPmNvbGxlY3RMZWFwcygkZnJvbSwgJGNvbG9yLCAkZmlsZSwgJHJhbmssIFtbMSwgMl0sIFsyLCAxXSwgWy0xLCAyXSwgWy0yLCAxXSwgWzEsIC0yXSwgWzIsIC0xXSwgWy0xLCAtMl0sIFstMiwgLTFdXSwgJG1vdmVzKTsKICAgICAgICAgICAgICAgIGJyZWFrOwogICAgICAgICAgICBjYXNlICdCJzoKICAgICAgICAgICAgICAgICR0aGlzLT5jb2xsZWN0U2xpZGluZygkZnJvbSwgJGNvbG9yLCBbWzEsIDFdLCBbMSwgLTFdLCBbLTEsIDFdLCBbLTEsIC0xXV0sICRtb3Zlcyk7CiAgICAgICAgICAgICAgICBicmVhazsKICAgICAgICAgICAgY2FzZSAnUic6CiAgICAgICAgICAgICAgICAkdGhpcy0+Y29sbGVjdFNsaWRpbmcoJGZyb20sICRjb2xvciwgW1sxLCAwXSwgWy0xLCAwXSwgWzAsIDFdLCBbMCwgLTFdXSwgJG1vdmVzKTsKICAgICAgICAgICAgICAgIGJyZWFrOwogICAgICAgICAgICBjYXNlICdRJzoKICAgICAgICAgICAgICAgICR0aGlzLT5jb2xsZWN0U2xpZGluZygkZnJvbSwgJGNvbG9yLCBbWzEsIDBdLCBbLTEsIDBdLCBbMCwgMV0sIFswLCAtMV0sIFsxLCAxXSwgWzEsIC0xXSwgWy0xLCAxXSwgWy0xLCAtMV1dLCAkbW92ZXMpOwogICAgICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgICAgIGNhc2UgJ0snOgogICAgICAgICAgICAgICAgJHRoaXMtPmNvbGxlY3RMZWFwcygkZnJvbSwgJGNvbG9yLCAkZmlsZSwgJHJhbmssIFtbMSwgMF0sIFstMSwgMF0sIFswLCAxXSwgWzAsIC0xXSwgWzEsIDFdLCBbMSwgLTFdLCBbLTEsIDFdLCBbLTEsIC0xXV0sICRtb3Zlcyk7CiAgICAgICAgICAgICAgICAkdGhpcy0+Y29sbGVjdENhc3RsaW5nKCRmcm9tLCAkY29sb3IsICRtb3Zlcyk7CiAgICAgICAgICAgICAgICBicmVhazsKICAgICAgICB9CgogICAgICAgIHJldHVybiAkbW92ZXM7CiAgICB9CgogICAgLyoqIEBwYXJhbSBhcnJheTxpbnQsc3RyaW5nPiAkbW92ZXMgKi8KICAgIHByaXZhdGUgZnVuY3Rpb24gY29sbGVjdFBhd25Nb3ZlcyhzdHJpbmcgJGZyb20sIHN0cmluZyAkY29sb3IsIGludCAkZmlsZSwgaW50ICRyYW5rLCBhcnJheSAmJG1vdmVzKTogdm9pZAogICAgewogICAgICAgICRkaXIgPSAkY29sb3IgPT09ICd3JyA/IDEgOiAtMTsKICAgICAgICAkc3RhcnQgPSAkY29sb3IgPT09ICd3JyA/IDIgOiA3OwogICAgICAgICRsYXN0ID0gJGNvbG9yID09PSAndycgPyA4IDogMTsKICAgICAgICAkb25lID0gY2hyKDk2ICsgJGZpbGUpIC4gKCRyYW5rICsgJGRpcik7CiAgICAgICAgaWYgKCRyYW5rICsgJGRpciA+PSAxICYmICRyYW5rICsgJGRpciA8PSA4ICYmICR0aGlzLT5waWVjZUF0KCRvbmUpID09PSBudWxsKSB7CiAgICAgICAgICAgIGlmICgkcmFuayArICRkaXIgPT09ICRsYXN0KSB7CiAgICAgICAgICAgICAgICBmb3JlYWNoIChbJ3EnLCAncicsICdiJywgJ24nXSBhcyAkcCkgewogICAgICAgICAgICAgICAgICAgICRtb3Zlc1tdID0gWyRmcm9tLCAkb25lLCAkcF07CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgICAgICAkbW92ZXNbXSA9IFskZnJvbSwgJG9uZSwgJyddOwogICAgICAgICAgICAgICAgaWYgKCRyYW5rID09PSAkc3RhcnQpIHsKICAgICAgICAgICAgICAgICAgICAkdHdvID0gY2hyKDk2ICsgJGZpbGUpIC4gKCRyYW5rICsgMiAqICRkaXIpOwogICAgICAgICAgICAgICAgICAgIGlmICgkdGhpcy0+cGllY2VBdCgkdHdvKSA9PT0gbnVsbCkgewogICAgICAgICAgICAgICAgICAgICAgICAkbW92ZXNbXSA9IFskZnJvbSwgJHR3bywgJyddOwogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBmb3JlYWNoIChbLTEsIDFdIGFzICRkZikgewogICAgICAgICAgICAkbmYgPSAkZmlsZSArICRkZjsKICAgICAgICAgICAgJG5yID0gJHJhbmsgKyAkZGlyOwogICAgICAgICAgICBpZiAoJG5mIDwgMSB8fCAkbmYgPiA4IHx8ICRuciA8IDEgfHwgJG5yID4gOCkgewogICAgICAgICAgICAgICAgY29udGludWU7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgJHRhcmdldCA9IGNocig5NiArICRuZikgLiAkbnI7CiAgICAgICAgICAgICRjYXB0dXJlZCA9ICR0aGlzLT5waWVjZUF0KCR0YXJnZXQpOwogICAgICAgICAgICBpZiAoJGNhcHR1cmVkICE9PSBudWxsICYmICRjYXB0dXJlZFswXSAhPT0gJGNvbG9yKSB7CiAgICAgICAgICAgICAgICBpZiAoJG5yID09PSAkbGFzdCkgewogICAgICAgICAgICAgICAgICAgIGZvcmVhY2ggKFsncScsICdyJywgJ2InLCAnbiddIGFzICRwKSB7CiAgICAgICAgICAgICAgICAgICAgICAgICRtb3Zlc1tdID0gWyRmcm9tLCAkdGFyZ2V0LCAkcF07CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgICAgICAgICAkbW92ZXNbXSA9IFskZnJvbSwgJHRhcmdldCwgJyddOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9IGVsc2VpZiAoJHRhcmdldCA9PT0gJHRoaXMtPmVwU3F1YXJlICYmICRjYXB0dXJlZCA9PT0gbnVsbCkgewogICAgICAgICAgICAgICAgJG1vdmVzW10gPSBbJGZyb20sICR0YXJnZXQsICcnXTsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KCiAgICAvKiogQHBhcmFtIGFycmF5PGludCxhcnJheXswOmludCwxOmludH0+ICRkZWx0YXMgQHBhcmFtIGFycmF5PGludCxzdHJpbmc+ICRtb3ZlcyAqLwogICAgcHJpdmF0ZSBmdW5jdGlvbiBjb2xsZWN0TGVhcHMoc3RyaW5nICRmcm9tLCBzdHJpbmcgJGNvbG9yLCBpbnQgJGZpbGUsIGludCAkcmFuaywgYXJyYXkgJGRlbHRhcywgYXJyYXkgJiRtb3Zlcyk6IHZvaWQKICAgIHsKICAgICAgICBmb3JlYWNoICgkZGVsdGFzIGFzIFskZGYsICRkcl0pIHsKICAgICAgICAgICAgJG5mID0gJGZpbGUgKyAkZGY7CiAgICAgICAgICAgICRuciA9ICRyYW5rICsgJGRyOwogICAgICAgICAgICBpZiAoJG5mIDwgMSB8fCAkbmYgPiA4IHx8ICRuciA8IDEgfHwgJG5yID4gOCkgewogICAgICAgICAgICAgICAgY29udGludWU7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgJHRhcmdldCA9IGNocig5NiArICRuZikgLiAkbnI7CiAgICAgICAgICAgICRjYXB0dXJlZCA9ICR0aGlzLT5waWVjZUF0KCR0YXJnZXQpOwogICAgICAgICAgICBpZiAoJGNhcHR1cmVkID09PSBudWxsIHx8ICRjYXB0dXJlZFswXSAhPT0gJGNvbG9yKSB7CiAgICAgICAgICAgICAgICAkbW92ZXNbXSA9IFskZnJvbSwgJHRhcmdldCwgJyddOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQoKICAgIC8qKiBAcGFyYW0gYXJyYXk8aW50LGFycmF5ezA6aW50LDE6aW50fT4gJGRpcnMgQHBhcmFtIGFycmF5PGludCxzdHJpbmc+ICRtb3ZlcyAqLwogICAgcHJpdmF0ZSBmdW5jdGlvbiBjb2xsZWN0U2xpZGluZyhzdHJpbmcgJGZyb20sIHN0cmluZyAkY29sb3IsIGFycmF5ICRkaXJzLCBhcnJheSAmJG1vdmVzKTogdm9pZAogICAgewogICAgICAgICRmaWxlID0gb3JkKCRmcm9tWzBdKSAtIDk2OwogICAgICAgICRyYW5rID0gKGludCkgJGZyb21bMV07CiAgICAgICAgZm9yZWFjaCAoJGRpcnMgYXMgWyRkZiwgJGRyXSkgewogICAgICAgICAgICAkZGlzdCA9IDE7CiAgICAgICAgICAgIHdoaWxlICh0cnVlKSB7CiAgICAgICAgICAgICAgICAkbmYgPSAkZmlsZSArICRkZiAqICRkaXN0OwogICAgICAgICAgICAgICAgJG5yID0gJHJhbmsgKyAkZHIgKiAkZGlzdDsKICAgICAgICAgICAgICAgIGlmICgkbmYgPCAxIHx8ICRuZiA+IDggfHwgJG5yIDwgMSB8fCAkbnIgPiA4KSB7CiAgICAgICAgICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAkdGFyZ2V0ID0gY2hyKDk2ICsgJG5mKSAuICRucjsKICAgICAgICAgICAgICAgICRjYXB0dXJlZCA9ICR0aGlzLT5waWVjZUF0KCR0YXJnZXQpOwogICAgICAgICAgICAgICAgaWYgKCRjYXB0dXJlZCAhPT0gbnVsbCAmJiAkY2FwdHVyZWRbMF0gPT09ICRjb2xvcikgewogICAgICAgICAgICAgICAgICAgIGJyZWFrOyAvLyBwacOoY2UgYWxsacOpZSA6IGxhIGNhc2UgZXN0IGluYXR0ZWlnbmFibGUKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICRtb3Zlc1tdID0gWyRmcm9tLCAkdGFyZ2V0LCAnJ107CiAgICAgICAgICAgICAgICBpZiAoJGNhcHR1cmVkICE9PSBudWxsKSB7CiAgICAgICAgICAgICAgICAgICAgYnJlYWs7IC8vIHByaXNlIDogbGEgbWFyY2hlIHMnYXJyw6p0ZSBhcHLDqHMKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICRkaXN0Kys7CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9CgogICAgLyoqIEBwYXJhbSBhcnJheTxpbnQsc3RyaW5nPiAkbW92ZXMgKi8KICAgIHByaXZhdGUgZnVuY3Rpb24gY29sbGVjdENhc3RsaW5nKHN0cmluZyAkZnJvbSwgc3RyaW5nICRjb2xvciwgYXJyYXkgJiRtb3Zlcyk6IHZvaWQKICAgIHsKICAgICAgICAkaG9tZVJhbmsgPSAkY29sb3IgPT09ICd3JyA/ICcxJyA6ICc4JzsKICAgICAgICBpZiAoJGZyb20gIT09ICdlJyAuICRob21lUmFuaykgewogICAgICAgICAgICByZXR1cm47IC8vIHJvcXVlIGltcG9zc2libGUgc2kgbGUgcm9pIG4nZXN0IHBhcyBzdXIgc2EgY2FzZSBkZSBkw6lwYXJ0CiAgICAgICAgfQogICAgICAgICRyb29rU3F1YXJlcyA9ICRjb2xvciA9PT0gJ3cnID8gWydLJyA9PiAnaDEnLCAnUScgPT4gJ2ExJ10gOiBbJ2snID0+ICdoOCcsICdxJyA9PiAnYTgnXTsKICAgICAgICAka2V5cyA9ICRjb2xvciA9PT0gJ3cnID8gWydLJywgJ1EnXSA6IFsnaycsICdxJ107CiAgICAgICAgZm9yZWFjaCAoJGtleXMgYXMgJGtleSkgewogICAgICAgICAgICBpZiAoISAkdGhpcy0+Y2FzdGxpbmdbJGtleV0pIHsKICAgICAgICAgICAgICAgIGNvbnRpbnVlOwogICAgICAgICAgICB9CiAgICAgICAgICAgICRyb29rU3EgPSAkcm9va1NxdWFyZXNbJGtleV07CiAgICAgICAgICAgIGlmICgkdGhpcy0+cGllY2VBdCgkcm9va1NxKSAhPT0gJGNvbG9yIC4gJ1InKSB7CiAgICAgICAgICAgICAgICBjb250aW51ZTsKICAgICAgICAgICAgfQogICAgICAgICAgICAkaXNLaW5nc2lkZSA9IGluX2FycmF5KCRrZXksIFsnSycsICdrJ10sIHRydWUpOwogICAgICAgICAgICAkYmV0d2VlbiA9ICRpc0tpbmdzaWRlCiAgICAgICAgICAgICAgICA/IFsnZicgLiAkaG9tZVJhbmssICdnJyAuICRob21lUmFua10KICAgICAgICAgICAgICAgIDogWydkJyAuICRob21lUmFuaywgJ2MnIC4gJGhvbWVSYW5rLCAnYicgLiAkaG9tZVJhbmtdOwogICAgICAgICAgICAkY2xlYXIgPSB0cnVlOwogICAgICAgICAgICBmb3JlYWNoICgkYmV0d2VlbiBhcyAkc3EpIHsKICAgICAgICAgICAgICAgIGlmICgkdGhpcy0+cGllY2VBdCgkc3EpICE9PSBudWxsKSB7CiAgICAgICAgICAgICAgICAgICAgJGNsZWFyID0gZmFsc2U7CiAgICAgICAgICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICAgICAgaWYgKCEgJGNsZWFyKSB7CiAgICAgICAgICAgICAgICBjb250aW51ZTsKICAgICAgICAgICAgfQogICAgICAgICAgICAka2luZ1RvID0gKCRpc0tpbmdzaWRlID8gJ2cnIDogJ2MnKSAuICRob21lUmFuazsKICAgICAgICAgICAgJHBhdGggPSAkaXNLaW5nc2lkZQogICAgICAgICAgICAgICAgPyBbJ2UnIC4gJGhvbWVSYW5rLCAnZicgLiAkaG9tZVJhbmssICdnJyAuICRob21lUmFua10KICAgICAgICAgICAgICAgIDogWydlJyAuICRob21lUmFuaywgJ2QnIC4gJGhvbWVSYW5rLCAnYycgLiAkaG9tZVJhbmtdOwogICAgICAgICAgICAkc2FmZSA9IHRydWU7CiAgICAgICAgICAgIGZvcmVhY2ggKCRwYXRoIGFzICRzcSkgewogICAgICAgICAgICAgICAgJHByb2JlID0gY2xvbmUgJHRoaXM7CiAgICAgICAgICAgICAgICAkcHJvYmUtPnNxdWFyZXMgPSBhcnJheV9kaWZmX2tleSgkcHJvYmUtPnNxdWFyZXMsIFsnZScgLiAkaG9tZVJhbmsgPT4gMV0pOwogICAgICAgICAgICAgICAgJHByb2JlLT5zcXVhcmVzWyRzcV0gPSAkY29sb3IgLiAnSyc7CiAgICAgICAgICAgICAgICAvLyBVbmUgc29uZGUgbmUgdGVzdGUgcXVlIGRlcyBhdHRhcXVlcyA6IG9uIG5ldXRyYWxpc2UgbGVzIGRyb2l0cwogICAgICAgICAgICAgICAgLy8gZGUgcm9xdWUgcG91ciDDqXZpdGVyIHRvdXRlIHLDqWfDqW7DqXJhdGlvbiBkZSByb3F1ZXMgZW4gY2FzY2FkZS4KICAgICAgICAgICAgICAgICRwcm9iZS0+Y2FzdGxpbmcgPSBbJ0snID0+IGZhbHNlLCAnUScgPT4gZmFsc2UsICdrJyA9PiBmYWxzZSwgJ3EnID0+IGZhbHNlXTsKICAgICAgICAgICAgICAgIGlmICgkcHJvYmUtPmlzQ2hlY2soJGNvbG9yKSkgewogICAgICAgICAgICAgICAgICAgICRzYWZlID0gZmFsc2U7CiAgICAgICAgICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICAgICAgaWYgKCRzYWZlKSB7CiAgICAgICAgICAgICAgICAkbW92ZXNbXSA9IFskZnJvbSwgJGtpbmdUbywgJyddOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQoKICAgIHByaXZhdGUgZnVuY3Rpb24gYXBwbHlVbmNoZWNrZWQoc3RyaW5nICRmcm9tLCBzdHJpbmcgJHRvLCA/c3RyaW5nICRwcm9tbyk6IHZvaWQKICAgIHsKICAgICAgICAkcHJvbW8gPSAkcHJvbW8gPT09ICcnID8gbnVsbCA6ICRwcm9tbzsKICAgICAgICAkcGllY2UgPSAkdGhpcy0+c3F1YXJlc1skZnJvbV0gPz8gbnVsbDsKICAgICAgICBpZiAoJHBpZWNlID09PSBudWxsKSB7CiAgICAgICAgICAgIHRocm93IG5ldyBcSW52YWxpZEFyZ3VtZW50RXhjZXB0aW9uKCdjb3VwIGludmFsaWRlIDogY2FzZSBzb3VyY2UgdmlkZScpOwogICAgICAgIH0KICAgICAgICAkY2FwdHVyZSA9ICgkdGhpcy0+c3F1YXJlc1skdG9dID8/IG51bGwpICE9PSBudWxsOwogICAgICAgICRjb2xvciA9ICRwaWVjZVswXTsKICAgICAgICAkdHlwZSA9ICRwaWVjZVsxXTsKCiAgICAgICAgaWYgKCR0eXBlID09PSAnUCcgJiYgJHRvID09PSAkdGhpcy0+ZXBTcXVhcmUgJiYgISAkY2FwdHVyZSkgewogICAgICAgICAgICAkY2FwU3EgPSAkdG9bMF0gLiAoJGNvbG9yID09PSAndycgPyAoaW50KSAkdG9bMV0gLSAxIDogKGludCkgJHRvWzFdICsgMSk7CiAgICAgICAgICAgIHVuc2V0KCR0aGlzLT5zcXVhcmVzWyRjYXBTcV0pOwogICAgICAgIH0KCiAgICAgICAgJHRoaXMtPmVwU3F1YXJlID0gbnVsbDsKICAgICAgICBpZiAoJHR5cGUgPT09ICdQJyAmJiBhYnMoKGludCkgJHRvWzFdIC0gKGludCkgJGZyb21bMV0pID09PSAyKSB7CiAgICAgICAgICAgICR0aGlzLT5lcFNxdWFyZSA9ICR0b1swXSAuICgoaW50KSAkdG9bMV0gKyAoJGNvbG9yID09PSAndycgPyAtMSA6IDEpKTsKICAgICAgICB9CgogICAgICAgIHVuc2V0KCR0aGlzLT5zcXVhcmVzWyRmcm9tXSk7CiAgICAgICAgJHRoaXMtPnNxdWFyZXNbJHRvXSA9ICRwcm9tbyAhPT0gbnVsbCA/ICRjb2xvciAuIHN0cnRvdXBwZXIoJHByb21vKSA6ICRwaWVjZTsKCiAgICAgICAgaWYgKCR0eXBlID09PSAnSycpIHsKICAgICAgICAgICAgaWYgKCRjb2xvciA9PT0gJ3cnKSB7CiAgICAgICAgICAgICAgICAkdGhpcy0+Y2FzdGxpbmdbJ0snXSA9IGZhbHNlOwogICAgICAgICAgICAgICAgJHRoaXMtPmNhc3RsaW5nWydRJ10gPSBmYWxzZTsKICAgICAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgICAgICR0aGlzLT5jYXN0bGluZ1snayddID0gZmFsc2U7CiAgICAgICAgICAgICAgICAkdGhpcy0+Y2FzdGxpbmdbJ3EnXSA9IGZhbHNlOwogICAgICAgICAgICB9CiAgICAgICAgICAgIGlmIChhYnMob3JkKCR0b1swXSkgLSBvcmQoJGZyb21bMF0pKSA9PT0gMikgewogICAgICAgICAgICAgICAgJHJvb2tGcm9tID0gJHRvWzBdID4gJGZyb21bMF0gPyAnaCcgLiAkZnJvbVsxXSA6ICdhJyAuICRmcm9tWzFdOwogICAgICAgICAgICAgICAgJHJvb2tUbyA9ICR0b1swXSA+ICRmcm9tWzBdID8gJ2YnIC4gJGZyb21bMV0gOiAnZCcgLiAkZnJvbVsxXTsKICAgICAgICAgICAgICAgICRyb29rID0gJHRoaXMtPnNxdWFyZXNbJHJvb2tGcm9tXSA/PyBudWxsOwogICAgICAgICAgICAgICAgdW5zZXQoJHRoaXMtPnNxdWFyZXNbJHJvb2tGcm9tXSk7CiAgICAgICAgICAgICAgICBpZiAoJHJvb2sgIT09IG51bGwpIHsKICAgICAgICAgICAgICAgICAgICAkdGhpcy0+c3F1YXJlc1skcm9va1RvXSA9ICRyb29rOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIGZvcmVhY2ggKFsnYTEnID0+ICdRJywgJ2gxJyA9PiAnSycsICdhOCcgPT4gJ3EnLCAnaDgnID0+ICdrJ10gYXMgJHNxID0+ICRmbGFnKSB7CiAgICAgICAgICAgIGlmICgkZnJvbSA9PT0gJHNxIHx8ICR0byA9PT0gJHNxKSB7CiAgICAgICAgICAgICAgICAkdGhpcy0+Y2FzdGxpbmdbJGZsYWddID0gZmFsc2U7CiAgICAgICAgICAgIH0KICAgICAgICB9CgogICAgICAgIGlmICgkdHlwZSA9PT0gJ1AnIHx8ICRjYXB0dXJlKSB7CiAgICAgICAgICAgICR0aGlzLT5oYWxmbW92ZSA9IDA7CiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgJHRoaXMtPmhhbGZtb3ZlKys7CiAgICAgICAgfQogICAgICAgIGlmICgkY29sb3IgPT09ICdiJykgewogICAgICAgICAgICAkdGhpcy0+ZnVsbG1vdmUrKzsKICAgICAgICB9CiAgICAgICAgJHRoaXMtPnR1cm4gPSAkY29sb3IgPT09ICd3JyA/ICdiJyA6ICd3JzsKICAgIH0KfQo=
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domain\Chess;
+
+/**
+ * Plateau d'échecs : représentation FEN, génération des coups légaux,
+ * application de coups UCI/SAN, détection échec/mat/pat, ambiguïtés SAN.
+ *
+ * Représentation interne : cases 'a1'..'h8' => 'wP','bK',...
+ */
+final class Board
+{
+    /** @var array<string,string> */
+    private array $squares = [];
+
+    private string $turn = 'w';
+
+    /** @var array<string,bool> roques disponibles : 'K','Q','k','q' */
+    private array $castling;
+
+    /** case de prise en passant éligible ou null */
+    private ?string $epSquare = null;
+
+    /** demi-coups depuis la dernière prise/avance de pion */
+    private int $halfmove = 0;
+
+    private int $fullmove = 1;
+
+    private function __construct()
+    {
+    }
+
+    public static function start(): self
+    {
+        $b = new self();
+        $b->squares = [
+            'a1' => 'wR', 'b1' => 'wN', 'c1' => 'wB', 'd1' => 'wQ', 'e1' => 'wK', 'f1' => 'wB', 'g1' => 'wN', 'h1' => 'wR',
+            'a2' => 'wP', 'b2' => 'wP', 'c2' => 'wP', 'd2' => 'wP', 'e2' => 'wP', 'f2' => 'wP', 'g2' => 'wP', 'h2' => 'wP',
+            'a8' => 'bR', 'b8' => 'bN', 'c8' => 'bB', 'd8' => 'bQ', 'e8' => 'bK', 'f8' => 'bB', 'g8' => 'bN', 'h8' => 'bR',
+            'a7' => 'bP', 'b7' => 'bP', 'c7' => 'bP', 'd7' => 'bP', 'e7' => 'bP', 'f7' => 'bP', 'g7' => 'bP', 'h7' => 'bP',
+        ];
+        $b->castling = ['K' => true, 'Q' => true, 'k' => true, 'q' => true];
+
+        return $b;
+    }
+
+    public static function fromFen(string $fen): self
+    {
+        $b = new self();
+        $parts = preg_split('/\s+/', trim($fen));
+        if ($parts === false || count($parts) < 4) {
+            throw new \InvalidArgumentException('FEN invalide');
+        }
+        [$placement, $turn, $castling, $ep] = $parts;
+        $b->squares = [];
+        $ranks = explode('/', $placement);
+        if (count($ranks) !== 8) {
+            throw new \InvalidArgumentException('FEN invalide : 8 rangées attendues');
+        }
+        for ($i = 0; $i < 8; $i++) {
+            $rank = 8 - $i;
+            $file = 1;
+            foreach (str_split($ranks[$i]) as $ch) {
+                if (ctype_digit($ch)) {
+                    $file += (int) $ch;
+                    continue;
+                }
+                $color = ctype_upper($ch) ? 'w' : 'b';
+                $b->squares[chr(96 + $file) . $rank] = $color . strtoupper($ch);
+                $file++;
+            }
+        }
+        $b->turn = $turn === 'b' ? 'b' : 'w';
+        $b->castling = ['K' => false, 'Q' => false, 'k' => false, 'q' => false];
+        if ($castling !== '-') {
+            foreach (str_split($castling) as $c) {
+                if (isset($b->castling[$c])) {
+                    $b->castling[$c] = true;
+                }
+            }
+        }
+        $b->epSquare = ($ep !== '-' && preg_match('/^[a-h][36]$/', $ep)) ? $ep : null;
+        $b->halfmove = isset($parts[4]) ? (int) $parts[4] : 0;
+        $b->fullmove = isset($parts[5]) ? max(1, (int) $parts[5]) : 1;
+
+        return $b;
+    }
+
+    public function fen(): string
+    {
+        $rows = [];
+        for ($rank = 8; $rank >= 1; $rank--) {
+            $row = '';
+            $empty = 0;
+            for ($file = 1; $file <= 8; $file++) {
+                $piece = $this->squares[chr(96 + $file) . $rank] ?? null;
+                if ($piece === null) {
+                    $empty++;
+                    continue;
+                }
+                if ($empty > 0) {
+                    $row .= $empty;
+                    $empty = 0;
+                }
+                $row .= $piece[0] === 'w' ? $piece[1] : strtolower($piece[1]);
+            }
+            if ($empty > 0) {
+                $row .= $empty;
+            }
+            $rows[] = $row;
+        }
+        $castling = '';
+        foreach (['K', 'Q', 'k', 'q'] as $c) {
+            if ($this->castling[$c]) {
+                $castling .= $c;
+            }
+        }
+
+        return sprintf(
+            '%s %s %s %s %d %d',
+            implode('/', $rows),
+            $this->turn,
+            $castling === '' ? '-' : $castling,
+            $this->epSquare ?? '-',
+            $this->halfmove,
+            $this->fullmove,
+        );
+    }
+
+    public function turn(): string
+    {
+        return $this->turn;
+    }
+
+    public function pieceAt(string $square): ?string
+    {
+        return $this->squares[$square] ?? null;
+    }
+
+    /**
+     * Coups légaux de la position, en notation UCI (ex. e2e4, e7e8q).
+     *
+     * @return array<int,string>
+     */
+    public function legalMovesUci(): array
+    {
+        $moves = [];
+        foreach ($this->squares as $square => $piece) {
+            if ($piece[0] !== $this->turn) {
+                continue;
+            }
+            foreach ($this->pseudoMoves($piece, $square) as $target) {
+                [$from, $to, $promoStr] = $target;
+                $promo = $promoStr === '' ? null : $promoStr;
+                if ($this->isLegal($from, $to, $promo)) {
+                    $moves[] = $from . $to . $promoStr;
+                }
+            }
+        }
+        sort($moves);
+
+        return $moves;
+    }
+
+    /** Conversion SAN -> UCI pour le prochain coup. */
+    public function sanToUci(string $san): ?string
+    {
+        $san = $this->normalizeSan($san);
+        foreach ($this->legalMovesUci() as $uci) {
+            if ($this->uciToSan($uci) === $san || $this->uciToSan($uci, false) === $san) {
+                return $uci;
+            }
+        }
+
+        return null;
+    }
+
+    /** Conversion UCI -> SAN du prochain coup. */
+    public function uciToSan(string $uci, bool $withCheck = true): string
+    {
+        $from = substr($uci, 0, 2);
+        $to = substr($uci, 2, 2);
+        $promo = strlen($uci) === 5 ? $uci[4] : null;
+        $piece = $this->pieceAt($from);
+        if ($piece === null) {
+            return $uci;
+        }
+        $isCapture = $this->pieceAt($to) !== null || ($piece[1] === 'P' && $to === $this->epSquare);
+        $san = '';
+        if ($piece[1] === 'K' && abs(ord($from[0]) - ord($to[0])) === 2) {
+            $san = $to[0] > $from[0] ? 'O-O' : 'O-O-O';
+        } else {
+            if ($piece[1] !== 'P') {
+                $san .= $piece[1];
+                if ($this->ambiguous($piece[1], $from, $to) !== null) {
+                    $sameFile = false;
+                    $sameRank = false;
+                    $candidates = [];
+                    foreach ($this->squares as $sq => $p) {
+                        if ($p === $piece && $sq !== $from && $this->isLegal($sq, $to, null)) {
+                            $candidates[] = $sq;
+                        }
+                    }
+                    foreach ($candidates as $c) {
+                        $sameFile = $sameFile || $c[0] === $from[0];
+                        $sameRank = $sameRank || $c[1] === $from[1];
+                    }
+                    $san .= $sameFile && ! $sameRank ? $from[1] : $from[0];
+                }
+                if ($isCapture) {
+                    $san .= 'x';
+                }
+            } elseif ($isCapture) {
+                $san .= $from[0] . 'x';
+            }
+            $san .= $to;
+            if ($promo !== null) {
+                $san .= '=' . strtoupper($promo);
+            }
+        }
+        $clone = clone $this;
+        $clone->applyUnchecked($from, $to, $promo);
+        if ($withCheck) {
+            if ($clone->isCheck($this->turn)) {
+                $san .= $clone->isCheckmate($this->turn) ? '#' : '+';
+            }
+        }
+
+        return $san;
+    }
+
+    public function applyUci(string $uci): bool
+    {
+        if (strlen($uci) < 4 || ! $this->isLegal(substr($uci, 0, 2), substr($uci, 2, 2), strlen($uci) === 5 ? $uci[4] : null)) {
+            return false;
+        }
+        $this->applyUnchecked(substr($uci, 0, 2), substr($uci, 2, 2), strlen($uci) === 5 ? $uci[4] : null);
+
+        return true;
+    }
+
+    public function applySan(string $san): bool
+    {
+        $uci = $this->sanToUci($san);
+        if ($uci === null) {
+            return false;
+        }
+
+        return $this->applyUci($uci);
+    }
+
+    /**
+     * Le roi de $color est-il attaqué ? On scanne les pseudo-coups adverses
+     * ciblant la case du roi : une pièce clouée attaque quand même, on
+     * raisonne donc en pseudo-coups (attaques) et non en coups légaux.
+     */
+    public function isCheck(string $color): bool
+    {
+        $kingSquare = null;
+        foreach ($this->squares as $sq => $piece) {
+            if ($piece === $color . 'K') {
+                $kingSquare = $sq;
+                break;
+            }
+        }
+        if ($kingSquare === null) {
+            return false;
+        }
+        $opponent = $color === 'w' ? 'b' : 'w';
+        foreach ($this->squares as $square => $piece) {
+            if ($piece[0] !== $opponent) {
+                continue;
+            }
+            foreach ($this->pseudoMoves($piece, $square) as $target) {
+                if ($target[1] === $kingSquare) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public function isCheckmate(string $color): bool
+    {
+        return $this->isCheck($color) && $this->legalMovesUci() === [];
+    }
+
+    public function isStalemate(): bool
+    {
+        return ! $this->isCheck($this->turn) && $this->legalMovesUci() === [];
+    }
+
+    /** @return array<string,string> */
+    public function squares(): array
+    {
+        return $this->squares;
+    }
+
+    // --- interne ---
+
+    private function normalizeSan(string $san): string
+    {
+        $san = str_replace(['0-0-0', '0-0'], ['O-O-O', 'O-O'], trim($san));
+        $san = str_replace(['+', '#', '!?', '?', '†', 'ep'], '', $san);
+
+        return preg_replace('/\s+/', '', $san) ?? '';
+    }
+
+    private function ambiguous(string $pieceType, string $from, string $to): ?string
+    {
+        $found = [];
+        foreach ($this->squares as $sq => $piece) {
+            if ($piece === $this->turn . $pieceType && $sq !== $from && $this->isLegal($sq, $to, null)) {
+                $found[] = $sq;
+            }
+        }
+
+        return $found === [] ? null : 'ambiguous';
+    }
+
+    private function isLegal(string $from, string $to, ?string $promo): bool
+    {
+        $promo = $promo === '' ? null : $promo;
+        if (! isset($this->squares[$from])) {
+            return false;
+        }
+        $ok = false;
+        foreach ($this->pseudoMoves($this->squares[$from], $from) as $candidate) {
+            if ($candidate[0] === $from && $candidate[1] === $to) {
+                if ($promo !== null) {
+                    if ($candidate[2] === $promo) {
+                        $ok = true;
+                        break;
+                    }
+                } elseif ($candidate[2] === '') {
+                    $ok = true;
+                    break;
+                }
+            }
+        }
+        if (! $ok) {
+            return false;
+        }
+        $clone = clone $this;
+        $clone->applyUnchecked($from, $to, $promo);
+
+        return ! $clone->isCheck($this->turn);
+    }
+
+    /**
+     * Pseudo-coups de la pièce (sans filtrage du roi en échec).
+     *
+     * @return array<int,array{0:string,1:string,2:string}> [from, to, promo]
+     */
+    private function pseudoMoves(string $piece, string $from): array
+    {
+        $moves = [];
+        $color = $piece[0];
+        $type = $piece[1];
+        $file = ord($from[0]) - 96;
+        $rank = (int) $from[1];
+
+        switch ($type) {
+            case 'P':
+                $this->collectPawnMoves($from, $color, $file, $rank, $moves);
+                break;
+            case 'N':
+                $this->collectLeaps($from, $color, $file, $rank, [[1, 2], [2, 1], [-1, 2], [-2, 1], [1, -2], [2, -1], [-1, -2], [-2, -1]], $moves);
+                break;
+            case 'B':
+                $this->collectSliding($from, $color, [[1, 1], [1, -1], [-1, 1], [-1, -1]], $moves);
+                break;
+            case 'R':
+                $this->collectSliding($from, $color, [[1, 0], [-1, 0], [0, 1], [0, -1]], $moves);
+                break;
+            case 'Q':
+                $this->collectSliding($from, $color, [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]], $moves);
+                break;
+            case 'K':
+                $this->collectLeaps($from, $color, $file, $rank, [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]], $moves);
+                $this->collectCastling($from, $color, $moves);
+                break;
+        }
+
+        return $moves;
+    }
+
+    /** @param array<int,string> $moves */
+    private function collectPawnMoves(string $from, string $color, int $file, int $rank, array &$moves): void
+    {
+        $dir = $color === 'w' ? 1 : -1;
+        $start = $color === 'w' ? 2 : 7;
+        $last = $color === 'w' ? 8 : 1;
+        $one = chr(96 + $file) . ($rank + $dir);
+        if ($rank + $dir >= 1 && $rank + $dir <= 8 && $this->pieceAt($one) === null) {
+            if ($rank + $dir === $last) {
+                foreach (['q', 'r', 'b', 'n'] as $p) {
+                    $moves[] = [$from, $one, $p];
+                }
+            } else {
+                $moves[] = [$from, $one, ''];
+                if ($rank === $start) {
+                    $two = chr(96 + $file) . ($rank + 2 * $dir);
+                    if ($this->pieceAt($two) === null) {
+                        $moves[] = [$from, $two, ''];
+                    }
+                }
+            }
+        }
+        foreach ([-1, 1] as $df) {
+            $nf = $file + $df;
+            $nr = $rank + $dir;
+            if ($nf < 1 || $nf > 8 || $nr < 1 || $nr > 8) {
+                continue;
+            }
+            $target = chr(96 + $nf) . $nr;
+            $captured = $this->pieceAt($target);
+            if ($captured !== null && $captured[0] !== $color) {
+                if ($nr === $last) {
+                    foreach (['q', 'r', 'b', 'n'] as $p) {
+                        $moves[] = [$from, $target, $p];
+                    }
+                } else {
+                    $moves[] = [$from, $target, ''];
+                }
+            } elseif ($target === $this->epSquare && $captured === null) {
+                $moves[] = [$from, $target, ''];
+            }
+        }
+    }
+
+    /** @param array<int,array{0:int,1:int}> $deltas @param array<int,string> $moves */
+    private function collectLeaps(string $from, string $color, int $file, int $rank, array $deltas, array &$moves): void
+    {
+        foreach ($deltas as [$df, $dr]) {
+            $nf = $file + $df;
+            $nr = $rank + $dr;
+            if ($nf < 1 || $nf > 8 || $nr < 1 || $nr > 8) {
+                continue;
+            }
+            $target = chr(96 + $nf) . $nr;
+            $captured = $this->pieceAt($target);
+            if ($captured === null || $captured[0] !== $color) {
+                $moves[] = [$from, $target, ''];
+            }
+        }
+    }
+
+    /** @param array<int,array{0:int,1:int}> $dirs @param array<int,string> $moves */
+    private function collectSliding(string $from, string $color, array $dirs, array &$moves): void
+    {
+        $file = ord($from[0]) - 96;
+        $rank = (int) $from[1];
+        foreach ($dirs as [$df, $dr]) {
+            $dist = 1;
+            while (true) {
+                $nf = $file + $df * $dist;
+                $nr = $rank + $dr * $dist;
+                if ($nf < 1 || $nf > 8 || $nr < 1 || $nr > 8) {
+                    break;
+                }
+                $target = chr(96 + $nf) . $nr;
+                $captured = $this->pieceAt($target);
+                if ($captured !== null && $captured[0] === $color) {
+                    break; // pièce alliée : la case est inatteignable
+                }
+                $moves[] = [$from, $target, ''];
+                if ($captured !== null) {
+                    break; // prise : la marche s'arrête après
+                }
+                $dist++;
+            }
+        }
+    }
+
+    /** @param array<int,string> $moves */
+    private function collectCastling(string $from, string $color, array &$moves): void
+    {
+        $homeRank = $color === 'w' ? '1' : '8';
+        if ($from !== 'e' . $homeRank) {
+            return; // roque impossible si le roi n'est pas sur sa case de départ
+        }
+        $rookSquares = $color === 'w' ? ['K' => 'h1', 'Q' => 'a1'] : ['k' => 'h8', 'q' => 'a8'];
+        $keys = $color === 'w' ? ['K', 'Q'] : ['k', 'q'];
+        foreach ($keys as $key) {
+            if (! $this->castling[$key]) {
+                continue;
+            }
+            $rookSq = $rookSquares[$key];
+            if ($this->pieceAt($rookSq) !== $color . 'R') {
+                continue;
+            }
+            $isKingside = in_array($key, ['K', 'k'], true);
+            $between = $isKingside
+                ? ['f' . $homeRank, 'g' . $homeRank]
+                : ['d' . $homeRank, 'c' . $homeRank, 'b' . $homeRank];
+            $clear = true;
+            foreach ($between as $sq) {
+                if ($this->pieceAt($sq) !== null) {
+                    $clear = false;
+                    break;
+                }
+            }
+            if (! $clear) {
+                continue;
+            }
+            $kingTo = ($isKingside ? 'g' : 'c') . $homeRank;
+            $path = $isKingside
+                ? ['e' . $homeRank, 'f' . $homeRank, 'g' . $homeRank]
+                : ['e' . $homeRank, 'd' . $homeRank, 'c' . $homeRank];
+            $safe = true;
+            foreach ($path as $sq) {
+                $probe = clone $this;
+                $probe->squares = array_diff_key($probe->squares, ['e' . $homeRank => 1]);
+                $probe->squares[$sq] = $color . 'K';
+                // Une sonde ne teste que des attaques : on neutralise les droits
+                // de roque pour éviter toute régénération de roques en cascade.
+                $probe->castling = ['K' => false, 'Q' => false, 'k' => false, 'q' => false];
+                if ($probe->isCheck($color)) {
+                    $safe = false;
+                    break;
+                }
+            }
+            if ($safe) {
+                $moves[] = [$from, $kingTo, ''];
+            }
+        }
+    }
+
+    private function applyUnchecked(string $from, string $to, ?string $promo): void
+    {
+        $promo = $promo === '' ? null : $promo;
+        $piece = $this->squares[$from] ?? null;
+        if ($piece === null) {
+            throw new \InvalidArgumentException('coup invalide : case source vide');
+        }
+        $capture = ($this->squares[$to] ?? null) !== null;
+        $color = $piece[0];
+        $type = $piece[1];
+
+        if ($type === 'P' && $to === $this->epSquare && ! $capture) {
+            $capSq = $to[0] . ($color === 'w' ? (int) $to[1] - 1 : (int) $to[1] + 1);
+            unset($this->squares[$capSq]);
+        }
+
+        $this->epSquare = null;
+        if ($type === 'P' && abs((int) $to[1] - (int) $from[1]) === 2) {
+            $this->epSquare = $to[0] . ((int) $to[1] + ($color === 'w' ? -1 : 1));
+        }
+
+        unset($this->squares[$from]);
+        $this->squares[$to] = $promo !== null ? $color . strtoupper($promo) : $piece;
+
+        if ($type === 'K') {
+            if ($color === 'w') {
+                $this->castling['K'] = false;
+                $this->castling['Q'] = false;
+            } else {
+                $this->castling['k'] = false;
+                $this->castling['q'] = false;
+            }
+            if (abs(ord($to[0]) - ord($from[0])) === 2) {
+                $rookFrom = $to[0] > $from[0] ? 'h' . $from[1] : 'a' . $from[1];
+                $rookTo = $to[0] > $from[0] ? 'f' . $from[1] : 'd' . $from[1];
+                $rook = $this->squares[$rookFrom] ?? null;
+                unset($this->squares[$rookFrom]);
+                if ($rook !== null) {
+                    $this->squares[$rookTo] = $rook;
+                }
+            }
+        }
+        foreach (['a1' => 'Q', 'h1' => 'K', 'a8' => 'q', 'h8' => 'k'] as $sq => $flag) {
+            if ($from === $sq || $to === $sq) {
+                $this->castling[$flag] = false;
+            }
+        }
+
+        if ($type === 'P' || $capture) {
+            $this->halfmove = 0;
+        } else {
+            $this->halfmove++;
+        }
+        if ($color === 'b') {
+            $this->fullmove++;
+        }
+        $this->turn = $color === 'w' ? 'b' : 'w';
+    }
+}

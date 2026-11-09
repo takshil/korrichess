@@ -1,1 +1,46 @@
-IyBhcGkvIOKAlCBCYWNrLWVuZCBLb3JyaWNoZXNzIChQSFAgLyBMYXJhdmVsIDExKQoKQVBJIFJFU1QgSlNPTiBjb25zb21tw6llIHBhciBsJ2FwcGxpY2F0aW9uIG1vYmlsZSAoYGFwcC9gKSBldCBsZSBzaXRlIChgd2ViL2ApLgoKIyMgUMOpcmltw6h0cmUgYWN0dWVsIChpc3N1ZSAjMTQgKyBtb3RldXIgZCfDqWNoZWNzKQoKLSBSb3V0ZXMgdmVyc2lvbm7DqWVzIHNvdXMgKipgL2FwaS92MWAqKiAoYHJvdXRlcy9hcGkucGhwYCkuCi0gRW5kcG9pbnQgYEdFVCAvYXBpL3YxL2hlYWx0aGAgKHNvbmRlIGRlIGRpc3BvbmliaWxpdMOpKS4KLSBNaWdyYXRpb24gYHVzZXJzYCA6IGNvbXB0ZSBlLW1haWwgKyBtb3QgZGUgcGFzc2UgKGhhY2jDqSksIGxvY2FsZSBwYXIgZMOpZmF1dCBgZnJgLgotIE1vZMOobGUgYEFwcFxNb2RlbHNcVXNlcmAgKGhhY2hhZ2UgYXV0b21hdGlxdWUgZHUgbW90IGRlIHBhc3NlLCBjaGFtcHMgbWFzcXXDqXMpLgotIEVzcGFjZSBkZSBub21tYWdlIGRlcyBjb250csO0bGV1cnMgOiBgQXBwXEh0dHBcQ29udHJvbGxlcnNcQXBpXFYxXCpgLgotICoqTW90ZXVyIGQnw6ljaGVjcyBtYWlzb24qKiBkYW5zIGBhcHAvRG9tYWluL0NoZXNzL2AgKGBCb2FyZGAsIGBNb3ZlYCwgYFBnbmApIDoKICByZXByw6lzZW50YXRpb24gRkVOLCBnw6luw6lyYXRpb24gZGVzIGNvdXBzIGzDqWdhdXggKHJvcXVlcywgcHJpc2UgZW4gcGFzc2FudCwKICBwcm9tb3Rpb25zKSwgY29udmVyc2lvbnMgU0FOIOKGlCBVQ0kgKGFtYmlndcOvdMOpcyBpbmNsdXNlcyksIGTDqXRlY3Rpb24KICDDqWNoZWMvbWF0L3BhdCwgbGVjdHVyZSBldCBnw6luw6lyYXRpb24gZGUgUEdOIChjb21tZW50YWlyZXMgZXQgdmFyaWFudGVzCiAgaWdub3LDqXMsIGpldG9ucyBpbmNvbm51cyByZWpldMOpcykuIFByw6lyZXF1aXMgdGVjaG5pcXVlIGRlcyBpc3N1ZXMKICBzeW5jaHJvbmlzYXRpb24gKCMzKSwgYmlibGlvdGjDqHF1ZSAoIzQpLCByZWpldS9hbmFseXNlICgjNSkgZXQgc2NhbiAoIzIpLgoKTCdhdXRoZW50aWZpY2F0aW9uIChlbnJlZ2lzdHJlbWVudCwgY29ubmV4aW9uLCBqZXRvbnMgU2FuY3R1bSkgZXQgbGVzCnJlc3NvdXJjZXMgZXhwb3PDqWVzIChwYXJ0aWVzLCBhbmFseXNlcywgZXhlcmNpY2VzKSBhcnJpdmVudCBkYW5zIGxldXJzCmlzc3VlcyBkw6lkacOpZXMuCgojIyBDb252ZW50aW9ucwoKLSBSRVNUICsgSlNPTiwgdmVyc2lvbm5lbWVudCBkZSByb3V0ZSBgL2FwaS92MWAgKGF1Y3VuZSByb3V0ZSBub24gdmVyc2lvbm7DqWUpLgotIE1pZ3JhdGlvbnMgdmVyc2lvbm7DqWVzIGRhbnMgYGRhdGFiYXNlL21pZ3JhdGlvbnMvYCA7IGphbWFpcyBkZSBsb2dpcXVlCiAgbcOpdGllciBkYW5zIGxlcyBjb250csO0bGV1cnMgKHNlcnZpY2VzIGTDqWRpw6lzKS4KLSBEb21haW5lIG3DqXRpZXIgZGFucyBgYXBwL0RvbWFpbi9gIDogY2xhc3NlcyBwdXJlcywgc2FucyBkw6lwZW5kYW5jZSBhdQogIGZyYW1ld29yayAodGVzdGFibGVzIGlzb2zDqW1lbnQpLgotIE1vdHMgZGUgcGFzc2UgaGFjaMOpcyA7IG1pbmltaXNhdGlvbiBkZXMgZG9ubsOpZXMgUkdQRCBkw6hzIGxhIGNvbmNlcHRpb24uCgojIyBUZXN0cwoKLSBTdWl0ZSBgVW5pdGAgOiBtb3RldXIgZCfDqWNoZWNzIChyw6hnbGVzLCByb3F1ZXMsIGVuIHBhc3NhbnQsIHByb21vdGlvbiwKICBwYXQsIGFtYmlndcOvdMOpcyBTQU4sIHBlcmZ0IEtpd2lwZXRlLCBQR04pIOKAlCBgcGhwIGFydGlzYW4gdGVzdCAtLXRlc3RzdWl0ZSBVbml0YC4KLSBTdWl0ZSBgRmVhdHVyZWAgOiBBUEkgSFRUUCDigJQgYHBocCBhcnRpc2FuIHRlc3QgLS10ZXN0c3VpdGUgRmVhdHVyZWAuCgojIyBJbnN0YWxsYXRpb24gKG7DqWNlc3NpdGUgUEhQIOKJpSA4LjIgZXQgQ29tcG9zZXIpCgpgYGBiYXNoCmNvbXBvc2VyIGluc3RhbGwKY3AgLmVudi5leGFtcGxlIC5lbnYKcGhwIGFydGlzYW4ga2V5OmdlbmVyYXRlCnBocCBhcnRpc2FuIG1pZ3JhdGUKcGhwIGFydGlzYW4gdGVzdApgYGAK
+# api/ — Back-end Korrichess (PHP / Laravel 11)
+
+API REST JSON consommée par l'application mobile (`app/`) et le site (`web/`).
+
+## Périmètre actuel (issue #14 + moteur d'échecs)
+
+- Routes versionnées sous **`/api/v1`** (`routes/api.php`).
+- Endpoint `GET /api/v1/health` (sonde de disponibilité).
+- Migration `users` : compte e-mail + mot de passe (haché), locale par défaut `fr`.
+- Modèle `App\Models\User` (hachage automatique du mot de passe, champs masqués).
+- Espace de nommage des contrôleurs : `App\Http\Controllers\Api\V1\*`.
+- **Moteur d'échecs maison** dans `app/Domain/Chess/` (`Board`, `Move`, `Pgn`) :
+  représentation FEN, génération des coups légaux (roques, prise en passant,
+  promotions), conversions SAN ↔ UCI (ambiguïtés incluses), détection
+  échec/mat/pat, lecture et génération de PGN (commentaires et variantes
+  ignorés, jetons inconnus rejetés). Prérequis technique des issues
+  synchronisation (#3), bibliothèque (#4), rejeu/analyse (#5) et scan (#2).
+
+L'authentification (enregistrement, connexion, jetons Sanctum) et les
+ressources exposées (parties, analyses, exercices) arrivent dans leurs
+issues dédiées.
+
+## Conventions
+
+- REST + JSON, versionnement de route `/api/v1` (aucune route non versionnée).
+- Migrations versionnées dans `database/migrations/` ; jamais de logique
+  métier dans les contrôleurs (services dédiés).
+- Domaine métier dans `app/Domain/` : classes pures, sans dépendance au
+  framework (testables isolément).
+- Mots de passe hachés ; minimisation des données RGPD dès la conception.
+
+## Tests
+
+- Suite `Unit` : moteur d'échecs (règles, roques, en passant, promotion,
+  pat, ambiguïtés SAN, perft Kiwipete, PGN) — `php artisan test --testsuite Unit`.
+- Suite `Feature` : API HTTP — `php artisan test --testsuite Feature`.
+
+## Installation (nécessite PHP ≥ 8.2 et Composer)
+
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan test
+```

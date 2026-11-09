@@ -1,1 +1,15 @@
-PD9waHAKCmRlY2xhcmUoc3RyaWN0X3R5cGVzPTEpOwoKbmFtZXNwYWNlIEFwcFxEb21haW5cQ2hlc3M7CgpmaW5hbCBjbGFzcyBNb3ZlCnsKICAgIHB1YmxpYyBmdW5jdGlvbiBfX2NvbnN0cnVjdCgKICAgICAgICBwdWJsaWMgcmVhZG9ubHkgc3RyaW5nICRmcm9tLAogICAgICAgIHB1YmxpYyByZWFkb25seSBzdHJpbmcgJHRvLAogICAgICAgIHB1YmxpYyByZWFkb25seSA/c3RyaW5nICRwcm9tb3Rpb24gPSBudWxsLAogICAgKSB7CiAgICB9Cn0K
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domain\Chess;
+
+final class Move
+{
+    public function __construct(
+        public readonly string $from,
+        public readonly string $to,
+        public readonly ?string $promotion = null,
+    ) {
+    }
+}

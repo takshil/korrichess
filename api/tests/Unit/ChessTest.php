@@ -1,1 +1,198 @@
-PD9waHAKCmRlY2xhcmUoc3RyaWN0X3R5cGVzPTEpOwoKbmFtZXNwYWNlIFRlc3RzXFVuaXQ7Cgp1c2UgQXBwXERvbWFpblxDaGVzc1xCb2FyZDsKdXNlIEFwcFxEb21haW5cQ2hlc3NcUGduOwp1c2UgUEhQVW5pdFxGcmFtZXdvcmtcVGVzdENhc2U7CgpjbGFzcyBDaGVzc1Rlc3QgZXh0ZW5kcyBUZXN0Q2FzZQp7CiAgICBwdWJsaWMgZnVuY3Rpb24gdGVzdF9wb3NpdGlvbl9kZV9kZXBhcnRfb2ZmcmVfMjBfY291cHNfbGVnYXV4KCk6IHZvaWQKICAgIHsKICAgICAgICAkdGhpcy0+YXNzZXJ0Q291bnQoMjAsIEJvYXJkOjpzdGFydCgpLT5sZWdhbE1vdmVzVWNpKCkpOwogICAgfQoKICAgIHB1YmxpYyBmdW5jdGlvbiB0ZXN0X2Zlbl9kZV9kZXBhcnRfZXN0X2V4YWN0ZSgpOiB2b2lkCiAgICB7CiAgICAgICAgJHRoaXMtPmFzc2VydFNhbWUoCiAgICAgICAgICAgICdybmJxa2Juci9wcHBwcHBwcC84LzgvOC84L1BQUFBQUFBQL1JOQlFLQk5SIHcgS1FrcSAtIDAgMScsCiAgICAgICAgICAgIEJvYXJkOjpzdGFydCgpLT5mZW4oKSwKICAgICAgICApOwogICAgfQoKICAgIHB1YmxpYyBmdW5jdGlvbiB0ZXN0X3Nhbl9jb252ZXJ0aV9lbl91Y2koKTogdm9pZAogICAgewogICAgICAgICRiID0gQm9hcmQ6OnN0YXJ0KCk7CiAgICAgICAgJHRoaXMtPmFzc2VydFNhbWUoJ2UyZTQnLCAkYi0+c2FuVG9VY2koJ2U0JykpOwogICAgICAgICR0aGlzLT5hc3NlcnRTYW1lKCdnMWYzJywgJGItPnNhblRvVWNpKCdOZjMnKSk7CiAgICB9CgogICAgcHVibGljIGZ1bmN0aW9uIHRlc3Rfc2FuX2lsbGVnYWxfZXN0X3JlamV0ZSgpOiB2b2lkCiAgICB7CiAgICAgICAgJHRoaXMtPmFzc2VydE51bGwoQm9hcmQ6OnN0YXJ0KCktPnNhblRvVWNpKCdlNScpKTsKICAgIH0KCiAgICBwdWJsaWMgZnVuY3Rpb24gdGVzdF9tYXRfZHVfYmVyZ2VyX2VzdF9kZXRlY3RlKCk6IHZvaWQKICAgIHsKICAgICAgICAkYiA9IEJvYXJkOjpzdGFydCgpOwogICAgICAgIGZvcmVhY2ggKFsnZTQnLCAnZTUnLCAnUWg1JywgJ05jNicsICdCYzQnLCAnTmY2JywgJ1F4ZjcjJ10gYXMgJHNhbikgewogICAgICAgICAgICAkdGhpcy0+YXNzZXJ0VHJ1ZSgkYi0+YXBwbHlTYW4oJHNhbiksICJsZSBjb3VwIHskc2FufSBkb2l0IMOqdHJlIGpvdWFibGUiKTsKICAgICAgICB9CiAgICAgICAgJHRoaXMtPmFzc2VydFRydWUoJGItPmlzQ2hlY2ttYXRlKCdiJykpOwogICAgICAgICR0aGlzLT5hc3NlcnRTYW1lKFtdLCAkYi0+bGVnYWxNb3Zlc1VjaSgpKTsKICAgIH0KCiAgICBwdWJsaWMgZnVuY3Rpb24gdGVzdF9wZXRpdF9yb3F1ZV9ibGFuYygpOiB2b2lkCiAgICB7CiAgICAgICAgJGIgPSBCb2FyZDo6ZnJvbUZlbigncjNrMnIvcHBwcHBwcHAvOC84LzgvOC9QUFBQUFBQUC9SM0syUiB3IEtRa3EgLSAwIDEnKTsKICAgICAgICAkdGhpcy0+YXNzZXJ0U2FtZSgnZTFnMScsICRiLT5zYW5Ub1VjaSgnTy1PJykpOwogICAgICAgICR0aGlzLT5hc3NlcnRUcnVlKCRiLT5hcHBseVNhbignTy1PJykpOwogICAgICAgICR0aGlzLT5hc3NlcnRTYW1lKCd3UicsICRiLT5waWVjZUF0KCdmMScpKTsKICAgICAgICAkdGhpcy0+YXNzZXJ0U2FtZSgnd0snLCAkYi0+cGllY2VBdCgnZzEnKSk7CiAgICB9CgogICAgcHVibGljIGZ1bmN0aW9uIHRlc3RfZ3JhbmRfcm9xdWVfYmxhbmMoKTogdm9pZAogICAgewogICAgICAgICRiID0gQm9hcmQ6OmZyb21GZW4oJ3IzazJyL3BwcHBwcHBwLzgvOC84LzgvUFBQUFBQUFAvUjNLMlIgdyBLUWtxIC0gMCAxJyk7CiAgICAgICAgJHRoaXMtPmFzc2VydFNhbWUoJ2UxYzEnLCAkYi0+c2FuVG9VY2koJ08tTy1PJykpOwogICAgICAgICR0aGlzLT5hc3NlcnRUcnVlKCRiLT5hcHBseVNhbignTy1PLU8nKSk7CiAgICAgICAgJHRoaXMtPmFzc2VydFNhbWUoJ3dSJywgJGItPnBpZWNlQXQoJ2QxJykpOwogICAgfQoKICAgIHB1YmxpYyBmdW5jdGlvbiB0ZXN0X3JvcXVlX3JlZnVzZV9zaV91bmVfY2FzZV9kdV9wYXJjb3Vyc19lc3RfYXR0YXF1ZSgpOiB2b2lkCiAgICB7CiAgICAgICAgJGIgPSBCb2FyZDo6ZnJvbUZlbigncjNrMnIvcHBwcHBwcHAvOC84LzgvNW4yL1BQUFBQUFBQL1IzSzJSIHcgS1FrcSAtIDAgMScpOwogICAgICAgICR0aGlzLT5hc3NlcnROdWxsKCRiLT5zYW5Ub1VjaSgnTy1PJykpOwogICAgfQoKICAgIHB1YmxpYyBmdW5jdGlvbiB0ZXN0X3BpZWNlX2Nsb3VlZV9kb25uZV90b3V0X2RlX21lbWVfZWNoZWMoKTogdm9pZAogICAgewogICAgICAgIC8vIENhdmFsaWVyIG5vaXIgYTQgY2xvdcOpIHBhciBsYSB0b3VyIGJsYW5jaGUgYTEgKHJvaSBub2lyIGE4KSA6CiAgICAgICAgLy8gaWwgYXR0YXF1ZSBwb3VydGFudCBsZSByb2kgYmxhbmMgYjYsIHF1aSBlc3QgZG9uYyBlbiDDqWNoZWMuCiAgICAgICAgJGIgPSBCb2FyZDo6ZnJvbUZlbignazcvOC8xSzYvOC9uNy84LzgvUjcgdyAtIC0gMCAxJyk7CiAgICAgICAgJHRoaXMtPmFzc2VydFRydWUoJGItPmlzQ2hlY2soJ3cnKSk7CiAgICB9CgogICAgcHVibGljIGZ1bmN0aW9uIHRlc3RfcHJpc2VfZW5fcGFzc2FudCgpOiB2b2lkCiAgICB7CiAgICAgICAgJGIgPSBCb2FyZDo6c3RhcnQoKTsKICAgICAgICAkYi0+YXBwbHlTYW4oJ2U0Jyk7CiAgICAgICAgJGItPmFwcGx5U2FuKCdhNicpOwogICAgICAgICRiLT5hcHBseVNhbignZTUnKTsKICAgICAgICAkYi0+YXBwbHlTYW4oJ2Q1Jyk7CiAgICAgICAgJHRoaXMtPmFzc2VydFNhbWUoJ2U1ZDYnLCAkYi0+c2FuVG9VY2koJ2V4ZDYnKSk7CiAgICAgICAgJHRoaXMtPmFzc2VydFRydWUoJGItPmFwcGx5U2FuKCdleGQ2JykpOwogICAgICAgICR0aGlzLT5hc3NlcnROdWxsKCRiLT5waWVjZUF0KCdkNScpKTsKICAgIH0KCiAgICBwdWJsaWMgZnVuY3Rpb24gdGVzdF9wcm9tb3Rpb24oKTogdm9pZAogICAgewogICAgICAgICRiID0gQm9hcmQ6OmZyb21GZW4oJzgvUDcvOC84LzgvOC83ay9LNyB3IC0gLSAwIDEnKTsKICAgICAgICAkdGhpcy0+YXNzZXJ0U2FtZSgnYTdhOHEnLCAkYi0+c2FuVG9VY2koJ2E4PVEnKSk7CiAgICAgICAgJHRoaXMtPmFzc2VydFRydWUoJGItPmFwcGx5U2FuKCdhOD1OJykpOwogICAgICAgICR0aGlzLT5hc3NlcnRTYW1lKCd3TicsICRiLT5waWVjZUF0KCdhOCcpKTsKICAgIH0KCiAgICBwdWJsaWMgZnVuY3Rpb24gdGVzdF9wcm9tb3Rpb25fc2Fuc19waWVjZV9pbmRpcXVlZV9lc3RfcmVqZXRlZSgpOiB2b2lkCiAgICB7CiAgICAgICAgJGIgPSBCb2FyZDo6ZnJvbUZlbignOC9QNy84LzgvOC84LzdrL0s3IHcgLSAtIDAgMScpOwogICAgICAgICR0aGlzLT5hc3NlcnRGYWxzZSgkYi0+YXBwbHlVY2koJ2E3YTgnKSk7CiAgICB9CgogICAgcHVibGljIGZ1bmN0aW9uIHRlc3RfcGF0X2VzdF9kZXRlY3RlKCk6IHZvaWQKICAgIHsKICAgICAgICAkdGhpcy0+YXNzZXJ0VHJ1ZShCb2FyZDo6ZnJvbUZlbignN2svNVEyLzgvOC84LzgvOC9LNyBiIC0gLSAwIDEnKS0+aXNTdGFsZW1hdGUoKSk7CiAgICB9CgogICAgcHVibGljIGZ1bmN0aW9uIHRlc3RfZmVuX2FsbGVyX3JldG91cigpOiB2b2lkCiAgICB7CiAgICAgICAgJGZlbiA9ICdyMWJxa2Juci9wcHBwMXBwcC8ybjUvNHAzLzJCMVAzLzVRMi9QUFBQMVBQUC9STkIxSzFOUiB3IEtRa3EgLSA0IDQnOwogICAgICAgICR0aGlzLT5hc3NlcnRTYW1lKCRmZW4sIEJvYXJkOjpmcm9tRmVuKCRmZW4pLT5mZW4oKSk7CiAgICB9CgogICAgcHVibGljIGZ1bmN0aW9uIHRlc3RfZmVuX2ludmFsaWRlX3JlamV0ZWUoKTogdm9pZAogICAgewogICAgICAgICR0aGlzLT5leHBlY3RFeGNlcHRpb24oXEludmFsaWRBcmd1bWVudEV4Y2VwdGlvbjo6Y2xhc3MpOwogICAgICAgIEJvYXJkOjpmcm9tRmVuKCdGRU4gaW52YWxpZGUnKTsKICAgIH0KCiAgICBwdWJsaWMgZnVuY3Rpb24gdGVzdF9hbWJpZ3VpdGVfc2FuX3Jlc29sdWVfcGFyX2NvbG9ubmVfb3VfcmFuZ2VlKCk6IHZvaWQKICAgIHsKICAgICAgICAkYiA9IEJvYXJkOjpmcm9tRmVuKCcxazYvOC84LzgvOC84LzFLNi9SNlIgdyAtIC0gMCAxJyk7CiAgICAgICAgJHRoaXMtPmFzc2VydFNhbWUoJ2ExZDEnLCAkYi0+c2FuVG9VY2koJ1JhZDEnKSk7CiAgICAgICAgJHRoaXMtPmFzc2VydFNhbWUoJ2gxZDEnLCAkYi0+c2FuVG9VY2koJ1JoZDEnKSk7CiAgICB9CgogICAgcHVibGljIGZ1bmN0aW9uIHRlc3RfcGVyZnRfa2l3aXBldGUoKTogdm9pZAogICAgewogICAgICAgICRraXdpID0gQm9hcmQ6OmZyb21GZW4oJ3IzazJyL3AxcHBxcGIxL2JuMnBucDEvM1BOMy8xcDJQMy8yTjJRMXAvUFBQQkJQUFAvUjNLMlIgdyBLUWtxIC0gMCAxJyk7CiAgICAgICAgJHRoaXMtPmFzc2VydFNhbWUoNDgsICR0aGlzLT5wZXJmdCgka2l3aSwgMSksICdwZXJmdCgxKSBkb2l0IHZhbG9pciA0OCcpOwogICAgICAgICR0aGlzLT5hc3NlcnRTYW1lKDIwMzksICR0aGlzLT5wZXJmdCgka2l3aSwgMiksICdwZXJmdCgyKSBkb2l0IHZhbG9pciAyMDM5Jyk7CiAgICB9CgogICAgcHJpdmF0ZSBmdW5jdGlvbiBwZXJmdChCb2FyZCAkYiwgaW50ICRkZXB0aCk6IGludAogICAgewogICAgICAgIGlmICgkZGVwdGggPT09IDApIHsKICAgICAgICAgICAgcmV0dXJuIDE7CiAgICAgICAgfQogICAgICAgICRub2RlcyA9IDA7CiAgICAgICAgZm9yZWFjaCAoJGItPmxlZ2FsTW92ZXNVY2koKSBhcyAkdWNpKSB7CiAgICAgICAgICAgICRjbG9uZSA9IGNsb25lICRiOwogICAgICAgICAgICAkY2xvbmUtPmFwcGx5VWNpKCR1Y2kpOwogICAgICAgICAgICAkbm9kZXMgKz0gJHRoaXMtPnBlcmZ0KCRjbG9uZSwgJGRlcHRoIC0gMSk7CiAgICAgICAgfQoKICAgICAgICByZXR1cm4gJG5vZGVzOwogICAgfQoKICAgIHB1YmxpYyBmdW5jdGlvbiB0ZXN0X3Bnbl9wYXJzZV9leHRyYWl0c19lbl90ZXRlc19ldF9jb3VwcygpOiB2b2lkCiAgICB7CiAgICAgICAgJHBnbiA9ICdbRXZlbnQgIlRlc3QiXScgLiAiXG4iIC4gJ1tXaGl0ZSAiQWxpY2UiXScgLiAiXG4iIC4gJ1tCbGFjayAiQm9iIl0nIC4gIlxuXG4iIC4gJzEuIGU0IGU1IDIuIE5mMyBOYzYgMy4gQmI1IGE2IConOwogICAgICAgICRwYXJzZWQgPSBQZ246OnBhcnNlKCRwZ24pOwogICAgICAgICR0aGlzLT5hc3NlcnRDb3VudCg2LCAkcGFyc2VkWydtb3ZlcyddKTsKICAgICAgICAkdGhpcy0+YXNzZXJ0U2FtZSgnQWxpY2UnLCAkcGFyc2VkWydoZWFkZXJzJ11bJ1doaXRlJ10pOwogICAgfQoKICAgIHB1YmxpYyBmdW5jdGlvbiB0ZXN0X3Bnbl9yZWpldV9lbl91Y2koKTogdm9pZAogICAgewogICAgICAgICRwZ24gPSAnW0V2ZW50ICJUZXN0Il0nIC4gIlxuXG4iIC4gJzEuIGU0IGU1IDIuIE5mMyBOYzYgMy4gQmI1IGE2IConOwogICAgICAgICR1Y2kgPSBQZ246Om1vdmVzVG9VY2koJHBnbik7CiAgICAgICAgJHRoaXMtPmFzc2VydE5vdE51bGwoJHVjaSk7CiAgICAgICAgJHRoaXMtPmFzc2VydFNhbWUoJ2UyZTQnLCAkdWNpWzBdKTsKICAgICAgICAkdGhpcy0+YXNzZXJ0Q291bnQoNiwgJHVjaSk7CiAgICB9CgogICAgcHVibGljIGZ1bmN0aW9uIHRlc3RfcGduX2F2ZWNfY291cF9pbGxlZ2FsX3JlbnZveWVfbnVsbCgpOiB2b2lkCiAgICB7CiAgICAgICAgJGJhZCA9ICdbRXZlbnQgIlRlc3QiXScgLiAiXG5cbiIgLiAnMS4gZTQgZTUgMi4gWnp6OSAqJzsKICAgICAgICAkdGhpcy0+YXNzZXJ0TnVsbChQZ246Om1vdmVzVG9VY2koJGJhZCkpOwogICAgfQoKICAgIHB1YmxpYyBmdW5jdGlvbiB0ZXN0X3Bnbl9qZXRvbnNfaW5jb25udXNfbWFycXVlc19pbnZhbGlkZSgpOiB2b2lkCiAgICB7CiAgICAgICAgJHBhcnNlZCA9IFBnbjo6cGFyc2UoJ1tFdmVudCAiVGVzdCJdJyAuICJcblxuIiAuICcxLiBlNCBlNSAyLiBaeno5IConKTsKICAgICAgICAkdGhpcy0+YXNzZXJ0VHJ1ZSgkcGFyc2VkWydpbnZhbGlkJ10pOwogICAgfQoKICAgIHB1YmxpYyBmdW5jdGlvbiB0ZXN0X3Bnbl92YXJpYW50ZXNfZXRfY29tbWVudGFpcmVzX2lnbm9yZXMoKTogdm9pZAogICAgewogICAgICAgICRwZ24gPSAnW0V2ZW50ICJUZXN0Il0nIC4gIlxuXG4iIC4gJzEuIGU0IGU1IHtjb21tZW50YWlyZX0gKDEuLi4gYzUgMi4gTmYzKSAyLiBOZjMgKic7CiAgICAgICAgJHRoaXMtPmFzc2VydFNhbWUoWydlMmU0JywgJ2U3ZTUnLCAnZzFmMyddLCBQZ246Om1vdmVzVG9VY2koJHBnbikpOwogICAgfQoKICAgIHB1YmxpYyBmdW5jdGlvbiB0ZXN0X3Bnbl9jb25zdHJ1Y3Rpb25fZGVwdWlzX2Rlc19jb3Vwc191Y2koKTogdm9pZAogICAgewogICAgICAgICRidWlsdCA9IFBnbjo6YnVpbGQoWydFdmVudCcgPT4gJ1Rlc3QnXSwgWydlMmU0JywgJ2U3ZTUnLCAnZzFmMyddLCAnMS0wJyk7CiAgICAgICAgJHRoaXMtPmFzc2VydFN0cmluZ0NvbnRhaW5zU3RyaW5nKCcxLiBlNCBlNSAyLiBOZjMnLCAkYnVpbHQpOwogICAgICAgICR0aGlzLT5hc3NlcnRTdHJpbmdFbmRzV2l0aCgnMS0wJywgdHJpbSgkYnVpbHQpKTsKICAgIH0KCiAgICBwdWJsaWMgZnVuY3Rpb24gdGVzdF9wZ25fYWxsZXJfcmV0b3VyX2J1aWxkX3B1aXNfcmVqZXUoKTogdm9pZAogICAgewogICAgICAgICRidWlsdCA9IFBnbjo6YnVpbGQoWydFdmVudCcgPT4gJ1Rlc3QnXSwgWydlMmU0JywgJ2U3ZTUnLCAnZzFmMyddLCAnMS0wJyk7CiAgICAgICAgJHRoaXMtPmFzc2VydFNhbWUoWydlMmU0JywgJ2U3ZTUnLCAnZzFmMyddLCBQZ246Om1vdmVzVG9VY2koJGJ1aWx0KSk7CiAgICB9Cn0K
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit;
+
+use App\Domain\Chess\Board;
+use App\Domain\Chess\Pgn;
+use PHPUnit\Framework\TestCase;
+
+class ChessTest extends TestCase
+{
+    public function test_position_de_depart_offre_20_coups_legaux(): void
+    {
+        $this->assertCount(20, Board::start()->legalMovesUci());
+    }
+
+    public function test_fen_de_depart_est_exacte(): void
+    {
+        $this->assertSame(
+            'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+            Board::start()->fen(),
+        );
+    }
+
+    public function test_san_converti_en_uci(): void
+    {
+        $b = Board::start();
+        $this->assertSame('e2e4', $b->sanToUci('e4'));
+        $this->assertSame('g1f3', $b->sanToUci('Nf3'));
+    }
+
+    public function test_san_illegal_est_rejete(): void
+    {
+        $this->assertNull(Board::start()->sanToUci('e5'));
+    }
+
+    public function test_mat_du_berger_est_detecte(): void
+    {
+        $b = Board::start();
+        foreach (['e4', 'e5', 'Qh5', 'Nc6', 'Bc4', 'Nf6', 'Qxf7#'] as $san) {
+            $this->assertTrue($b->applySan($san), "le coup {$san} doit être jouable");
+        }
+        $this->assertTrue($b->isCheckmate('b'));
+        $this->assertSame([], $b->legalMovesUci());
+    }
+
+    public function test_petit_roque_blanc(): void
+    {
+        $b = Board::fromFen('r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1');
+        $this->assertSame('e1g1', $b->sanToUci('O-O'));
+        $this->assertTrue($b->applySan('O-O'));
+        $this->assertSame('wR', $b->pieceAt('f1'));
+        $this->assertSame('wK', $b->pieceAt('g1'));
+    }
+
+    public function test_grand_roque_blanc(): void
+    {
+        $b = Board::fromFen('r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1');
+        $this->assertSame('e1c1', $b->sanToUci('O-O-O'));
+        $this->assertTrue($b->applySan('O-O-O'));
+        $this->assertSame('wR', $b->pieceAt('d1'));
+    }
+
+    public function test_roque_refuse_si_une_case_du_parcours_est_attaque(): void
+    {
+        $b = Board::fromFen('r3k2r/pppppppp/8/8/8/5n2/PPPPPPPP/R3K2R w KQkq - 0 1');
+        $this->assertNull($b->sanToUci('O-O'));
+    }
+
+    public function test_piece_clouee_donne_tout_de_meme_echec(): void
+    {
+        // Cavalier noir a4 cloué par la tour blanche a1 (roi noir a8) :
+        // il attaque pourtant le roi blanc b6, qui est donc en échec.
+        $b = Board::fromFen('k7/8/1K6/8/n7/8/8/R7 w - - 0 1');
+        $this->assertTrue($b->isCheck('w'));
+    }
+
+    public function test_prise_en_passant(): void
+    {
+        $b = Board::start();
+        $b->applySan('e4');
+        $b->applySan('a6');
+        $b->applySan('e5');
+        $b->applySan('d5');
+        $this->assertSame('e5d6', $b->sanToUci('exd6'));
+        $this->assertTrue($b->applySan('exd6'));
+        $this->assertNull($b->pieceAt('d5'));
+    }
+
+    public function test_promotion(): void
+    {
+        $b = Board::fromFen('8/P7/8/8/8/8/7k/K7 w - - 0 1');
+        $this->assertSame('a7a8q', $b->sanToUci('a8=Q'));
+        $this->assertTrue($b->applySan('a8=N'));
+        $this->assertSame('wN', $b->pieceAt('a8'));
+    }
+
+    public function test_promotion_sans_piece_indiquee_est_rejetee(): void
+    {
+        $b = Board::fromFen('8/P7/8/8/8/8/7k/K7 w - - 0 1');
+        $this->assertFalse($b->applyUci('a7a8'));
+    }
+
+    public function test_pat_est_detecte(): void
+    {
+        $this->assertTrue(Board::fromFen('7k/5Q2/8/8/8/8/8/K7 b - - 0 1')->isStalemate());
+    }
+
+    public function test_fen_aller_retour(): void
+    {
+        $fen = 'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5Q2/PPPP1PPP/RNB1K1NR w KQkq - 4 4';
+        $this->assertSame($fen, Board::fromFen($fen)->fen());
+    }
+
+    public function test_fen_invalide_rejetee(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        Board::fromFen('FEN invalide');
+    }
+
+    public function test_ambiguite_san_resolue_par_colonne_ou_rangee(): void
+    {
+        $b = Board::fromFen('1k6/8/8/8/8/8/1K6/R6R w - - 0 1');
+        $this->assertSame('a1d1', $b->sanToUci('Rad1'));
+        $this->assertSame('h1d1', $b->sanToUci('Rhd1'));
+    }
+
+    public function test_perft_kiwipete(): void
+    {
+        $kiwi = Board::fromFen('r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1');
+        $this->assertSame(48, $this->perft($kiwi, 1), 'perft(1) doit valoir 48');
+        $this->assertSame(2039, $this->perft($kiwi, 2), 'perft(2) doit valoir 2039');
+    }
+
+    private function perft(Board $b, int $depth): int
+    {
+        if ($depth === 0) {
+            return 1;
+        }
+        $nodes = 0;
+        foreach ($b->legalMovesUci() as $uci) {
+            $clone = clone $b;
+            $clone->applyUci($uci);
+            $nodes += $this->perft($clone, $depth - 1);
+        }
+
+        return $nodes;
+    }
+
+    public function test_pgn_parse_extraits_en_tetes_et_coups(): void
+    {
+        $pgn = '[Event "Test"]' . "\n" . '[White "Alice"]' . "\n" . '[Black "Bob"]' . "\n\n" . '1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 *';
+        $parsed = Pgn::parse($pgn);
+        $this->assertCount(6, $parsed['moves']);
+        $this->assertSame('Alice', $parsed['headers']['White']);
+    }
+
+    public function test_pgn_rejeu_en_uci(): void
+    {
+        $pgn = '[Event "Test"]' . "\n\n" . '1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 *';
+        $uci = Pgn::movesToUci($pgn);
+        $this->assertNotNull($uci);
+        $this->assertSame('e2e4', $uci[0]);
+        $this->assertCount(6, $uci);
+    }
+
+    public function test_pgn_avec_coup_illegal_renvoye_null(): void
+    {
+        $bad = '[Event "Test"]' . "\n\n" . '1. e4 e5 2. Zzz9 *';
+        $this->assertNull(Pgn::movesToUci($bad));
+    }
+
+    public function test_pgn_jetons_inconnus_marques_invalide(): void
+    {
+        $parsed = Pgn::parse('[Event "Test"]' . "\n\n" . '1. e4 e5 2. Zzz9 *');
+        $this->assertTrue($parsed['invalid']);
+    }
+
+    public function test_pgn_variantes_et_commentaires_ignores(): void
+    {
+        $pgn = '[Event "Test"]' . "\n\n" . '1. e4 e5 {commentaire} (1... c5 2. Nf3) 2. Nf3 *';
+        $this->assertSame(['e2e4', 'e7e5', 'g1f3'], Pgn::movesToUci($pgn));
+    }
+
+    public function test_pgn_construction_depuis_des_coups_uci(): void
+    {
+        $built = Pgn::build(['Event' => 'Test'], ['e2e4', 'e7e5', 'g1f3'], '1-0');
+        $this->assertStringContainsString('1. e4 e5 2. Nf3', $built);
+        $this->assertStringEndsWith('1-0', trim($built));
+    }
+
+    public function test_pgn_aller_retour_build_puis_rejeu(): void
+    {
+        $built = Pgn::build(['Event' => 'Test'], ['e2e4', 'e7e5', 'g1f3'], '1-0');
+        $this->assertSame(['e2e4', 'e7e5', 'g1f3'], Pgn::movesToUci($built));
+    }
+}
