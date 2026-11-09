@@ -109,6 +109,12 @@ final class LibraryService
         $body['pgn'] = $game->pgn;
         $body['moves_uci'] = $this->games->movesUci($gameId);
 
+        // Saisie manuelle sans validation (S5, issue #25) : coups tels
+        // qu'ils ont été tapés, pour rouvrir la correction là où la
+        // feuille s'était trompée.
+        $bruts = $game->raw_moves !== null ? json_decode((string) $game->raw_moves, true) : null;
+        $body['raw_moves'] = is_array($bruts) ? array_values($bruts) : null;
+
         return ['status' => 200, 'body' => $body];
     }
 
@@ -313,6 +319,7 @@ final class LibraryService
             'favorite' => (bool) $game->favorite,
             'personal_note' => $game->personal_note,
             'tags' => ($game->tags === '' || $game->tags === null) ? [] : explode(',', (string) $game->tags),
+            'needs_review' => (bool) $game->needs_review,
         ];
     }
 }
