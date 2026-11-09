@@ -91,7 +91,13 @@ final class SyncService
             return ['status' => 422, 'body' => ['error' => 'plateforme_inconnue']];
         }
 
-        return ['status' => 200, 'body' => ['platform' => $platform, 'username' => $username, 'status' => 'inconnu']];
+        $username = trim($username);
+
+        return ['status' => 200, 'body' => [
+            'platform' => $platform,
+            'username' => $username,
+            'status' => $client->userExists($username) ? 'connu' : 'inconnu',
+        ]];
     }
 
     /**
