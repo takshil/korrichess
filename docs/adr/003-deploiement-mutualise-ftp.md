@@ -15,7 +15,7 @@ configuration Apache globale). Les éléments contraignants :
 - la base de données se crée uniquement depuis le panel de l'hébergeur ;
 - la racine web (souvent `www/` ou `public_html/`) est imposée, on ne peut pas
   la pointer vers `api/public/` ;
-- l'hébergeur doit fournir PHP ≥ 8.2 (contrainte `composer.json`) et Apache
+- l'hébergeur doit fournir PHP ≥ 8.3 (contrainte `composer.json`) et Apache
   avec `mod_rewrite`.
 
 ## Décision
