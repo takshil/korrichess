@@ -1,11 +1,1 @@
-{
-    "$schema": "vendor/phpunit/phpunit/phpunit.xsd",
-    "phpunit": {
-        "bootstrap": "vendor/autoload.php",
-        "testsuites": {
-            "Feature": {
-                "directories": ["tests/Feature"]
-            }
-        }
-    }
-}
+ewogICAgIiRzY2hlbWEiOiAidmVuZG9yL3BocHVuaXQvcGhwdW5pdC9waHB1bml0LnhzZCIsCiAgICAicGhwdW5pdCI6IHsKICAgICAgICAiYm9vdHN0cmFwIjogInZlbmRvci9hdXRvbG9hZC5waHAiLAogICAgICAgICJ0ZXN0c3VpdGVzIjogewogICAgICAgICAgICAiVW5pdCI6IHsKICAgICAgICAgICAgICAgICJkaXJlY3RvcmllcyI6IFsidGVzdHMvVW5pdCJdCiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJGZWF0dXJlIjogewogICAgICAgICAgICAgICAgImRpcmVjdG9yaWVzIjogWyJ0ZXN0cy9GZWF0dXJlIl0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQo=
