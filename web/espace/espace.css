@@ -105,6 +105,22 @@
 .carree { display: flex; gap: 0.5rem; align-items: center; }
 .carree input[type="checkbox"] { width: auto; }
 
+/* ---------- Saisie manuelle (S5 + S7) ---------- */
+
+.saisie-options {
+    background: var(--vert-clair);
+    border-left: 4px solid var(--vert);
+    border-radius: 0.5rem;
+    padding: 0.8rem 1.1rem;
+    margin-bottom: 1.2rem;
+}
+.saisie-options .carree { display: flex; }
+.saisie-echiquier .case { cursor: pointer; }
+.saisie-echiquier.figee .case { cursor: not-allowed; }
+.saisie-echiquier .case.selectionnee { box-shadow: inset 0 0 0 3px var(--vert-fonce); }
+.saisie-echiquier .case.destination { box-shadow: inset 0 0 0 3px var(--or); }
+.coups button.douteux { color: var(--erreur); font-weight: 700; }
+
 @media (max-width: 800px) {
     .rejeu-disposition { grid-template-columns: 1fr; }
 }
