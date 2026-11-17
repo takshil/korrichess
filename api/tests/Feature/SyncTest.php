@@ -253,20 +253,55 @@ final class SyncTest extends TestCase
 
     // ------------------------------------------------- API HTTP
 
-    public function test_sync_via_api_avec_un_jeton(): void
+    public function test_sync_via_api_enfile_un_job_et_repond_202(): void
     {
         $body = $this->registerUser();
         $this->syncServiceWith(new InMemoryPlatformClient($this->initialGames()));
+        Queue::fake();
 
         $response = $this->withToken($body['token'])->postJson('/api/v1/sync', [
             'platform' => 'lichess',
             'username' => 'alice',
         ]);
 
-        $response->assertStatus(200)
+        $response->assertStatus(202)
+            ->assertJsonPath('statut', 'en_file')
             ->assertJsonPath('platform', 'lichess')
-            ->assertJsonPath('imported', 3)
-            ->assertJsonPath('duplicates_ignores', 0);
+            ->assertJsonPath('username', 'alice');
+
+        Queue::assertPushed(SyncPlatformJob::class, 1);
+        Queue::assertPushed(
+            SyncPlatformJob::class,
+            fn (SyncPlatformJob $job) => $job->userId === 1 && $job->platform === 'lichess' && $job->username === 'alice',
+        );
+    }
+
+    public function test_statut_de_sync_expose_les_curseurs(): void
+    {
+        $body = $this->registerUser();
+        $service = $this->syncServiceWith(new InMemoryPlatformClient($this->initialGames()));
+        $service->sync(1, 'lichess', 'alice');
+
+        $response = $this->withToken($body['token'])->getJson('/api/v1/sync/statut');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(1, 'synchronisations')
+            ->assertJsonPath('synchronisations.0.platform', 'lichess')
+            ->assertJsonPath('synchronisations.0.last_game_at', '2025-03-13T22:00:00Z');
+    }
+
+    public function test_sync_all_enfile_une_sync_par_compte_lie(): void
+    {
+        $this->registerUser();
+        DB::table('linked_accounts')->insert([
+            ['user_id' => 1, 'platform' => 'lichess', 'username' => 'alice', 'created_at' => now(), 'updated_at' => now()],
+            ['user_id' => 1, 'platform' => 'chesscom', 'username' => 'alice', 'created_at' => now(), 'updated_at' => now()],
+        ]);
+
+        Queue::fake();
+        $this->artisan('korrichess:sync-all')->assertSuccessful();
+
+        Queue::assertPushed(SyncPlatformJob::class, 2);
     }
 
     public function test_sync_refusee_sans_jeton(): void

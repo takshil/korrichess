@@ -101,12 +101,24 @@ final class SyncService
     }
 
     /**
-     * Enregistre une sync automatique en file (L7) : le job rejouera la
-     * synchronisation incrémentale en tâche de fond.
+     * Plateformes clientes disponibles (validation synchrone du bouton).
+     *
+     * @return array<int,string>
      */
-    public function scheduleAutoSync(int $userId, string $platform, string $username): void
+    public function platforms(): array
     {
-        SyncPlatformJob::dispatch($userId, strtolower(trim($platform)), $username);
+        return array_keys($this->clients);
+    }
+
+    /**
+     * Enregistre une sync automatique en file (L7) : le job rejouera la
+     * synchronisation incrémentale en tâche de fond, filtres compris.
+     *
+     * @param array{time_controls?:array<string>,period_start?:?string} $filters
+     */
+    public function scheduleAutoSync(int $userId, string $platform, string $username, array $filters = []): void
+    {
+        SyncPlatformJob::dispatch($userId, strtolower(trim($platform)), $username, $filters);
     }
 
     /**

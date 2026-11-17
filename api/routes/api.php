@@ -62,6 +62,9 @@ Route::prefix('v1')->group(function (): void {
         // Synchronisation des parties Lichess / Chess.com (issue #3).
         Route::post('/sync', [SyncController::class, 'store'])->name('sync.store');
 
+        // État des synchronisations (asynchrone L7) : curseur et dernier passage.
+        Route::get('/sync/statut', [SyncController::class, 'statut'])->name('sync.statut');
+
         // Bibliothèque de parties (issue #4).
         Route::get('/games', [GameController::class, 'index'])->name('games.index');
         Route::get('/games/{game}', [GameController::class, 'show'])->whereNumber('game')->name('games.show');
