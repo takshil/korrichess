@@ -899,7 +899,7 @@
                 '        <select id="l-plateforme"><option value="lichess">Lichess</option><option value="chesscom">Chess.com</option></select></div>' +
                 '      <div class="champ"><label for="l-pseudo">Pseudo</label>' +
                 '        <input id="l-pseudo" type="text" required></div>' +
-                '      <button class="bouton bouton-secondaire" type="submit">Lier ce pseudo</button>' +
+                '      <button id="bouton-lier" class="bouton bouton-secondaire" type="submit">Lier ce pseudo</button>' +
                 '      <p class="message-ok" id="retour-lier"></p>' +
                 '    </form>' +
                 '  </div>' +
@@ -961,6 +961,7 @@
 
             document.getElementById('formulaire-lier').addEventListener('submit', function (evenement) {
                 evenement.preventDefault();
+                document.getElementById('bouton-lier').disabled = true;
                 api('/me/linked-accounts', {
                     methode: 'POST',
                     body: {
@@ -969,12 +970,51 @@
                     }
                 }).then(function (r) {
                     var retour = document.getElementById('retour-lier');
-                    retour.textContent = r.body.message === 'compte_lie' ? 'Pseudo lié !'
-                        : r.body.message === 'deja_lie' ? 'Ce pseudo est déjà lié.'
-                        : 'Liaison impossible.';
-                    if (r.status === 201) { setTimeout(vueCompte, 800); }
+                    var bouton = document.getElementById('bouton-lier');
+                    if (r.status === 201) {
+                        retour.innerHTML = 'Pseudo lié ! <span class="chargement"></span>Synchronisation de tes parties en cours…';
+                        suivreLiaison(
+                            document.getElementById('l-plateforme').value,
+                            document.getElementById('l-pseudo').value,
+                            Date.now(),
+                            0
+                        );
+                    } else {
+                        retour.textContent = r.body.message === 'deja_lie' ? 'Ce pseudo est déjà lié.' : 'Liaison impossible.';
+                        if (bouton) { bouton.disabled = false; }
+                    }
                 });
             });
+
+            // Suivi de la première synchronisation déclenchée par la liaison :
+            // indicateur de chargement jusqu'à ce que le curseur du compte
+            // avance (GET /sync/statut), puis retour à la vue actualisée.
+            function suivreLiaison(plateforme, pseudo, depart, essais) {
+                var retour = document.getElementById('retour-lier');
+                if (essais >= 36) {
+                    retour.textContent = 'Synchronisation toujours en cours — tes parties arriveront d\'ici peu.';
+                    vueCompte();
+                    return;
+                }
+                api('/sync/statut').then(function (res) {
+                    if (res.status !== 200) {
+                        setTimeout(function () { suivreLiaison(plateforme, pseudo, depart, essais + 1); }, 5000);
+                        return;
+                    }
+                    var lignes = res.body.synchronisations || [];
+                    var ligne = null;
+                    for (var i = 0; i < lignes.length; i++) {
+                        if (lignes[i].platform === plateforme && lignes[i].username === pseudo) { ligne = lignes[i]; break; }
+                    }
+                    var terminee = ligne && ligne.last_sync_at && Date.parse(ligne.last_sync_at) > depart - 60000;
+                    if (terminee) {
+                        retour.textContent = 'Parties importées ! Rends-toi sur ton tableau de bord pour les rejouer.';
+                        setTimeout(vueCompte, 1500);
+                    } else {
+                        setTimeout(function () { suivreLiaison(plateforme, pseudo, depart, essais + 1); }, 5000);
+                    }
+                });
+            }
 
             Array.prototype.forEach.call(document.querySelectorAll('button.delier'), function (bouton) {
                 bouton.addEventListener('click', function () {
