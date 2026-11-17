@@ -106,18 +106,18 @@ final class SyncHttpTest extends TestCase
     public function test_chesscom_importe_les_parties_des_archives_mensuelles(): void
     {
         Http::fake([
-            'https://api.chess.test/api/player/alice/games/archives' => Http::response([
+            'https://api.chess.test/pub/player/alice/games/archives' => Http::response([
                 'archives' => [
-                    'https://api.chess.test/api/player/alice/games/2025/02',
-                    'https://api.chess.test/api/player/alice/games/2025/03',
+                    'https://api.chess.test/pub/player/alice/games/2025/02',
+                    'https://api.chess.test/pub/player/alice/games/2025/03',
                 ],
             ]),
-            'https://api.chess.test/api/player/alice/games/2025/02' => Http::response([
+            'https://api.chess.test/pub/player/alice/games/2025/02' => Http::response([
                 'games' => [
                     ['url' => 'https://www.chess.com/game/live/111', 'end_time' => 1740225600, 'pgn' => self::PGN_BLANC],
                 ],
             ]),
-            'https://api.chess.test/api/player/alice/games/2025/03' => Http::response([
+            'https://api.chess.test/pub/player/alice/games/2025/03' => Http::response([
                 'games' => [
                     ['url' => 'https://www.chess.com/game/live/222', 'endTime' => '2025-03-10T20:00:00.000+00:00', 'pgn' => self::PGN_BLANC],
                 ],
@@ -137,14 +137,14 @@ final class SyncHttpTest extends TestCase
     public function test_chesscom_ne_requete_que_les_archives_posterieures_au_curseur(): void
     {
         Http::fake([
-            'https://api.chess.test/api/player/alice/games/archives' => Http::response([
+            'https://api.chess.test/pub/player/alice/games/archives' => Http::response([
                 'archives' => [
-                    'https://api.chess.test/api/player/alice/games/2024/12',
-                    'https://api.chess.test/api/player/alice/games/2025/02',
-                    'https://api.chess.test/api/player/alice/games/2025/03',
+                    'https://api.chess.test/pub/player/alice/games/2024/12',
+                    'https://api.chess.test/pub/player/alice/games/2025/02',
+                    'https://api.chess.test/pub/player/alice/games/2025/03',
                 ],
             ]),
-            'https://api.chess.test/api/player/alice/games/*' => Http::response(['games' => []]),
+            'https://api.chess.test/pub/player/alice/games/*' => Http::response(['games' => []]),
         ]);
 
         (new ChessComClient('https://api.chess.test'))
@@ -157,8 +157,8 @@ final class SyncHttpTest extends TestCase
     public function test_chesscom_user_exists(): void
     {
         Http::fake([
-            'https://api.chess.test/api/player/alice' => Http::response(['username' => 'alice'], 200),
-            'https://api.chess.test/api/player/ghost' => Http::response([], 404),
+            'https://api.chess.test/pub/player/alice' => Http::response(['username' => 'alice'], 200),
+            'https://api.chess.test/pub/player/ghost' => Http::response([], 404),
         ]);
         $client = new ChessComClient('https://api.chess.test');
 
@@ -169,13 +169,28 @@ final class SyncHttpTest extends TestCase
     public function test_chesscom_renvoie_rien_pour_un_pseudo_inconnu(): void
     {
         Http::fake([
-            'https://api.chess.test/api/player/ghost/games/archives' => Http::response([], 404),
+            'https://api.chess.test/pub/player/ghost/games/archives' => Http::response([], 404),
         ]);
 
         $games = (new ChessComClient('https://api.chess.test'))
             ->fetchGames('ghost', ['since' => null, 'time_controls' => [], 'period_start' => null]);
 
         $this->assertSame([], $games);
+    }
+
+    public function test_chesscom_envoie_un_user_agent_descriptif(): void
+    {
+        Http::fake([
+            'https://api.chess.test/pub/player/alice/games/archives' => Http::response(['archives' => []]),
+        ]);
+
+        (new ChessComClient('https://api.chess.test'))
+            ->fetchGames('alice', ['since' => null, 'time_controls' => [], 'period_start' => null]);
+
+        Http::assertSent(function ($request) {
+            return str_contains($request->url(), '/pub/player/alice/games/archives')
+                && str_contains(implode(',', (array) $request->header('User-Agent')), 'korrichess');
+        });
     }
 
     // ------------------------------------------------- Câblage conteneur
