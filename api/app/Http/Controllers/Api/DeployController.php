@@ -25,6 +25,16 @@ final class DeployController extends Controller
     {
         $token = (string) config('korrichess.deploy_token');
 
+        // Repli o2switch : env('DEPLOY_TOKEN') ressort vide en production
+        // alors que le .env le contient ; la CI depose donc aussi le jeton
+        // dans .deploy-token, relu ici si la config est vide.
+        if ($token === '') {
+            $fichier = base_path('.deploy-token');
+            if (is_file($fichier) && is_readable($fichier)) {
+                $token = trim((string) file_get_contents($fichier));
+            }
+        }
+
         // Jeton accepté via X-Deploy-Token ou Authorization: Bearer : certains
         // hébergements mutualisés filtrent les en-têtes personnalisés (WAF)
         // ou ne transmettent pas Authorization en CGI sans passe-plat Apache.
@@ -47,6 +57,7 @@ final class DeployController extends Controller
                 'authorization' => $request->header('Authorization'),
                 'token_query' => $request->query('token') !== null,
                 'longueur_config' => strlen($token),
+                'longueur_env' => strlen((string) env('DEPLOY_TOKEN')),
                 'longueur_recue' => strlen($fourni),
             ]);
             abort(404);
