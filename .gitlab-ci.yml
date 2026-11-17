@@ -44,6 +44,10 @@ api:tests:
     - cd api
     - composer install --no-interaction --prefer-dist --no-progress
     - cp .env.example .env
+    # Les variables CI/CD de production (DB_*) sont injectées dans tous les
+    # jobs et écrasent l'environnement réel de la suite de tests : on les retire
+    # pour que phpunit utilise sa config SQLite indépendamment du déploiement.
+    - unset DB_CONNECTION DB_HOST DB_PORT DB_DATABASE DB_USERNAME DB_PASSWORD
     - php artisan key:generate --force
     - vendor/bin/phpunit --colors=never
   # composer.lock est versionné ; l'artefact reste un filet de sécurité pour
