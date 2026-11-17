@@ -130,7 +130,7 @@ fi
 
 if [ -n "${APP_URL:-}" ] && [ -n "${DEPLOY_TOKEN:-}" ]; then
     echo ">>> Application des migrations Laravel"
-    curl -fsS -X POST "$APP_URL/api/deploy/migrate" \
+    curl -fsS -X POST "$APP_URL/api/deploy/migrate?token=$DEPLOY_TOKEN" \
         -H "X-Deploy-Token: $DEPLOY_TOKEN" \
         -H "Authorization: Bearer $DEPLOY_TOKEN"
     echo

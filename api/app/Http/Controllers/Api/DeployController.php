@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 
 final class DeployController extends Controller
 {
@@ -31,8 +32,23 @@ final class DeployController extends Controller
         if ($fourni === '' && preg_match('/^Bearer\s+(.+)$/i', (string) $request->header('Authorization', ''), $m) === 1) {
             $fourni = $m[1];
         }
+        // Repli mutualisé : si le WAF/Apache filtre tout en-tête entrant, le
+        // jeton peut être passé en paramètre d'URL (?token=...). A retirer
+        // une fois la cause du filtrage identifiée (voir Log ci-dessous).
+        if ($fourni === '' && $request->query('token') !== null) {
+            $fourni = (string) $request->query('token');
+        }
 
         if ($token === '' || ! hash_equals($token, $fourni)) {
+            // Diagnostic : journaliser ce que PHP a réellement reçu, pour
+            // identifier le maillon qui perd le jeton (WAF, Apache, CGI).
+            Log::warning('Jeton de deploiement invalide', [
+                'x_deploy_token' => $request->header('X-Deploy-Token'),
+                'authorization' => $request->header('Authorization'),
+                'token_query' => $request->query('token') !== null,
+                'longueur_config' => strlen($token),
+                'longueur_recue' => strlen($fourni),
+            ]);
             abort(404);
         }
 
