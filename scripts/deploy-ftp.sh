@@ -18,9 +18,16 @@ FTP_TLS="${FTP_TLS:-true}"
 # L'hébergeur FTP peut ne pas envoyer la chaîne complète (intermédiaire absent).
 # Vérification activée par défaut ; FTP_TLS_VERIFY=false la désactive (phase de test).
 TLS_VERIFY_CMD=""
-if [ "${FTP_TLS_VERIFY:-true}" = "false" ]; then
-    TLS_VERIFY_CMD="set ssl:verify-certificate no"
-fi
+FTP_TLS_VERIFY="${FTP_TLS_VERIFY:-true}"
+case "$(echo "$FTP_TLS_VERIFY" | tr '[:upper:]' '[:lower:]')" in
+    false|no|off|0)
+        TLS_VERIFY_CMD="set ssl:verify-certificate no"
+        echo ">>> Vérification du certificat FTP : DESACTIVEE (FTP_TLS_VERIFY=$FTP_TLS_VERIFY)"
+        ;;
+    *)
+        echo ">>> Vérification du certificat FTP : active (FTP_TLS_VERIFY=$FTP_TLS_VERIFY)"
+        ;;
+esac
 FTP_API_DIR="${FTP_API_DIR:-korrichess-api}"
 FTP_BASE_PATH="${FTP_BASE_PATH:-}"
 DOCROOT="${FTP_DOCROOT:-}"
