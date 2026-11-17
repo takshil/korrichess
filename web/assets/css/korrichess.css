@@ -238,6 +238,20 @@ table.tableau { border-collapse: collapse; width: 100%; background: var(--carte)
 .message-erreur { color: var(--erreur); font-weight: 600; min-height: 1.4em; }
 .message-ok { color: var(--ok); font-weight: 600; min-height: 1.4em; }
 
+/* Indicateur de chargement : première sync déclenchée par la liaison d'un pseudo */
+.chargement {
+    display: inline-block;
+    width: 0.9em;
+    height: 0.9em;
+    margin-right: 0.35em;
+    border: 2px solid var(--bord);
+    border-top-color: var(--ok);
+    border-radius: 50%;
+    vertical-align: -0.1em;
+    animation: korrichess-tourne 0.8s linear infinite;
+}
+@keyframes korrichess-tourne { to { transform: rotate(360deg); } }
+
 /* ---------- FAQ ---------- */
 
 details.faq {
