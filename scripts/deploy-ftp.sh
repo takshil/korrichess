@@ -56,10 +56,11 @@ cat > "$CI_PROJECT_DIR/api-protect.htaccess" <<'HTACCESS'
 </FilesMatch>
 HTACCESS
 
-export LFTP_PASSWORD="$FTP_PASSWORD"
+# Identifiants FTP passés via -u sur chaque appel lftp : sur l'image Alpine
+# sans TTY, la variable LFTP_PASSWORD n'est pas relevée (GetPass() failed).
 
 echo ">>> Envoi de l'API vers ftp://$FTP_HOST:$FTP_PORT/$API_DIR"
-lftp -u "$FTP_USER" -p "$FTP_PORT" "$FTP_HOST" <<LFTP
+lftp -u "$FTP_USER","$FTP_PASSWORD" -p "$FTP_PORT" "$FTP_HOST" <<LFTP
 set ftp:ssl-allow $FTP_TLS
 mirror --reverse --delete --no-perms --verbose --exclude-glob '^\.env.*' "$CI_PROJECT_DIR/api" "$API_DIR"
 put "$CI_PROJECT_DIR/api-protect.htaccess" -o "$API_DIR/.htaccess"
@@ -71,7 +72,7 @@ if [ -n "$DOCROOT" ]; then
     echo ">>> Publication de la vitrine dans la racine web ($DOCROOT)"
     # Mirror sans --delete : la racine web peut contenir d'autres fichiers de
     # l'hébergeur ; index.php et .htaccess sont reposés juste après.
-    lftp -u "$FTP_USER" -p "$FTP_PORT" "$FTP_HOST" <<LFTP
+    lftp -u "$FTP_USER","$FTP_PASSWORD" -p "$FTP_PORT" "$FTP_HOST" <<LFTP
 set ftp:ssl-allow $FTP_TLS
 mirror --reverse --no-perms --verbose --exclude-glob 'README.md' "$CI_PROJECT_DIR/web" "$DOCROOT"
 quit
@@ -99,7 +100,7 @@ ErrorDocument 404 /404.html
 </IfModule>
 HTACCESS
 
-    lftp -u "$FTP_USER" -p "$FTP_PORT" "$FTP_HOST" <<LFTP
+    lftp -u "$FTP_USER","$FTP_PASSWORD" -p "$FTP_PORT" "$FTP_HOST" <<LFTP
 set ftp:ssl-allow $FTP_TLS
 put "$CI_PROJECT_DIR/docroot-index.php" -o "$DOCROOT/index.php"
 put "$CI_PROJECT_DIR/docroot-htaccess" -o "$DOCROOT/.htaccess"
