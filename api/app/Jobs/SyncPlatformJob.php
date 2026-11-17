@@ -22,6 +22,7 @@ final class SyncPlatformJob implements ShouldQueue
         public readonly int $userId,
         public readonly string $platform,
         public readonly string $username,
+        public readonly array $filters = [],
     ) {
     }
 
@@ -32,6 +33,6 @@ final class SyncPlatformJob implements ShouldQueue
      */
     public function handle(SyncService $service): void
     {
-        $service->sync($this->userId, $this->platform, $this->username);
+        $service->sync($this->userId, $this->platform, $this->username, $this->filters);
     }
 }
