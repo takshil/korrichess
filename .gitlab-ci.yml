@@ -78,6 +78,8 @@ api:deploy:
   rules:
     - if: '$CI_COMMIT_BRANCH == "main" && $FTP_HOST'
   before_script:
-    - apk add --no-cache lftp curl bash
+    # ca-certificates : sans lui, lftp ne peut pas vérifier le certificat
+    # TLS de l'hébergeur (unable to get local issuer certificate).
+    - apk add --no-cache lftp curl bash ca-certificates
   script:
     - bash scripts/deploy-ftp.sh
