@@ -269,6 +269,10 @@ details.faq[open] summary { margin-bottom: 0.4rem; }
 .echiquier {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
+    /* Rangées en 1fr : depuis les pièces <img> (plus de taille de police),
+       les cases vides n'ont plus de hauteur intrinsèque et les rangées
+       sans pièces s'effondraient (position déformée). */
+    grid-template-rows: repeat(8, 1fr);
     width: min(100%, 480px);
     aspect-ratio: 1;
     border: 3px solid var(--case-foncee);
