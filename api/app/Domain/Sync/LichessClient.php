@@ -11,9 +11,19 @@ use Illuminate\Support\Facades\Http;
  * Les tests injectent les réponses via Http::fake() : aucun appel réseau
  * dans la suite automatisée. L'abstraction reste remplaçable si l'API
  * évolue (AGENTS.md « points sensibles »).
+ *
+ * L'export d'un historique complet dépasse le timeout HTTP d'un compte actif
+ * (constaté en production : 30 s pour 1,2 Mo sans fin de flux) : les parties
+ * sont donc récupérées par lots de 50, du plus récent vers le plus ancien,
+ * via les curseurs since / until de l'API.
  */
 final class LichessClient implements PlatformClient
 {
+    private const LOT = 50;
+
+    /** Garde-fou : 60 lots = 3 000 parties par passage ; les passages suivants convergent (dédoublonnage L6). */
+    private const LOTS_MAX = 60;
+
     public function __construct(
         private readonly string $baseUrl = 'https://lichess.org',
         private readonly RateLimiter $limiter = new RateLimiter(),
@@ -21,10 +31,10 @@ final class LichessClient implements PlatformClient
     }
 
     /**
-     * Export NDJSON des parties du joueur : une partie JSON par ligne, PGN
-     * inclus via pgnInJson. `since` (curseur incrémental, ISO 8601) est
-     * converti en millisecondes comme l'attend l'API ; la partie à la
-     * limite peut revenir, le dédoublonnage en amont l'ignore (L6).
+     * Export NDJSON paginé des parties du joueur : une partie JSON par ligne,
+     * PGN inclus via pgnInJson. Le curseur incrémental since (ISO 8601) est
+     * converti en millisecondes comme l'attend l'API ; la partie à la limite
+     * d'un lot peut revenir au suivant, le dédoublonnage en amont l'ignore (L6).
      *
      * @param array{since?:?string,time_controls?:array<string>,period_start?:?string} $filters
      * @return array<int,array{external_id:string,pgn:string,played_at:?string}>
@@ -36,32 +46,69 @@ final class LichessClient implements PlatformClient
             return [];
         }
 
+        $since = null;
+        $brutSince = $filters['since'] ?? null;
+        if (is_string($brutSince) && $brutSince !== '' && ($timestamp = strtotime($brutSince)) !== false) {
+            $since = (string) ($timestamp * 1000);
+        }
+
+        $games = [];
+        $until = null;
+        for ($lot = 0; $lot < self::LOTS_MAX; $lot++) {
+            $batch = $this->fetchBatch($username, $since, $until);
+            if ($batch['games'] === []) {
+                break;
+            }
+            $games = array_merge($games, $batch['games']);
+            if (count($batch['games']) < self::LOT || $batch['oldest_ms'] === null) {
+                break;
+            }
+            $until = (string) $batch['oldest_ms'];
+        }
+
+        // Les plus récentes en premier (contrat de l'interface).
+        usort($games, static fn (array $a, array $b): int => strcmp((string) $b['played_at'], (string) $a['played_at']));
+
+        return $games;
+    }
+
+    /**
+     * Un lot de parties.
+     *
+     * @return array{games:array<int,array{external_id:string,pgn:string,played_at:?string}>,oldest_ms:?int}
+     */
+    private function fetchBatch(string $username, ?string $since, ?string $until): array
+    {
         $query = [
+            'max' => (string) self::LOT,
             'moves' => 'true',
             'pgnInJson' => 'true',
             'clocks' => 'false',
             'evals' => 'false',
             'opening' => 'false',
         ];
-        $since = $filters['since'] ?? null;
-        if (is_string($since) && $since !== '' && ($timestamp = strtotime($since)) !== false) {
-            $query['since'] = (string) ($timestamp * 1000);
+        if ($since !== null) {
+            $query['since'] = $since;
+        }
+        if ($until !== null) {
+            $query['until'] = $until;
         }
 
         $this->limiter->wait('lichess');
         $response = Http::baseUrl($this->baseUrl)
             ->accept('application/x-ndjson')
-            ->timeout(30)
+            ->timeout(60)
             ->retry(2, 500, throw: false)
             ->get('/api/games/user/' . $username, $query);
 
         // Pseudo introuvable ou compte fermé (L8) : rien à importer.
         if ($response->status() === 404) {
-            return [];
+            return ['games' => [], 'oldest_ms' => null];
         }
         $response->throw();
 
         $games = [];
+        $oldest = null;
         foreach (explode("\n", trim((string) $response->body())) as $line) {
             $line = trim($line);
             if ($line === '') {
@@ -72,6 +119,9 @@ final class LichessClient implements PlatformClient
                 continue;
             }
             $createdAt = (int) ($data['createdAt'] ?? 0);
+            if ($createdAt > 0 && ($oldest === null || $createdAt < $oldest)) {
+                $oldest = $createdAt;
+            }
             $games[] = [
                 'external_id' => (string) $data['id'],
                 'pgn' => (string) $data['pgn'],
@@ -79,10 +129,7 @@ final class LichessClient implements PlatformClient
             ];
         }
 
-        // Les plus récentes en premier (contrat de l'interface).
-        usort($games, static fn (array $a, array $b): int => strcmp((string) $b['played_at'], (string) $a['played_at']));
-
-        return $games;
+        return ['games' => $games, 'oldest_ms' => $oldest];
     }
 
     /**
