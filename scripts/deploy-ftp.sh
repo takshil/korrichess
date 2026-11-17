@@ -15,6 +15,12 @@ set -euo pipefail
 
 FTP_PORT="${FTP_PORT:-21}"
 FTP_TLS="${FTP_TLS:-true}"
+# L'hébergeur FTP peut ne pas envoyer la chaîne complète (intermédiaire absent).
+# Vérification activée par défaut ; FTP_TLS_VERIFY=false la désactive (phase de test).
+TLS_VERIFY_CMD=""
+if [ "${FTP_TLS_VERIFY:-true}" = "false" ]; then
+    TLS_VERIFY_CMD="set ssl:verify-certificate no"
+fi
 FTP_API_DIR="${FTP_API_DIR:-korrichess-api}"
 FTP_BASE_PATH="${FTP_BASE_PATH:-}"
 DOCROOT="${FTP_DOCROOT:-}"
@@ -62,6 +68,7 @@ HTACCESS
 echo ">>> Envoi de l'API vers ftp://$FTP_HOST:$FTP_PORT/$API_DIR"
 lftp -u "$FTP_USER","$FTP_PASSWORD" -p "$FTP_PORT" "$FTP_HOST" <<LFTP
 set ftp:ssl-allow $FTP_TLS
+$TLS_VERIFY_CMD
 mirror --reverse --delete --no-perms --verbose --exclude-glob '^\.env.*' "$CI_PROJECT_DIR/api" "$API_DIR"
 put "$CI_PROJECT_DIR/api-protect.htaccess" -o "$API_DIR/.htaccess"
 put "$ENV_FILE" -o "$API_DIR/.env"
@@ -74,6 +81,7 @@ if [ -n "$DOCROOT" ]; then
     # l'hébergeur ; index.php et .htaccess sont reposés juste après.
     lftp -u "$FTP_USER","$FTP_PASSWORD" -p "$FTP_PORT" "$FTP_HOST" <<LFTP
 set ftp:ssl-allow $FTP_TLS
+$TLS_VERIFY_CMD
 mirror --reverse --no-perms --verbose --exclude-glob 'README.md' "$CI_PROJECT_DIR/web" "$DOCROOT"
 quit
 LFTP
@@ -102,6 +110,7 @@ HTACCESS
 
     lftp -u "$FTP_USER","$FTP_PASSWORD" -p "$FTP_PORT" "$FTP_HOST" <<LFTP
 set ftp:ssl-allow $FTP_TLS
+$TLS_VERIFY_CMD
 put "$CI_PROJECT_DIR/docroot-index.php" -o "$DOCROOT/index.php"
 put "$CI_PROJECT_DIR/docroot-htaccess" -o "$DOCROOT/.htaccess"
 quit
