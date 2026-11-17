@@ -17,4 +17,4 @@ Schedule::command('model:prune')->daily();
 |      les jobs enfilés par le bouton « Synchroniser » de l'espace.
 */
 Schedule::command('korrichess:sync-all')->dailyAt('03:00');
-Schedule::command('queue:work --stop-when-empty --max-time=90')->everyFiveMinutes()->withoutOverlapping();
+Schedule::command('queue:work --stop-when-empty --max-time=90 --timeout=900')->everyFiveMinutes()->withoutOverlapping();
