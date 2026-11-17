@@ -18,6 +18,13 @@ final class SyncPlatformJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    /**
+     * La première synchronisation exporte l'historique complet du compte :
+     * plusieurs minutes pour un compte actif. Le timeout par défaut (60 s)
+     * tuait le job en plein téléchargement.
+     */
+    public int $timeout = 900;
+
     public function __construct(
         public readonly int $userId,
         public readonly string $platform,
