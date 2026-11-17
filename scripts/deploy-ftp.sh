@@ -76,7 +76,7 @@ echo ">>> Envoi de l'API vers ftp://$FTP_HOST:$FTP_PORT/$API_DIR"
 lftp -u "$FTP_USER","$FTP_PASSWORD" -p "$FTP_PORT" "$FTP_HOST" <<LFTP
 set ftp:ssl-allow $FTP_TLS
 $TLS_VERIFY_CMD
-mirror --reverse --delete --no-perms --verbose --exclude-glob '^\.env.*' "$CI_PROJECT_DIR/api" "$API_DIR"
+mirror --reverse --delete --no-perms --verbose --parallel=10 --exclude-glob '^\.env.*' "$CI_PROJECT_DIR/api" "$API_DIR"
 put "$CI_PROJECT_DIR/api-protect.htaccess" -o "$API_DIR/.htaccess"
 put "$ENV_FILE" -o "$API_DIR/.env"
 quit
@@ -89,7 +89,7 @@ if [ -n "$DOCROOT" ]; then
     lftp -u "$FTP_USER","$FTP_PASSWORD" -p "$FTP_PORT" "$FTP_HOST" <<LFTP
 set ftp:ssl-allow $FTP_TLS
 $TLS_VERIFY_CMD
-mirror --reverse --no-perms --verbose --exclude-glob 'README.md' "$CI_PROJECT_DIR/web" "$DOCROOT"
+mirror --reverse --no-perms --verbose --parallel=10 --exclude-glob 'README.md' "$CI_PROJECT_DIR/web" "$DOCROOT"
 quit
 LFTP
 
