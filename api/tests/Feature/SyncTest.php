@@ -330,4 +330,21 @@ final class SyncTest extends TestCase
             ->assertStatus(422)
             ->assertJson(['error' => 'plateforme_inconnue']);
     }
+
+    public function test_lier_un_compte_declenche_la_premiere_sync(): void
+    {
+        $body = $this->registerUser();
+        Queue::fake();
+
+        $this->withToken($body['token'])->postJson('/api/v1/me/linked-accounts', [
+            'platform' => 'lichess',
+            'username' => 'alice',
+        ])->assertStatus(201)->assertJson(['message' => 'compte_lie']);
+
+        Queue::assertPushed(SyncPlatformJob::class, 1);
+        Queue::assertPushed(
+            SyncPlatformJob::class,
+            fn (SyncPlatformJob $job) => $job->userId === 1 && $job->platform === 'lichess' && $job->username === 'alice',
+        );
+    }
 }
