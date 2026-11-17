@@ -237,10 +237,14 @@
                         username: document.getElementById('sync-pseudo').value
                     }
                 }).then(function (res) {
-                    if (res.status === 200) {
-                        retour.textContent = res.body.imported + ' partie(s) importée(s), ' +
-                            res.body.duplicates_ignores + ' déjà connue(s).';
-                        setTimeout(function () { vueTableauDeBord(); }, 1200);
+                    if (res.status === 202) {
+                        retour.textContent = 'Synchronisation lancée en arrière-plan…';
+                        suivreSync(
+                            document.getElementById('sync-plateforme').value,
+                            document.getElementById('sync-pseudo').value,
+                            Date.now(),
+                            0
+                        );
                     } else if (res.body.error === 'plateforme_inconnue') {
                         retour.textContent = 'Plateforme inconnue.';
                     } else if (res.body.error === 'pseudo_invalide') {
@@ -250,6 +254,36 @@
                     }
                 });
             });
+
+            // Suivi de la sync asynchrone : on interroge /sync/statut toutes les
+            // 5 secondes jusqu'à ce que le curseur du compte avance, puis on
+            // recharge le tableau de bord. Sans nouvelle donnée au bout de 2
+            // minutes, on rend la main au joueur sans message d'erreur.
+            function suivreSync(plateforme, pseudo, depart, essais) {
+                if (essais >= 24) {
+                    retour.textContent = 'Synchronisation toujours en cours, reviens dans un instant.';
+                    vueTableauDeBord();
+                    return;
+                }
+                api('/sync/statut').then(function (res) {
+                    if (res.status !== 200) { return; }
+                    var lignes = res.body.synchronisations || [];
+                    var ligne = null;
+                    for (var i = 0; i < lignes.length; i++) {
+                        if (lignes[i].platform === plateforme && lignes[i].username === pseudo) {
+                            ligne = lignes[i];
+                            break;
+                        }
+                    }
+                    var terminee = ligne && ligne.last_sync_at && Date.parse(ligne.last_sync_at) > depart - 60000;
+                    if (terminee) {
+                        retour.textContent = 'Synchronisation terminée ! Tes dernières parties sont là.';
+                        vueTableauDeBord();
+                    } else {
+                        setTimeout(function () { suivreSync(plateforme, pseudo, depart, essais + 1); }, 5000);
+                    }
+                });
+            }
         });
     }
 
