@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://korrichess.fr/sitemap.xml
+Sitemap: https://korrichess.clemenceau.email/sitemap.xml
