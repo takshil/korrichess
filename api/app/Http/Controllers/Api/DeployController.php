@@ -24,7 +24,15 @@ final class DeployController extends Controller
     {
         $token = (string) config('korrichess.deploy_token');
 
-        if ($token === '' || ! hash_equals($token, (string) $request->header('X-Deploy-Token'))) {
+        // Jeton accepté via X-Deploy-Token ou Authorization: Bearer : certains
+        // hébergements mutualisés filtrent les en-têtes personnalisés (WAF)
+        // ou ne transmettent pas Authorization en CGI sans passe-plat Apache.
+        $fourni = (string) $request->header('X-Deploy-Token');
+        if ($fourni === '' && preg_match('/^Bearer\s+(.+)$/i', (string) $request->header('Authorization', ''), $m) === 1) {
+            $fourni = $m[1];
+        }
+
+        if ($token === '' || ! hash_equals($token, $fourni)) {
             abort(404);
         }
 

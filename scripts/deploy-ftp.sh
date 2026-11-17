@@ -108,6 +108,8 @@ PHPEOF
 # La vitrine (index.html) est servie en priorité à la racine.
 DirectoryIndex index.html index.php
 ErrorDocument 404 /404.html
+# Passe-plat CGI/FastCGI : sans lui, PHP ne voit pas l'en-tête Authorization.
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteCond %{REQUEST_URI} ^/api(/|$)
@@ -128,7 +130,9 @@ fi
 
 if [ -n "${APP_URL:-}" ] && [ -n "${DEPLOY_TOKEN:-}" ]; then
     echo ">>> Application des migrations Laravel"
-    curl -fsS -X POST "$APP_URL/api/deploy/migrate" -H "X-Deploy-Token: $DEPLOY_TOKEN"
+    curl -fsS -X POST "$APP_URL/api/deploy/migrate" \
+        -H "X-Deploy-Token: $DEPLOY_TOKEN" \
+        -H "Authorization: Bearer $DEPLOY_TOKEN"
     echo
     echo ">>> Migrations appliquées."
 else
