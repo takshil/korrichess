@@ -276,9 +276,11 @@ details.faq[open] summary { margin-bottom: 0.4rem; }
     overflow: hidden;
     margin: 0 auto;
 }
-.echiquier .case { position: relative; display: grid; place-items: center; font-size: clamp(1.3rem, 5vw, 2.6rem); line-height: 1; }
+.echiquier .case { position: relative; display: grid; place-items: center; line-height: 0; }
 .echiquier .case.clair { background: var(--case-claire); }
 .echiquier .case.fonce { background: var(--case-foncee); }
+.echiquier .case img.piece { width: 100%; height: 100%; display: block; pointer-events: none; }
+#saisie-promotion img.piece { width: 2.4rem; height: 2.4rem; display: inline-block; vertical-align: middle; }
 
 /* ---------- Pied ---------- */
 
