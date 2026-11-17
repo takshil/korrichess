@@ -58,6 +58,7 @@ echo ">>> Génération du .env de production (depuis les variables CI/CD)"
     echo "KORRI_STOCKFISH_PATH=${KORRI_STOCKFISH_PATH:-stockfish}"
     echo "ANALYSIS_DEFAULT_DEPTH=${ANALYSIS_DEFAULT_DEPTH:-12}"
     echo "DEPLOY_TOKEN=${DEPLOY_TOKEN:-}"
+    printf '%s' "${DEPLOY_TOKEN:-}" > "$CI_PROJECT_DIR/deploy-token"
 } > "$ENV_FILE"
 
 # Défense en profondeur : si l'application venait à se retrouver sous la
@@ -79,6 +80,7 @@ $TLS_VERIFY_CMD
 mirror --reverse --delete --no-perms --verbose --parallel=10 --exclude-glob '^\.env.*' "$CI_PROJECT_DIR/api" "$API_DIR"
 put "$CI_PROJECT_DIR/api-protect.htaccess" -o "$API_DIR/.htaccess"
 put "$ENV_FILE" -o "$API_DIR/.env"
+put "$CI_PROJECT_DIR/deploy-token" -o "$API_DIR/.deploy-token"
 quit
 LFTP
 
