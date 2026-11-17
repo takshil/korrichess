@@ -14,6 +14,13 @@ use Illuminate\Support\Facades\Http;
  */
 final class ChessComClient implements PlatformClient
 {
+    /**
+     * L'API Chess.com (derrière Cloudflare) rejette en 403 les requêtes sans
+     * User-Agent descriptif : nom d'app + contact, comme demandé dans leur
+     * documentation Published-Data.
+     */
+    private const USER_AGENT = 'korrichess/1.0 (contact: contact@korrichess.fr)';
+
     public function __construct(
         private readonly string $baseUrl = 'https://api.chess.com',
         private readonly int $maxArchives = 24,
@@ -36,7 +43,8 @@ final class ChessComClient implements PlatformClient
         $response = Http::baseUrl($this->baseUrl)
             ->timeout(15)
             ->retry(2, 500, throw: false)
-            ->get('/api/player/' . $username . '/games/archives');
+            ->withHeaders(['User-Agent' => self::USER_AGENT])
+            ->get('/pub/player/' . $username . '/games/archives');
 
         // Pseudo introuvable ou compte fermé (L8).
         if ($response->status() === 404) {
@@ -71,6 +79,7 @@ final class ChessComClient implements PlatformClient
             $this->limiter->wait('chesscom');
             $month = Http::timeout(15)
                 ->retry(2, 500, throw: false)
+                ->withHeaders(['User-Agent' => self::USER_AGENT])
                 ->get($archiveUrl);
             // Archive temporairement indisponible : on passe à la suivante.
             if (!$month->ok()) {
@@ -116,7 +125,8 @@ final class ChessComClient implements PlatformClient
         $response = Http::baseUrl($this->baseUrl)
             ->timeout(15)
             ->retry(2, 500, throw: false)
-            ->get('/api/player/' . $username);
+            ->withHeaders(['User-Agent' => self::USER_AGENT])
+            ->get('/pub/player/' . $username);
 
         return $response->status() === 200;
     }
