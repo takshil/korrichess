@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 
@@ -23,12 +22,14 @@ use Illuminate\Support\Facades\Cache;
 */
 class DrainQueueAfterResponse
 {
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         return $next($request);
     }
 
-    public function terminate(Request $request, Response $response): void
+    // Type sur la base Symfony : les réponses API sont des JsonResponse,
+    // qui n'étendent pas Illuminate\Http\Response.
+    public function terminate(Request $request, \Symfony\Component\HttpFoundation\Response $response): void
     {
         try {
             $lock = Cache::lock('korrichess:queue-drain', 120);
