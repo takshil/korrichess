@@ -177,16 +177,21 @@
 
     function vueTableauDeBord() {
         vue().innerHTML = '<p>Chargement…</p>';
-        api('/games?limit=200&sort=played_at&order=desc').then(function (r) {
+        // Les compteurs viennent du serveur (/me/stats) : les calculer sur les
+        // 200 dernières parties sous-estimait les totaux dès 200+ parties.
+        Promise.all([
+            api('/games?limit=8&sort=played_at&order=desc'),
+            api('/me/stats')
+        ]).then(function (reponses) {
+            var r = reponses[0];
             if (r.status !== 200) { return; }
             var parties = r.body.games || [];
-            var total = r.body.total || parties.length;
-            var victoires = 0, nulles = 0, defaites = 0;
-            parties.forEach(function (p) {
-                var l = libelleResultat(p);
-                if (l === 'victoire') { victoires++; } else if (l === 'nulle') { nulles++; } else if (l === 'défaite') { defaites++; }
-            });
-            var taux = total > 0 ? Math.round((victoires / total) * 100) : 0;
+            var stats = reponses[1].status === 200 ? reponses[1].body : null;
+            var total = stats ? (stats.total || 0) : (r.body.total || parties.length);
+            var victoires = stats ? (stats.victoires || 0) : 0;
+            var nulles = stats ? (stats.nulles || 0) : 0;
+            var defaites = stats ? (stats.defaites || 0) : 0;
+            var taux = stats ? (stats.taux_victoires || 0) : (total > 0 ? Math.round((victoires / total) * 100) : 0);
             var recentes = parties.slice(0, 8).map(function (p) {
                 return '<tr>' +
                     '<td>' + echapperHtml(courteDate(p.played_at)) + '</td>' +

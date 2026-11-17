@@ -45,6 +45,7 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/me', [MeController::class, 'show'])->name('me.show');
         Route::patch('/me', [MeController::class, 'update'])->name('me.update');
         Route::get('/me/export', [MeController::class, 'export'])->name('me.export');
+        Route::get('/me/stats', [MeController::class, 'stats'])->name('me.stats');
         Route::delete('/me', [MeController::class, 'destroy'])->name('me.destroy');
 
         // Comptes liés Lichess / Chess.com (C3).
