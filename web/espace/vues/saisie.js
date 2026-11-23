@@ -2,6 +2,7 @@
 
 import { api } from '../api.js';
 import { damierSaisie, fenVersCarte, svgPiece } from '../echiquier.js';
+import { analyserSaisie } from '../partie.js';
 import { echapperHtml, vue } from '../ui.js';
 
 let saisie = null;
@@ -147,34 +148,30 @@ function construireVueSaisie() {
 }
 
 function apresCoupSaisie(recharge) {
-    return api('/games/manual/preview', { methode: 'POST', body: { moves: saisie.moves } }).then((r) => {
-        if (r.status !== 200) {
-            const statut = document.getElementById('saisie-statut');
-            if (statut) { statut.textContent = 'Prévisualisation impossible, réessaie dans un instant.'; }
-            return;
+    const b = analyserSaisie(saisie.moves);
+    const nouveauFautif = b.invalid_ply !== null && !recharge && b.invalid_ply === saisie.moves.length - 1;
+    if (nouveauFautif && saisie.verification) {
+        saisie.moves.pop();
+        apresCoupSaisie(true);
+        const statut = document.getElementById('saisie-statut');
+        if (statut) {
+            statut.textContent =
+                'Ce coup n\'est pas légal ici — vérifie ta feuille, ou décoche la vérification pour l\'enregistrer tel quel.';
         }
-        const b = r.body;
-        const nouveauFautif = b.invalid_ply !== null && !recharge && b.invalid_ply === saisie.moves.length - 1;
-        if (nouveauFautif && saisie.verification) {
-            saisie.moves.pop();
-            return apresCoupSaisie(true).then(() => {
-                document.getElementById('saisie-statut').textContent =
-                    'Ce coup n\'est pas légal ici — vérifie ta feuille, ou décoche la vérification pour l\'enregistrer tel quel.';
-            });
-        }
-        saisie.fen = b.fen;
-        saisie.san = b.moves_san || [];
-        saisie.legal = b.legal_uci || [];
-        saisie.invalidPly = b.invalid_ply;
-        saisie.invalidMove = b.invalid_move;
-        saisie.trait = b.turn;
-        saisie.echec = b.in_check;
-        saisie.mat = b.is_checkmate;
-        saisie.pat = b.is_stalemate;
-        saisie.selection = null;
-        saisie.destinations = [];
-        rafraichirSaisie();
-    });
+        return;
+    }
+    saisie.fen = b.fen;
+    saisie.san = b.moves_san || [];
+    saisie.legal = b.legal_uci || [];
+    saisie.invalidPly = b.invalid_ply;
+    saisie.invalidMove = b.invalid_move;
+    saisie.trait = b.turn;
+    saisie.echec = b.in_check;
+    saisie.mat = b.is_checkmate;
+    saisie.pat = b.is_stalemate;
+    saisie.selection = null;
+    saisie.destinations = [];
+    rafraichirSaisie();
 }
 
 function rafraichirSaisie() {
@@ -254,6 +251,19 @@ function clicCaseSaisie(nom) {
     saisie.selection = null;
     saisie.destinations = [];
     if (candidats.length === 0) {
+        const carte = fenVersCarte(saisie.fen);
+        const piece = carte[nom];
+        if (piece && (saisie.trait === 'white') === (piece === piece.toUpperCase())) {
+            saisie.destinations = [];
+            saisie.legal.forEach((m) => {
+                if (m.slice(0, 2) === nom && saisie.destinations.indexOf(m.slice(2, 4)) < 0) {
+                    saisie.destinations.push(m.slice(2, 4));
+                }
+            });
+            if (saisie.destinations.length > 0) {
+                saisie.selection = nom;
+            }
+        }
         rafraichirSaisie();
         return;
     }
