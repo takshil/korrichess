@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Auth;
 
+use App\Domain\Shared\DomainError;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,18 +14,20 @@ use Illuminate\Support\Facades\Hash;
  */
 final class AuthService
 {
-    /** @return array{status:int,body:array} */
-    public function register(string $email, ?string $password, ?string $googleSub = null, ?string $appleSub = null): array
+    /**
+     * @throws DomainError e-mail invalide ou déjà utilisé, aucun moyen de s'authentifier
+     */
+    public function register(string $email, ?string $password, ?string $googleSub = null, ?string $appleSub = null): AuthToken
     {
         $email = strtolower(trim($email));
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return ['status' => 422, 'body' => ['error' => 'email_invalide']];
+            throw DomainError::invalid('email_invalide');
         }
         if (($password === null || $password === '') && $googleSub === null && $appleSub === null) {
-            return ['status' => 422, 'body' => ['error' => 'authentifiant_requis']];
+            throw DomainError::invalid('authentifiant_requis');
         }
         if (User::query()->where('email', $email)->exists()) {
-            return ['status' => 409, 'body' => ['error' => 'email_deja_utilise']];
+            throw DomainError::conflict('email_deja_utilise');
         }
 
         $name = explode('@', $email)[0];
@@ -41,31 +44,29 @@ final class AuthService
         $user->profile()->create(['display_name' => $name]);
         $user->setting()->create([]);
 
-        return ['status' => 201, 'body' => ['user_id' => $user->id, 'token' => $this->issueToken($user)]];
-    }
-
-    /** @return array{status:int,body:array} */
-    public function login(string $email, ?string $password): array
-    {
-        $user = User::query()->where('email', strtolower(trim($email)))->first();
-        if ($user === null || $user->password === null || !Hash::check((string) $password, $user->password)) {
-            return ['status' => 401, 'body' => ['error' => 'identifiants_invalides']];
-        }
-
-        return ['status' => 200, 'body' => ['user_id' => $user->id, 'token' => $this->issueToken($user)]];
+        return new AuthToken((int) $user->id, $this->issueToken($user));
     }
 
     /**
-     * Révoque le jeton courant (le jeton porté par la requête).
+     * @throws DomainError identifiants invalides
      */
+    public function login(string $email, ?string $password): AuthToken
+    {
+        $user = User::query()->where('email', strtolower(trim($email)))->first();
+        if ($user === null || $user->password === null || !Hash::check((string) $password, $user->password)) {
+            throw DomainError::unauthenticated('identifiants_invalides');
+        }
+
+        return new AuthToken((int) $user->id, $this->issueToken($user));
+    }
+
+    /** Révoque le jeton courant (le jeton porté par la requête). */
     public function logout(User $user): void
     {
         $user->currentAccessToken()?->delete();
     }
 
-    /**
-     * Jeton Sanctum opaque, expire après le nombre de jours configuré.
-     */
+    /** Jeton Sanctum opaque, expire après le nombre de jours configuré. */
     public function issueToken(User $user): string
     {
         $ttlDays = max(1, (int) config('korrichess.auth.token_ttl_days', 30));

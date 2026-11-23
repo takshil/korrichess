@@ -1,5 +1,7 @@
 <?php
 
+use App\Domain\Shared\DomainError;
+use App\Http\Exceptions\DomainErrorRenderer;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -16,5 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Refus métier levés par le domaine → réponse JSON { "error": "<code>" }.
+        $exceptions->render((new DomainErrorRenderer())(...));
+        $exceptions->dontReport(DomainError::class);
     })->create();

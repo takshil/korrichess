@@ -7,6 +7,10 @@ namespace Tests\Feature;
 use App\Domain\Chess\Board;
 use App\Domain\Games\GameRepository;
 use App\Domain\Library\LibraryService;
+use App\Domain\Library\PgnExporter;
+use App\Domain\Library\PositionSearch;
+use App\Domain\Shared\DomainError;
+use App\Domain\Shared\ErrorKind;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -27,11 +31,15 @@ final class LibraryTest extends TestCase
         . '1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. b4 Bxb4 *';
 
     private LibraryService $library;
+    private PgnExporter $exporter;
+    private PositionSearch $positionSearch;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->library = new LibraryService();
+        $this->library = $this->app->make(LibraryService::class);
+        $this->exporter = $this->app->make(PgnExporter::class);
+        $this->positionSearch = $this->app->make(PositionSearch::class);
     }
 
     /**
@@ -69,6 +77,17 @@ final class LibraryTest extends TestCase
         ]);
     }
 
+    private function domainError(callable $action): DomainError
+    {
+        try {
+            $action();
+        } catch (DomainError $e) {
+            return $e;
+        }
+
+        $this->fail('Un DomainError était attendu.');
+    }
+
     // ------------------------------------------------- B1 : liste
 
     public function test_b1_liste_toutes_les_parties_avec_source(): void
@@ -76,14 +95,13 @@ final class LibraryTest extends TestCase
         $body = $this->registerUser();
         $this->seedGames($body['user_id']);
 
-        $r = $this->library->list((int) $body['user_id']);
+        $page = $this->library->list((int) $body['user_id']);
 
-        $this->assertSame(200, $r['status']);
-        $this->assertSame(3, $r['body']['total']);
-        $sources = array_column($r['body']['games'], 'source');
+        $this->assertSame(3, $page->total);
+        $sources = $page->games->pluck('source')->all();
         $this->assertContains('tournoi', $sources);
         $this->assertContains('lichess', $sources);
-        $this->assertFalse($r['body']['games'][0]['favorite']);
+        $this->assertFalse((bool) $page->games->first()->favorite);
     }
 
     // ------------------------------------------------- B2 : filtres, tri, pagination
@@ -94,14 +112,14 @@ final class LibraryTest extends TestCase
         $uid = (int) $body['user_id'];
         $this->seedGames($uid);
 
-        $this->assertSame(1, $this->library->list($uid, ['opponent' => 'dave'])['body']['total']);
-        $this->assertSame(2, $this->library->list($uid, ['opening' => 'C50'])['body']['total']);
-        $this->assertSame(2, $this->library->list($uid, ['source' => 'lichess'])['body']['total']);
-        $this->assertSame(1, $this->library->list($uid, ['time_control' => '600'])['body']['total']);
+        $this->assertSame(1, $this->library->list($uid, ['opponent' => 'dave'])->total);
+        $this->assertSame(2, $this->library->list($uid, ['opening' => 'C50'])->total);
+        $this->assertSame(2, $this->library->list($uid, ['source' => 'lichess'])->total);
+        $this->assertSame(1, $this->library->list($uid, ['time_control' => '600'])->total);
 
         $black = $this->library->list($uid, ['color' => 'black']);
-        $this->assertSame(1, $black['body']['total']);
-        $this->assertSame('dave', $black['body']['games'][0]['opponent']);
+        $this->assertSame(1, $black->total);
+        $this->assertSame('dave', $black->games->first()->opponent);
     }
 
     public function test_b2_filtre_de_periode(): void
@@ -110,9 +128,9 @@ final class LibraryTest extends TestCase
         $uid = (int) $body['user_id'];
         $this->seedGames($uid);
 
-        $r = $this->library->list($uid, ['period_start' => '2025-04-11T00:00:00Z']);
+        $page = $this->library->list($uid, ['period_start' => '2025-04-11T00:00:00Z']);
 
-        $this->assertSame(2, $r['body']['total']);
+        $this->assertSame(2, $page->total);
     }
 
     public function test_b2_tri_et_pagination(): void
@@ -122,11 +140,11 @@ final class LibraryTest extends TestCase
         $this->seedGames($uid);
 
         $sorted = $this->library->list($uid, [], sort: 'played_at', order: 'asc');
-        $this->assertSame('carol', $sorted['body']['games'][0]['opponent']);
+        $this->assertSame('carol', $sorted->games->first()->opponent);
 
         $page = $this->library->list($uid, [], limit: 2, offset: 1);
-        $this->assertCount(2, $page['body']['games']);
-        $this->assertSame(3, $page['body']['total']);
+        $this->assertCount(2, $page->games);
+        $this->assertSame(3, $page->total);
     }
 
     // ------------------------------------------------- B3 : recherche texte
@@ -138,10 +156,10 @@ final class LibraryTest extends TestCase
         $this->seedGames($uid);
 
         $byTournament = $this->library->list($uid, ['q' => 'rennes']);
-        $this->assertSame(1, $byTournament['body']['total']);
-        $this->assertSame('Open de Rennes', $byTournament['body']['games'][0]['tournament']);
+        $this->assertSame(1, $byTournament->total);
+        $this->assertSame('Open de Rennes', $byTournament->games->first()->tournament);
 
-        $this->assertSame(1, $this->library->list($uid, ['q' => 'eve'])['body']['total']);
+        $this->assertSame(1, $this->library->list($uid, ['q' => 'eve'])->total);
     }
 
     // ------------------------------------------------- B1 : détail
@@ -152,11 +170,11 @@ final class LibraryTest extends TestCase
         $this->seedGames((int) $body['user_id']);
 
         $detail = $this->library->detail(1, 1);
-        $this->assertSame(200, $detail['status']);
-        $this->assertStringContainsString('Open de Rennes', (string) $detail['body']['pgn']);
-        $this->assertSame(['e2e4', 'e7e5', 'g1f3', 'b8c6', 'f1c4', 'f8c5'], $detail['body']['moves_uci']);
+        $this->assertStringContainsString('Open de Rennes', (string) $detail->pgn);
+        $this->assertSame(['e2e4', 'e7e5', 'g1f3', 'b8c6', 'f1c4', 'f8c5'], $detail->uciMoves());
 
-        $this->assertSame(404, $this->library->detail(1, 999)['status']);
+        $error = $this->domainError(fn () => $this->library->detail(1, 999));
+        $this->assertSame(ErrorKind::NotFound, $error->kind);
     }
 
     // ------------------------------------------------- B4 : annotations
@@ -173,13 +191,12 @@ final class LibraryTest extends TestCase
             'favorite' => true,
         ]);
 
-        $this->assertSame(200, $ann['status']);
-        $this->assertSame('Belle attaque du fou', $ann['body']['personal_note']);
-        $this->assertTrue($ann['body']['favorite']);
-        $this->assertSame(['favori', 'italienne'], $ann['body']['tags']);
+        $this->assertSame('Belle attaque du fou', $ann->personal_note);
+        $this->assertTrue((bool) $ann->favorite);
+        $this->assertSame(['favori', 'italienne'], $ann->tagList());
 
-        $this->assertSame(1, $this->library->list($uid, ['favorite' => true])['body']['total']);
-        $this->assertSame(1, $this->library->list($uid, ['tag' => 'italienne'])['body']['total']);
+        $this->assertSame(1, $this->library->list($uid, ['favorite' => true])->total);
+        $this->assertSame(1, $this->library->list($uid, ['tag' => 'italienne'])->total);
     }
 
     public function test_b4_refuse_les_annotations_invalides(): void
@@ -188,11 +205,11 @@ final class LibraryTest extends TestCase
         $uid = (int) $body['user_id'];
         $this->seedGames($uid);
 
-        $this->assertSame(422, $this->library->annotate($uid, 1, ['personal_note' => str_repeat('x', 2001)])['status']);
-        $this->assertSame(422, $this->library->annotate($uid, 1, ['tags' => 'pas-un-tableau'])['status']);
-        $this->assertSame(422, $this->library->annotate($uid, 1, ['tags' => ['']])['status']);
-        $this->assertSame(422, $this->library->annotate($uid, 1, [])['status']);
-        $this->assertSame(404, $this->library->annotate($uid, 999, ['favorite' => true])['status']);
+        $this->assertSame(ErrorKind::Invalid, $this->domainError(fn () => $this->library->annotate($uid, 1, ['personal_note' => str_repeat('x', 2001)]))->kind);
+        $this->assertSame(ErrorKind::Invalid, $this->domainError(fn () => $this->library->annotate($uid, 1, ['tags' => 'pas-un-tableau']))->kind);
+        $this->assertSame(ErrorKind::Invalid, $this->domainError(fn () => $this->library->annotate($uid, 1, ['tags' => ['']]))->kind);
+        $this->assertSame(ErrorKind::Invalid, $this->domainError(fn () => $this->library->annotate($uid, 1, []))->kind);
+        $this->assertSame(ErrorKind::NotFound, $this->domainError(fn () => $this->library->annotate($uid, 999, ['favorite' => true]))->kind);
     }
 
     // ------------------------------------------------- B5 : export PGN
@@ -204,15 +221,14 @@ final class LibraryTest extends TestCase
         $this->seedGames($uid);
         $this->library->annotate($uid, 1, ['personal_note' => 'Belle attaque du fou']);
 
-        $export = $this->library->exportPgn($uid, [1, 2]);
+        $export = $this->exporter->export($uid, [1, 2]);
 
-        $this->assertSame(200, $export['status']);
-        $this->assertSame(2, $export['body']['count']);
-        $this->assertSame(2, substr_count((string) $export['body']['pgn'], '[Event'));
-        $this->assertStringContainsString('KorriNote "Belle attaque du fou"', (string) $export['body']['pgn']);
+        $this->assertSame(2, $export['count']);
+        $this->assertSame(2, substr_count((string) $export['pgn'], '[Event'));
+        $this->assertStringContainsString('KorriNote "Belle attaque du fou"', (string) $export['pgn']);
 
-        $this->assertSame(422, $this->library->exportPgn($uid, [])['status']);
-        $this->assertSame(404, $this->library->exportPgn($uid, [42])['status']);
+        $this->assertSame(ErrorKind::Invalid, $this->domainError(fn () => $this->exporter->export($uid, []))->kind);
+        $this->assertSame(ErrorKind::NotFound, $this->domainError(fn () => $this->exporter->export($uid, [42]))->kind);
     }
 
     // ------------------------------------------------- B6 : recherche par position
@@ -231,11 +247,10 @@ final class LibraryTest extends TestCase
         $board->applySan('Bc4');
         $fen = $board->fen();
 
-        $pos = $this->library->searchByPosition($uid, $fen);
+        $pos = $this->positionSearch->search($uid, $fen);
 
-        $this->assertSame(200, $pos['status']);
-        $this->assertSame(2, $pos['body']['total']);
-        $this->assertContains(5, array_column($pos['body']['games'], 'ply'));
+        $this->assertSame(2, $pos['total']);
+        $this->assertContains(5, array_column($pos['games'], 'ply'));
     }
 
     public function test_b6_position_absente_et_fen_invalide(): void
@@ -248,11 +263,10 @@ final class LibraryTest extends TestCase
         $board->applySan('d4');
 
         // FEN valide mais jamais atteinte (suffixe pour la différencier).
-        $absent = $this->library->searchByPosition($uid, $board->fen() . ' w');
-        $this->assertSame(200, $absent['status']);
-        $this->assertSame(0, $absent['body']['total']);
+        $absent = $this->positionSearch->search($uid, $board->fen() . ' w');
+        $this->assertSame(0, $absent['total']);
 
-        $this->assertSame(422, $this->library->searchByPosition($uid, 'pas un fen')['status']);
+        $this->assertSame(ErrorKind::Invalid, $this->domainError(fn () => $this->positionSearch->search($uid, 'pas un fen'))->kind);
     }
 
     // ------------------------------------------------- Isolation entre utilisateurs
@@ -266,9 +280,9 @@ final class LibraryTest extends TestCase
         $other = $this->registerUser('autre@example.com');
         $otherId = (int) $other['user_id'];
 
-        $this->assertSame(0, $this->library->list($otherId)['body']['total']);
-        $this->assertSame(404, $this->library->detail($otherId, 1)['status']);
-        $this->assertSame(404, $this->library->exportPgn($otherId, [1, 2])['status']);
+        $this->assertSame(0, $this->library->list($otherId)->total);
+        $this->assertSame(ErrorKind::NotFound, $this->domainError(fn () => $this->library->detail($otherId, 1))->kind);
+        $this->assertSame(ErrorKind::NotFound, $this->domainError(fn () => $this->exporter->export($otherId, [1, 2]))->kind);
     }
 
     // ------------------------------------------------- API HTTP

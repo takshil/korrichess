@@ -201,10 +201,9 @@ final class SyncHttpTest extends TestCase
         config(['korrichess.sync.mode' => 'memory']);
         $service = $this->app->make(SyncService::class);
 
-        $r = $service->sync(1, 'lichess', 'alice');
+        $report = $service->sync(1, 'lichess', 'alice');
 
-        $this->assertSame(200, $r['status']);
-        $this->assertSame(0, $r['body']['imported']);
+        $this->assertSame(0, $report->imported);
     }
 
     public function test_le_conteneur_utilise_le_client_http_en_mode_http(): void
@@ -217,9 +216,6 @@ final class SyncHttpTest extends TestCase
         ]);
         $service = $this->app->make(SyncService::class);
 
-        $r = $service->verifyUsername('lichess', 'alice');
-
-        $this->assertSame(200, $r['status']);
-        $this->assertSame('connu', $r['body']['status']);
+        $this->assertSame('connu', $service->verifyUsername('lichess', 'alice'));
     }
 }

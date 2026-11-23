@@ -8,6 +8,7 @@ use App\Domain\Auth\AuthService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\LoginRequest;
 use App\Http\Requests\V1\RegisterRequest;
+use App\Http\Resources\AuthTokenResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -19,24 +20,22 @@ final class AuthController extends Controller
 
     public function register(RegisterRequest $request): JsonResponse
     {
-        $result = $this->auth->register(
+        $token = $this->auth->register(
             (string) $request->validated('email'),
             $request->validated('password'),
             $request->validated('google_sub'),
             $request->validated('apple_sub'),
         );
 
-        return response()->json($result['body'], $result['status']);
+        return (new AuthTokenResource($token))->response()->setStatusCode(201);
     }
 
-    public function login(LoginRequest $request): JsonResponse
+    public function login(LoginRequest $request): AuthTokenResource
     {
-        $result = $this->auth->login(
+        return new AuthTokenResource($this->auth->login(
             (string) $request->validated('email'),
             $request->validated('password'),
-        );
-
-        return response()->json($result['body'], $result['status']);
+        ));
     }
 
     public function logout(Request $request): JsonResponse
