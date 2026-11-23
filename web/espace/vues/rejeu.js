@@ -1,16 +1,21 @@
 /* Vue rejeu (W4). */
 
 import { api } from '../api.js';
-import { damierDepuisFen } from '../echiquier.js';
+import { creerEchiquierRejeu } from '../echiquier.js';
 import { construireRejeu } from '../partie.js';
 import { courteDate, echapperHtml, libelleResultat, vue } from '../ui.js';
 
 let ecouteurClavier = null;
+let plateauRejeu = null;
 
 export function detacherClavierRejeu() {
     if (ecouteurClavier) {
         document.removeEventListener('keydown', ecouteurClavier);
         ecouteurClavier = null;
+    }
+    if (plateauRejeu) {
+        plateauRejeu.detruire();
+        plateauRejeu = null;
     }
 }
 
@@ -55,7 +60,7 @@ export function vueRejeu(id) {
             (positions
                 ? '<div class="rejeu-disposition">' +
                   '  <div>' +
-                  '    <div class="echiquier" id="echiquier" role="img" aria-label="Échiquier"></div>' +
+                  '    <div class="echiquier-cadre" id="echiquier" role="img" aria-label="Échiquier"></div>' +
                   '    <div class="rejeu-controles">' +
                   '      <button type="button" id="cp-debut" aria-label="Début">⏮</button>' +
                   '      <button type="button" id="cp-avant" aria-label="Coup précédent">◀</button>' +
@@ -74,9 +79,15 @@ export function vueRejeu(id) {
             return;
         }
 
+        detacherClavierRejeu();
+        plateauRejeu = creerEchiquierRejeu(document.getElementById('echiquier'), {
+            fen: positions[0],
+            inverser,
+        });
+
         function afficher(ply) {
             courant = Math.max(0, Math.min(ply, positions.length - 1));
-            document.getElementById('echiquier').innerHTML = damierDepuisFen(positions[courant], inverser);
+            plateauRejeu.afficher(positions[courant]);
             document.getElementById('rejeu-position').textContent = courant === 0
                 ? 'Position de départ'
                 : 'Coup ' + Math.ceil(courant / 2) + (courant % 2 === 1 ? '… ' : '. ') + (sans[courant - 1] || '');
@@ -91,13 +102,12 @@ export function vueRejeu(id) {
         document.getElementById('cp-fin').addEventListener('click', () => afficher(positions.length - 1));
         document.getElementById('cp-inverser').addEventListener('click', () => {
             inverser = !inverser;
-            afficher(courant);
+            plateauRejeu.inverser(inverser);
         });
         document.querySelectorAll('#liste-coups button.coup').forEach((bouton) => {
             bouton.addEventListener('click', () => afficher(Number(bouton.getAttribute('data-ply')) + 1));
         });
 
-        detacherClavierRejeu();
         ecouteurClavier = (evenement) => {
             if (evenement.key === 'ArrowLeft') { afficher(courant - 1); }
             if (evenement.key === 'ArrowRight') { afficher(courant + 1); }

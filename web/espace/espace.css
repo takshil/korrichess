@@ -115,6 +115,8 @@
     margin-bottom: 1.2rem;
 }
 .saisie-options .carree { display: flex; }
+.echiquier-cadre { width: min(100%, 480px); margin: 0 auto; }
+.echiquier-cadre.figee { opacity: 0.85; cursor: not-allowed; }
 .saisie-echiquier .case { cursor: pointer; }
 .saisie-echiquier.figee .case { cursor: not-allowed; }
 .saisie-echiquier .case.selectionnee { box-shadow: inset 0 0 0 3px var(--vert-fonce); }
