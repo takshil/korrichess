@@ -29,20 +29,21 @@ export function svgPiece(caractere) {
 
 /** Décodage d'un FEN en carte { case -> pièce } (ex. 'e4' -> 'P'). */
 export function fenVersCarte(fen) {
-    const placement = fen.split(' ')[0];
+    const lignes = String(fen || '').split(' ')[0].split('/');
     const colonnes = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
     const rangees = [8, 7, 6, 5, 4, 3, 2, 1];
     const carte = {};
-    let i = 0;
 
-    for (let l = 0; l < rangees.length; l++) {
-        for (let c = 0; c < 8; c++) {
-            const car = placement[i++];
+    for (let l = 0; l < 8 && l < lignes.length; l++) {
+        let c = 0;
+        for (let k = 0; k < lignes[l].length && c < 8; k++) {
+            const car = lignes[l][k];
             if (car >= '1' && car <= '8') {
-                c += Number(car) - 1;
-                continue;
+                c += Number(car);
+            } else {
+                carte[colonnes[c] + rangees[l]] = car;
+                c++;
             }
-            carte[colonnes[c] + rangees[l]] = car;
         }
     }
 
