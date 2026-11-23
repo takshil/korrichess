@@ -2,6 +2,7 @@
 
 import { api } from '../api.js';
 import { damierDepuisFen } from '../echiquier.js';
+import { construireRejeu } from '../partie.js';
 import { courteDate, echapperHtml, libelleResultat, vue } from '../ui.js';
 
 let ecouteurClavier = null;
@@ -15,17 +16,24 @@ export function detacherClavierRejeu() {
 
 export function vueRejeu(id) {
     vue().innerHTML = '<p>Chargement de la partie…</p>';
-    Promise.all([
-        api('/games/' + id),
-        api('/games/' + id + '/replay'),
-    ]).then(([detail, rejeu]) => {
+    api('/games/' + id).then(async (detail) => {
         if (detail.status !== 200) {
             vue().innerHTML = '<p>Partie introuvable. <a href="#/bibliotheque">Retour à la bibliothèque</a>.</p>';
             return;
         }
-        const positions = (rejeu.status === 200 && rejeu.body.positions) ? rejeu.body.positions : null;
-        const sans = (rejeu.status === 200 && rejeu.body.moves_san) ? rejeu.body.moves_san : [];
-        const inverser = detail.body.color === 'black';
+        let donneesRejeu = construireRejeu(detail.body);
+        if (!donneesRejeu) {
+            const rejeu = await api('/games/' + id + '/replay');
+            if (rejeu.status === 200 && rejeu.body.positions) {
+                donneesRejeu = {
+                    positions: rejeu.body.positions,
+                    moves_san: rejeu.body.moves_san || [],
+                };
+            }
+        }
+        const positions = donneesRejeu ? donneesRejeu.positions : null;
+        const sans = donneesRejeu ? donneesRejeu.moves_san : [];
+        let inverser = detail.body.color === 'black';
         let courant = 0;
 
         let listeCoups = '';
@@ -53,6 +61,7 @@ export function vueRejeu(id) {
                   '      <button type="button" id="cp-avant" aria-label="Coup précédent">◀</button>' +
                   '      <button type="button" id="cp-apres" aria-label="Coup suivant">▶</button>' +
                   '      <button type="button" id="cp-fin" aria-label="Fin">⏭</button>' +
+                  '      <button type="button" id="cp-inverser" aria-label="Retourner l\'échiquier" title="Retourner l\'échiquier">⇅</button>' +
                   '    </div>' +
                   '    <p class="rejeu-position" id="rejeu-position"></p>' +
                   '  </div>' +
@@ -80,6 +89,10 @@ export function vueRejeu(id) {
         document.getElementById('cp-avant').addEventListener('click', () => afficher(courant - 1));
         document.getElementById('cp-apres').addEventListener('click', () => afficher(courant + 1));
         document.getElementById('cp-fin').addEventListener('click', () => afficher(positions.length - 1));
+        document.getElementById('cp-inverser').addEventListener('click', () => {
+            inverser = !inverser;
+            afficher(courant);
+        });
         document.querySelectorAll('#liste-coups button.coup').forEach((bouton) => {
             bouton.addEventListener('click', () => afficher(Number(bouton.getAttribute('data-ply')) + 1));
         });
@@ -88,6 +101,8 @@ export function vueRejeu(id) {
         ecouteurClavier = (evenement) => {
             if (evenement.key === 'ArrowLeft') { afficher(courant - 1); }
             if (evenement.key === 'ArrowRight') { afficher(courant + 1); }
+            if (evenement.key === 'Home') { afficher(0); }
+            if (evenement.key === 'End') { afficher(positions.length - 1); }
         };
         document.addEventListener('keydown', ecouteurClavier);
         afficher(0);

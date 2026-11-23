@@ -44,12 +44,13 @@ avant tout rendu.
   cliquable (sélection, destinations, promotion) ou saisie texte SAN,
   troncature en un clic, retrait du dernier coup, fiche de la partie
   (date, adversaire, classement, couleur, résultat, cadence, tournoi,
-  ronde). La vérification des coups est assurée par l'API
-  (`POST /api/v1/games/manual/preview` après chaque coup) et peut être
-  désactivée si la feuille contient une erreur : la partie est alors
-  enregistrée telle quelle, marquée `needs_review`, et la saisie
-  d'origine est conservée (`raw_moves`). Correction possible depuis la
-  bibliothèque (`✎ corriger`, `PUT /api/v1/games/{id}/manual`).
+  ronde). La validation des coups, la génération des coups légaux et le
+  rejeu PGN/UCI sont assurés localement par `chess.js` (`espace/partie.js`
+  et `espace/vendor/chess.js`) ; la vérification peut être désactivée si
+  la feuille contient une erreur : la partie est alors enregistrée telle
+  quelle, marquée `needs_review`, et la saisie d'origine est conservée
+  (`raw_moves`). Correction possible depuis la bibliothèque (`✎ corriger`,
+  `PUT /api/v1/games/{id}/manual`).
 
 L'analyse moteur n'y est pas exposée : les workers de file ne tournent
 pas en mutualisé (ADR-003), le rejeu seul est disponible.
