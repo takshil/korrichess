@@ -25,6 +25,7 @@
         <env name="CACHE_STORE" value="array"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="KORRI_SYNC_MODE" value="memory"/>
         <env name="SESSION_DRIVER" value="array"/>
     </php>
 </phpunit>

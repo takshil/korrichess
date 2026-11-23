@@ -8,11 +8,12 @@ use App\Domain\Entry\ManualEntryService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\ManualGameRequest;
 use App\Http\Requests\V1\PreviewMovesRequest;
+use App\Http\Resources\GameDetailResource;
 use Illuminate\Http\JsonResponse;
 
 final class ManualEntryController extends Controller
 {
-    public function __construct(private readonly ManualEntryService $entry = new ManualEntryService())
+    public function __construct(private readonly ManualEntryService $entry)
     {
     }
 
@@ -22,9 +23,7 @@ final class ManualEntryController extends Controller
      */
     public function preview(PreviewMovesRequest $request): JsonResponse
     {
-        $result = $this->entry->preview((array) $request->validated('moves'));
-
-        return response()->json($result['body'], $result['status']);
+        return response()->json($this->entry->preview((array) $request->validated('moves')));
     }
 
     /**
@@ -33,19 +32,19 @@ final class ManualEntryController extends Controller
      */
     public function store(ManualGameRequest $request): JsonResponse
     {
-        $result = $this->entry->store((int) $request->user()->id, (array) $request->validated());
+        $game = $this->entry->store((int) $request->user()->id, (array) $request->validated());
 
-        return response()->json($result['body'], $result['status']);
+        return (new GameDetailResource($game))->response()->setStatusCode(201);
     }
 
     /**
      * PUT /api/v1/games/{game}/manual — corrige une saisie manuelle,
      * fiche et coups remplacés en entier (S7).
      */
-    public function update(ManualGameRequest $request, int $game): JsonResponse
+    public function update(ManualGameRequest $request, int $game): GameDetailResource
     {
-        $result = $this->entry->update((int) $request->user()->id, $game, (array) $request->validated());
-
-        return response()->json($result['body'], $result['status']);
+        return new GameDetailResource(
+            $this->entry->update((int) $request->user()->id, $game, (array) $request->validated()),
+        );
     }
 }

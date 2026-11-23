@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Domain\Analysis\AnalysisService;
+use App\Domain\Analysis\GameAnalyser;
+use App\Domain\Shared\DomainError;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -30,8 +32,13 @@ final class AnalyseGameJob implements ShouldQueue
      * A10 : analyse en file — le worker exécute l'analyse complète et
      * persiste les résultats (game_analyses / analysis_moves).
      */
-    public function handle(AnalysisService $service): void
+    public function handle(GameAnalyser $analyser): void
     {
-        $service->analyse($this->userId, $this->gameId, $this->depth);
+        try {
+            $analyser->analyse($this->userId, $this->gameId, $this->depth);
+        } catch (DomainError $e) {
+            // Partie supprimée ou sans coups : rien à analyser, inutile de rejouer le job.
+            Log::info('Analyse abandonnée : ' . $e->errorCode, ['game_id' => $this->gameId]);
+        }
     }
 }

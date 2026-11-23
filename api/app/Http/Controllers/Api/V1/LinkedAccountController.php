@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Domain\Account\AccountService;
-use App\Domain\Sync\SyncService;
+use App\Domain\Account\LinkedAccountService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\LinkAccountRequest;
 use Illuminate\Http\JsonResponse;
@@ -13,41 +12,32 @@ use Illuminate\Http\Request;
 
 final class LinkedAccountController extends Controller
 {
-    public function __construct(
-        private readonly AccountService $accounts,
-        private readonly SyncService $sync,
-    ) {
+    public function __construct(private readonly LinkedAccountService $accounts)
+    {
     }
 
     /** POST /api/v1/me/linked-accounts — lier un pseudo (C3). */
     public function store(LinkAccountRequest $request): JsonResponse
     {
-        $platform = (string) $request->validated('platform');
-        $username = (string) $request->validated('username');
+        $created = $this->accounts->link(
+            $request->user(),
+            (string) $request->validated('platform'),
+            (string) $request->validated('username'),
+        );
 
-        $result = $this->accounts->linkAccount((int) $request->user()->id, $platform, $username);
-
-        // Nouveau lien : la première synchronisation part immédiatement en
-        // file ; l'espace affiche l'indicateur de chargement pendant l'import.
-        if ($result['status'] === 201) {
-            $this->sync->scheduleAutoSync((int) $request->user()->id, $platform, $username);
-        }
-
-        return response()->json($result['body'], $result['status']);
+        return $created
+            ? response()->json(['message' => 'compte_lie'], 201)
+            : response()->json(['message' => 'deja_lie']);
     }
 
     /** DELETE /api/v1/me/linked-accounts — délier un pseudo (C3). */
     public function destroy(Request $request): JsonResponse
     {
-        $removed = $this->accounts->unlinkAccount(
-            (int) $request->user()->id,
+        $this->accounts->unlink(
+            $request->user(),
             (string) $request->input('platform', ''),
             (string) $request->input('username', ''),
         );
-
-        if (!$removed) {
-            return response()->json(['error' => 'introuvable'], 404);
-        }
 
         return response()->json(['message' => 'delie']);
     }

@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Domain\Shared\DomainError;
 use App\Domain\Sync\SyncService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 final class SyncPlatformJob implements ShouldQueue
 {
@@ -35,11 +37,15 @@ final class SyncPlatformJob implements ShouldQueue
 
     /**
      * Sync automatique en file (L7) : rejoue la synchronisation incrémentale
-     * en tâche de fond. Sans client plateforme configuré, la sync répondra
-     * plateforme_inconnue sans effet de bord.
+     * en tâche de fond. Sans client plateforme configuré, la sync est
+     * refusée (plateforme_inconnue) sans effet de bord.
      */
     public function handle(SyncService $service): void
     {
-        $service->sync($this->userId, $this->platform, $this->username, $this->filters);
+        try {
+            $service->sync($this->userId, $this->platform, $this->username, $this->filters);
+        } catch (DomainError $e) {
+            Log::info('Sync abandonnée : ' . $e->errorCode, ['platform' => $this->platform]);
+        }
     }
 }

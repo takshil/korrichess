@@ -4,9 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Domain\Analysis\AnalysisService;
+use App\Domain\Analysis\AnalysisReader;
+use App\Domain\Analysis\AnalysisRequestOutcome;
+use App\Domain\Analysis\AnalysisRequester;
+use App\Domain\Analysis\EngineClient;
+use App\Domain\Analysis\GameAnalyser;
+use App\Domain\Analysis\GameReplayer;
 use App\Domain\Analysis\HeuristicEngine;
 use App\Domain\Games\GameRepository;
+use App\Domain\Shared\DomainError;
+use App\Domain\Shared\ErrorKind;
+use App\Http\Resources\AnalysisResource;
 use App\Jobs\AnalyseGameJob;
 use App\Models\Game;
 use App\Models\GameAnalysis;
@@ -55,9 +63,46 @@ final class AnalysisTest extends TestCase
         return (int) Game::query()->where('user_id', $userId)->first()->id;
     }
 
-    private function service(): AnalysisService
+    protected function setUp(): void
     {
-        return new AnalysisService(new HeuristicEngine());
+        parent::setUp();
+        // Moteur déterministe : les tests ne dépendent pas d'un binaire Stockfish.
+        $this->app->instance(EngineClient::class, new HeuristicEngine());
+    }
+
+    private function requester(): AnalysisRequester
+    {
+        return $this->app->make(AnalysisRequester::class);
+    }
+
+    private function analyser(): GameAnalyser
+    {
+        return $this->app->make(GameAnalyser::class);
+    }
+
+    private function replayer(): GameReplayer
+    {
+        return $this->app->make(GameReplayer::class);
+    }
+
+    /** Résultat d'analyse tel que le client le reçoit (tableau JSON). */
+    private function resultBody(int $uid, int $gameId): array
+    {
+        $analysis = $this->app->make(AnalysisReader::class)->latest($uid, $gameId);
+
+        return (new AnalysisResource($analysis))->resolve(request());
+    }
+
+    /** Exécute $action et renvoie le DomainError qu'elle lève. */
+    private function domainError(callable $action): DomainError
+    {
+        try {
+            $action();
+        } catch (DomainError $e) {
+            return $e;
+        }
+
+        $this->fail('Un DomainError était attendu.');
     }
 
     // ------------------------------------------------- A1 : rejeu
@@ -67,20 +112,22 @@ final class AnalysisTest extends TestCase
         $body = $this->registerUser();
         $gameId = $this->seedGame((int) $body['user_id']);
 
-        $r = $this->service()->replay((int) $body['user_id'], $gameId);
+        $r = $this->replayer()->replay((int) $body['user_id'], $gameId);
 
-        $this->assertSame(200, $r['status']);
-        $this->assertCount(7, $r['body']['positions']);
-        $this->assertSame(['e4', 'e5', 'Qh5', 'Nc6', 'Qxf7+', 'Kxf7'], $r['body']['moves_san']);
-        $this->assertSame('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', $r['body']['positions'][0]);
-        $this->assertSame(6, count($r['body']['moves_uci']));
+        $this->assertCount(7, $r->positions);
+        $this->assertSame(['e4', 'e5', 'Qh5', 'Nc6', 'Qxf7+', 'Kxf7'], $r->movesSan);
+        $this->assertSame('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', $r->positions[0]);
+        $this->assertCount(6, $r->movesUci);
     }
 
     public function test_a1_partie_inexistante_404(): void
     {
         $body = $this->registerUser();
 
-        $this->assertSame(404, $this->service()->replay((int) $body['user_id'], 999)['status']);
+        $error = $this->domainError(fn () => $this->replayer()->replay((int) $body['user_id'], 999));
+
+        $this->assertSame(ErrorKind::NotFound, $error->kind);
+        $this->assertSame('partie_introuvable', $error->errorCode);
     }
 
     // ------------------------------------------------- A10 : demande d'analyse
@@ -92,13 +139,13 @@ final class AnalysisTest extends TestCase
         $gameId = $this->seedGame($uid);
 
         Queue::fake();
-        $r = $this->service()->request($uid, $gameId);
-        $this->assertSame(202, $r['status']);
-        $this->assertSame('pending', $r['body']['status']);
+        $r = $this->requester()->request($uid, $gameId);
+        $this->assertSame(AnalysisRequestOutcome::Queued, $r->outcome);
+        $this->assertSame('pending', $r->analysis->status);
 
-        $again = $this->service()->request($uid, $gameId);
-        $this->assertSame('pending', $again['body']['status']);
-        $this->assertSame($r['body']['analysis_id'], $again['body']['analysis_id']);
+        $again = $this->requester()->request($uid, $gameId);
+        $this->assertSame(AnalysisRequestOutcome::AlreadyPending, $again->outcome);
+        $this->assertSame($r->analysis->id, $again->analysis->id);
 
         Queue::assertPushed(AnalyseGameJob::class, 1);
         Queue::assertPushed(
@@ -115,8 +162,8 @@ final class AnalysisTest extends TestCase
         $uid = (int) $body['user_id'];
         $gameId = $this->seedGame($uid);
 
-        $r = $this->service()->request($uid, $gameId);
-        $this->assertSame(202, $r['status']);
+        $r = $this->requester()->request($uid, $gameId);
+        $this->assertSame(AnalysisRequestOutcome::Queued, $r->outcome);
 
         $analysis = GameAnalysis::query()->where('game_id', $gameId)->first();
         $this->assertSame('done', $analysis->status);
@@ -130,16 +177,15 @@ final class AnalysisTest extends TestCase
         $gameId = $this->seedGame($uid);
 
         Queue::fake();
-        $this->service()->request($uid, $gameId);
+        $this->requester()->request($uid, $gameId);
         Queue::assertPushed(AnalyseGameJob::class, 1);
 
         // Exécution du worker (A10 : asynchrone).
-        $this->service()->analyse($uid, $gameId);
+        $this->analyser()->analyse($uid, $gameId);
 
-        $reRequest = $this->service()->request($uid, $gameId);
-        $this->assertSame(200, $reRequest['status']);
-        $this->assertTrue($reRequest['body']['already']);
-        $this->assertSame('done', $reRequest['body']['status']);
+        $reRequest = $this->requester()->request($uid, $gameId);
+        $this->assertSame(AnalysisRequestOutcome::AlreadyDone, $reRequest->outcome);
+        $this->assertSame('done', $reRequest->analysis->status);
         Queue::assertPushed(AnalyseGameJob::class, 1);
     }
 
@@ -155,9 +201,12 @@ final class AnalysisTest extends TestCase
             'pgn' => '[Event "Partie vide"]',
         ]);
 
-        $r = $this->service()->analyse($uid, (int) Game::query()->where('external_id', 'vide')->first()->id);
-        $this->assertSame(422, $r['status']);
-        $this->assertSame('partie_sans_coups', $r['body']['error']);
+        $error = $this->domainError(
+            fn () => $this->analyser()->analyse($uid, (int) Game::query()->where('external_id', 'vide')->first()->id),
+        );
+
+        $this->assertSame(ErrorKind::Invalid, $error->kind);
+        $this->assertSame('partie_sans_coups', $error->errorCode);
     }
 
     // ------------------------------------------------- A2–A7, A9 : résultats
@@ -168,33 +217,31 @@ final class AnalysisTest extends TestCase
         $uid = (int) $body['user_id'];
         $gameId = $this->seedGame($uid);
 
-        $r = $this->service()->analyse($uid, $gameId);
-        $this->assertSame(200, $r['status']);
-        $this->assertSame('done', $r['body']['status']);
+        $analysis = $this->analyser()->analyse($uid, $gameId);
+        $this->assertSame('done', $analysis->status);
 
-        $result = $this->service()->result($uid, $gameId);
-        $this->assertSame(200, $result['status']);
-        $this->assertSame('done', $result['body']['status']);
+        $result = $this->resultBody($uid, $gameId);
+        $this->assertSame('done', $result['status']);
         // A2 : une évaluation par position (départ + 6 coups).
-        $this->assertCount(7, $result['body']['moves']);
-        $this->assertIsInt($result['body']['moves'][0]['eval_cp']);
+        $this->assertCount(7, $result['moves']);
+        $this->assertIsInt($result['moves'][0]['eval_cp']);
         // A3 : courbe d'évaluation.
-        $this->assertCount(7, $result['body']['eval_curve']);
+        $this->assertCount(7, $result['eval_curve']);
         // A4 : classement de chaque coup dans une catégorie connue.
         $known = ['meilleur', 'bon', 'imprecision', 'erreur', 'gaffe'];
         $this->assertSame(
-            count($result['body']['moves']),
-            count(array_filter($result['body']['moves'], fn ($m) => in_array($m['classification'], $known, true))),
+            count($result['moves']),
+            count(array_filter($result['moves'], fn ($m) => in_array($m['classification'], $known, true))),
         );
-        $this->assertArrayHasKey('classification_counts', $result['body']);
+        $this->assertArrayHasKey('classification_counts', $result);
         // A5 : moment décisif identifié.
-        $this->assertNotNull($result['body']['decisive_ply']);
-        $this->assertGreaterThanOrEqual(0, $result['body']['decisive_ply']);
-        $this->assertLessThanOrEqual(6, $result['body']['decisive_ply']);
+        $this->assertNotNull($result['decisive_ply']);
+        $this->assertGreaterThanOrEqual(0, $result['decisive_ply']);
+        $this->assertLessThanOrEqual(6, $result['decisive_ply']);
         // A6 : meilleur coup et variante suggérés.
-        $withBest = array_filter($result['body']['moves'], fn ($m) => $m['best_move_san'] !== null);
+        $withBest = array_filter($result['moves'], fn ($m) => $m['best_move_san'] !== null);
         $this->assertNotEmpty($withBest);
-        $this->assertNotEmpty($result['body']['moves'][0]['variation']);
+        $this->assertNotEmpty($result['moves'][0]['variation']);
     }
 
     public function test_a7_les_erreurs_sont_expliquees(): void
@@ -203,10 +250,10 @@ final class AnalysisTest extends TestCase
         $uid = (int) $body['user_id'];
         $gameId = $this->seedGame($uid);
 
-        $this->service()->analyse($uid, $gameId);
-        $result = $this->service()->result($uid, $gameId);
+        $this->analyser()->analyse($uid, $gameId);
+        $result = $this->resultBody($uid, $gameId);
 
-        $explained = array_filter($result['body']['moves'], fn ($m) => $m['explanation'] !== null);
+        $explained = array_filter($result['moves'], fn ($m) => $m['explanation'] !== null);
         $this->assertNotEmpty($explained);
         $hasSuggestion = (bool) array_filter(
             $explained,
@@ -221,11 +268,11 @@ final class AnalysisTest extends TestCase
         $uid = (int) $body['user_id'];
         $gameId = $this->seedGame($uid);
 
-        $this->service()->analyse($uid, $gameId);
-        $result = $this->service()->result($uid, $gameId);
+        $this->analyser()->analyse($uid, $gameId);
+        $result = $this->resultBody($uid, $gameId);
 
-        $this->assertSame('Partie italienne', $result['body']['opening_name']);
-        $this->assertSame(2, $result['body']['book_exit_ply']);
+        $this->assertSame('Partie italienne', $result['opening_name']);
+        $this->assertSame(2, $result['book_exit_ply']);
     }
 
     // ------------------------------------------------- A8 : exploration
@@ -236,11 +283,10 @@ final class AnalysisTest extends TestCase
         $uid = (int) $body['user_id'];
         $gameId = $this->seedGame($uid);
 
-        $explore = $this->service()->explore($uid, $gameId, 0, 'd2d4');
+        $explore = $this->replayer()->explore($uid, $gameId, 0, 'd2d4');
 
-        $this->assertSame(200, $explore['status']);
-        $this->assertSame('d4', $explore['body']['move_san']);
-        $this->assertStringStartsWith('rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP', (string) $explore['body']['fen']);
+        $this->assertSame('d4', $explore->moveSan);
+        $this->assertStringStartsWith('rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP', $explore->fen);
     }
 
     public function test_a8_coups_invalides_refuses(): void
@@ -249,8 +295,12 @@ final class AnalysisTest extends TestCase
         $uid = (int) $body['user_id'];
         $gameId = $this->seedGame($uid);
 
-        $this->assertSame(422, $this->service()->explore($uid, $gameId, 0, 'e2e5')['status']);
-        $this->assertSame(404, $this->service()->explore($uid, 999, 0, 'e2e4')['status']);
+        $illegal = $this->domainError(fn () => $this->replayer()->explore($uid, $gameId, 0, 'e2e5'));
+        $this->assertSame(ErrorKind::Invalid, $illegal->kind);
+        $this->assertArrayHasKey('fen', $illegal->context);
+
+        $unknown = $this->domainError(fn () => $this->replayer()->explore($uid, 999, 0, 'e2e4'));
+        $this->assertSame(ErrorKind::NotFound, $unknown->kind);
     }
 
     // ------------------------------------------------- Isolation
@@ -263,9 +313,16 @@ final class AnalysisTest extends TestCase
 
         $other = $this->registerUser('autre-analyse@example.com');
 
-        $this->assertSame(404, $this->service()->replay((int) $other['user_id'], $gameId)['status']);
-        $this->assertSame(404, $this->service()->result((int) $other['user_id'], $gameId)['status']);
-        $this->assertSame(404, $this->service()->explore((int) $other['user_id'], $gameId, 0, 'd2d4')['status']);
+        $otherId = (int) $other['user_id'];
+        $reader = $this->app->make(AnalysisReader::class);
+
+        foreach ([
+            fn () => $this->replayer()->replay($otherId, $gameId),
+            fn () => $reader->latest($otherId, $gameId),
+            fn () => $this->replayer()->explore($otherId, $gameId, 0, 'd2d4'),
+        ] as $attempt) {
+            $this->assertSame(ErrorKind::NotFound, $this->domainError($attempt)->kind);
+        }
     }
 
     // ------------------------------------------------- API HTTP
@@ -291,7 +348,7 @@ final class AnalysisTest extends TestCase
         $gameId = $this->seedGame($uid);
 
         // Analyse déjà faite → la route renvoie l'existante.
-        $this->service()->analyse($uid, $gameId);
+        $this->analyser()->analyse($uid, $gameId);
 
         $ask = $this->withToken($body['token'])->postJson("/api/v1/games/{$gameId}/analyse", []);
         $ask->assertStatus(200)->assertJson(['already' => true, 'status' => 'done']);

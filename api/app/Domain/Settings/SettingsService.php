@@ -8,74 +8,41 @@ use App\Models\UserSetting;
 
 /**
  * Paramètres du joueur (issue #10) : langue (i18n fr/en), thème clair/sombre,
- * styles d'échiquier et de pièces, notifications désactivables.
+ * styles d'échiquier et de pièces, notifications désactivables. Les valeurs
+ * autorisées sont validées en amont par UpdateSettingsRequest.
  */
 final class SettingsService
 {
-    private const THEMES = ['clair', 'sombre'];
-    private const LANGUAGES = ['fr', 'en'];
-    private const BOARD_STYLES = ['classique', 'bois', 'contraste'];
-    private const PIECE_STYLES = ['classique', 'minimaliste'];
+    private const CHOICE_FIELDS = ['language', 'theme', 'board_style', 'piece_style'];
+    private const FLAG_FIELDS = ['notify_analysis_done', 'notify_exercise_reminder', 'notify_games_synced'];
 
-    /** @return array<string,mixed> */
-    public function get(int $userId): array
+    public function get(int $userId): UserSetting
     {
-        $setting = $this->row($userId);
-
-        return [
-            'language' => $setting->language,
-            'theme' => $setting->theme,
-            'board_style' => $setting->board_style,
-            'piece_style' => $setting->piece_style,
-            'notifications' => [
-                'analysis_done' => $setting->notify_analysis_done,
-                'exercise_reminder' => $setting->notify_exercise_reminder,
-                'games_synced' => $setting->notify_games_synced,
-            ],
-        ];
+        return UserSetting::query()->firstOrCreate(['user_id' => $userId]);
     }
 
-    /** @return array{status:int,body:array} */
-    public function update(int $userId, array $input): array
+    /**
+     * @param array<string,mixed> $input champs validés
+     */
+    public function update(int $userId, array $input): UserSetting
     {
-        $setting = $this->row($userId);
-
-        $map = [
-            'language' => ['language', self::LANGUAGES],
-            'theme' => ['theme', self::THEMES],
-            'board_style' => ['board_style', self::BOARD_STYLES],
-            'piece_style' => ['piece_style', self::PIECE_STYLES],
-            'notify_analysis_done' => ['notify_analysis_done', null],
-            'notify_exercise_reminder' => ['notify_exercise_reminder', null],
-            'notify_games_synced' => ['notify_games_synced', null],
-        ];
+        $setting = $this->get($userId);
 
         $changes = [];
-        foreach ($map as $key => [$column, $allowed]) {
-            if (!array_key_exists($key, $input)) {
-                continue;
-            }
-            $value = $input[$key];
-            if ($allowed === null) {
-                $changes[$column] = in_array($value, [true, 1, '1'], true);
-            } else {
-                $value = (string) $value;
-                if (!in_array($value, $allowed, true)) {
-                    return ['status' => 422, 'body' => ['error' => 'valeur_non_autorisee', 'champ' => $key]];
-                }
-                $changes[$column] = $value;
+        foreach (self::CHOICE_FIELDS as $field) {
+            if (array_key_exists($field, $input)) {
+                $changes[$field] = (string) $input[$field];
             }
         }
-
+        foreach (self::FLAG_FIELDS as $field) {
+            if (array_key_exists($field, $input)) {
+                $changes[$field] = in_array($input[$field], [true, 1, '1'], true);
+            }
+        }
         if ($changes !== []) {
             $setting->fill($changes)->save();
         }
 
-        return ['status' => 200, 'body' => $this->get($userId)];
-    }
-
-    private function row(int $userId): UserSetting
-    {
-        return UserSetting::query()->firstOrCreate(['user_id' => $userId]);
+        return $setting;
     }
 }

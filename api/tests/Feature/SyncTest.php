@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Domain\Shared\DomainError;
+use App\Domain\Shared\ErrorKind;
 use App\Domain\Sync\InMemoryPlatformClient;
+use App\Domain\Sync\PlatformRegistry;
 use App\Domain\Sync\RateLimiter;
+use App\Domain\Sync\SyncScheduler;
 use App\Domain\Sync\SyncService;
+use App\Domain\Sync\SyncStateRepository;
 use App\Jobs\SyncPlatformJob;
 use App\Models\Game;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -49,10 +54,9 @@ final class SyncTest extends TestCase
      */
     private function syncServiceWith(InMemoryPlatformClient $client): SyncService
     {
-        $service = new SyncService(['lichess' => $client]);
-        $this->app->instance(SyncService::class, $service);
+        $this->app->instance(PlatformRegistry::class, new PlatformRegistry(['lichess' => $client]));
 
-        return $service;
+        return $this->app->make(SyncService::class);
     }
 
     /** @return array<int,array{external_id:string,pgn:string,played_at:string}> */
@@ -72,11 +76,10 @@ final class SyncTest extends TestCase
         $this->registerUser();
         $service = $this->syncServiceWith(new InMemoryPlatformClient($this->initialGames()));
 
-        $r = $service->sync(1, 'lichess', 'alice');
+        $report = $service->sync(1, 'lichess', 'alice');
 
-        $this->assertSame(200, $r['status']);
-        $this->assertSame(3, $r['body']['imported']);
-        $this->assertSame(0, $r['body']['duplicates_ignores']);
+        $this->assertSame(3, $report->imported);
+        $this->assertSame(0, $report->duplicates);
         $this->assertSame(3, Game::query()->count());
     }
 
@@ -119,7 +122,7 @@ final class SyncTest extends TestCase
         $service->sync(1, 'lichess', 'alice');
         $r2 = $service->sync(1, 'lichess', 'alice');
 
-        $this->assertSame(0, $r2['body']['imported']);
+        $this->assertSame(0, $r2->imported);
         $this->assertSame(3, Game::query()->count());
     }
 
@@ -128,16 +131,17 @@ final class SyncTest extends TestCase
         $this->registerUser();
         $client = new InMemoryPlatformClient($this->initialGames());
         $service = $this->syncServiceWith($client);
+        $states = $this->app->make(SyncStateRepository::class);
 
         $service->sync(1, 'lichess', 'alice');
-        $this->assertSame('2025-03-13T22:00:00Z', $service->state(1, 'lichess', 'alice')['last_game_at']);
+        $this->assertSame('2025-03-13T22:00:00Z', $states->cursor(1, 'lichess', 'alice')['last_game_at']);
 
         $newGame = '[Event "Lichess blitz"]' . "\n" . '[TimeControl "300"]' . "\n\n" . '1. f4 e5 2. g4 Qh4# 0-1';
         $client->games[] = ['external_id' => 'g4', 'pgn' => $newGame, 'played_at' => '2025-03-20T10:00:00Z'];
         $r = $service->sync(1, 'lichess', 'alice');
 
-        $this->assertSame(1, $r['body']['imported']);
-        $this->assertSame('2025-03-20T10:00:00Z', $service->state(1, 'lichess', 'alice')['last_game_at']);
+        $this->assertSame(1, $r->imported);
+        $this->assertSame('2025-03-20T10:00:00Z', $states->cursor(1, 'lichess', 'alice')['last_game_at']);
     }
 
     // ------------------------------------------------- Doublons (L6)
@@ -155,8 +159,8 @@ final class SyncTest extends TestCase
         DB::table('sync_state')->delete();
         $r = $service->sync(1, 'lichess', 'alice');
 
-        $this->assertSame(0, $r['body']['imported']);
-        $this->assertSame(3, $r['body']['duplicates_ignores']);
+        $this->assertSame(0, $r->imported);
+        $this->assertSame(3, $r->duplicates);
         $this->assertSame(3, Game::query()->count());
     }
 
@@ -172,14 +176,14 @@ final class SyncTest extends TestCase
 
         // Rien de nouveau en cadence 600.
         $r = $service->sync(1, 'lichess', 'alice', ['time_controls' => ['600']]);
-        $this->assertSame(0, $r['body']['imported']);
+        $this->assertSame(0, $r->imported);
 
         // Une nouvelle rapide (600) est importée, les blitz (300) ne le sont pas.
         $client->games[] = ['external_id' => 'g5', 'pgn' => self::GAME_RAPIDE, 'played_at' => '2025-03-25T10:00:00Z'];
         $client->games[] = ['external_id' => 'g6', 'pgn' => self::GAME_BLANC, 'played_at' => '2025-03-26T10:00:00Z'];
         $r2 = $service->sync(1, 'lichess', 'alice', ['time_controls' => ['600']]);
 
-        $this->assertSame(1, $r2['body']['imported']);
+        $this->assertSame(1, $r2->imported);
         $this->assertDatabaseHas('games', ['external_id' => 'g5']);
         $this->assertDatabaseMissing('games', ['external_id' => 'g6']);
     }
@@ -191,21 +195,24 @@ final class SyncTest extends TestCase
 
         $r = $service->sync(1, 'lichess', 'alice', ['period_start' => '2025-03-12T00:00:00Z']);
 
-        $this->assertSame(2, $r['body']['imported']);
+        $this->assertSame(2, $r->imported);
         $this->assertDatabaseMissing('games', ['external_id' => 'g1']);
     }
 
     // ------------------------------------------------- Robustesse (L8)
 
-    public function test_plateforme_inconnue_renvoyee_en_422(): void
+    public function test_plateforme_inconnue_est_refusee(): void
     {
         $this->registerUser();
         $service = $this->syncServiceWith(new InMemoryPlatformClient());
 
-        $r = $service->sync(1, 'foo', 'alice');
-
-        $this->assertSame(422, $r['status']);
-        $this->assertSame('plateforme_inconnue', $r['body']['error']);
+        try {
+            $service->sync(1, 'foo', 'alice');
+            $this->fail('Un DomainError était attendu.');
+        } catch (DomainError $e) {
+            $this->assertSame(ErrorKind::Invalid, $e->kind);
+            $this->assertSame('plateforme_inconnue', $e->errorCode);
+        }
     }
 
     public function test_pgn_invalide_est_ignore_sans_crash(): void
@@ -219,8 +226,7 @@ final class SyncTest extends TestCase
 
         $r = $service->sync(1, 'lichess', 'alice');
 
-        $this->assertSame(200, $r['status']);
-        $this->assertSame(0, $r['body']['imported']);
+        $this->assertSame(0, $r->imported);
         $this->assertDatabaseMissing('games', ['external_id' => 'g7']);
     }
 
@@ -229,10 +235,10 @@ final class SyncTest extends TestCase
     public function test_une_sync_automatique_est_placee_en_file(): void
     {
         $this->registerUser();
-        $service = $this->syncServiceWith(new InMemoryPlatformClient());
+        $scheduler = $this->app->make(SyncScheduler::class);
 
         Queue::fake();
-        $service->scheduleAutoSync(1, 'lichess', 'alice');
+        $scheduler->schedule(1, 'lichess', 'alice');
 
         Queue::assertPushed(SyncPlatformJob::class, 1);
         Queue::assertPushed(
