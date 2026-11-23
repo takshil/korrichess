@@ -172,9 +172,11 @@ cat > "$API_DIR/.htaccess" <<'HTACCESS'
 </FilesMatch>
 HTACCESS
 
-# 3. Initialisation du .env si inexistant
+# 3. Initialisation du .env uniquement s'il n'existe pas déjà sur le serveur
 ENV_CREATED="false"
-if [ ! -f "$API_DIR/.env" ]; then
+if [ -f "$API_DIR/.env" ]; then
+    echo ">>> Fichier .env existant conservé : $API_DIR/.env"
+else
     echo ">>> Création initiale de $API_DIR/.env (mode production)"
     cp "$REPO_DIR/api/.env.example" "$API_DIR/.env"
     "$PHP_BIN" -r '
@@ -229,8 +231,8 @@ if [ "$SKIP_COMPOSER" != "true" ]; then
     )
 fi
 
-# Générer APP_KEY si absent du .env
-if ! grep -qE '^APP_KEY=base64:.+' "$API_DIR/.env"; then
+# Générer APP_KEY uniquement s'il est vide dans le .env
+if ! grep -qE '^APP_KEY=.+' "$API_DIR/.env"; then
     if [ -f "$API_DIR/vendor/autoload.php" ]; then
         echo ">>> Génération de APP_KEY"
         (
