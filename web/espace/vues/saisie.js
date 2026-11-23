@@ -1,12 +1,20 @@
 /* Vue saisie manuelle d'une partie de tournoi (S5 + S7, issue #25). */
 
 import { api } from '../api.js';
-import { damierSaisie, fenVersCarte, svgPiece } from '../echiquier.js';
+import { creerEchiquierSaisie } from '../echiquier.js';
 import { analyserSaisie } from '../partie.js';
 import { echapperHtml, vue } from '../ui.js';
 
 let saisie = null;
 let naviguer = null;
+let plateauSaisie = null;
+
+export function detruirePlateauSaisie() {
+    if (plateauSaisie) {
+        plateauSaisie.detruire();
+        plateauSaisie = null;
+    }
+}
 
 export function vueSaisie(id, aller) {
     naviguer = aller;
@@ -69,14 +77,13 @@ function construireVueSaisie() {
         '</div>' +
         '<div class="rejeu-disposition">' +
         '  <div>' +
-        '    <div class="echiquier saisie-echiquier" id="saisie-echiquier" aria-label="Échiquier de saisie"></div>' +
+        '    <div class="echiquier-cadre" id="saisie-echiquier" aria-label="Échiquier de saisie"></div>' +
         '    <p class="rejeu-position" id="saisie-statut"></p>' +
         '    <form id="saisie-form-san" style="display:flex;gap:0.5rem;flex-wrap:wrap">' +
         '      <div class="champ" style="flex:1;min-width:9rem;margin:0"><label for="saisie-san-texte">Tape un coup (ex. Nf3)</label>' +
         '        <input id="saisie-san-texte" type="text" autocomplete="off"></div>' +
         '      <button class="bouton bouton-secondaire" type="submit" style="align-self:flex-end">Ajouter</button>' +
         '    </form>' +
-        '    <div id="saisie-promotion" hidden style="display:flex;gap:0.5rem;justify-content:center;margin-top:0.6rem"></div>' +
         '    <p style="margin-top:0.8rem"><button type="button" class="bouton bouton-secondaire" id="saisie-retirer">↩ Retirer le dernier coup</button></p>' +
         '  </div>' +
         '  <div class="coups" id="saisie-liste"></div>' +
@@ -111,18 +118,27 @@ function construireVueSaisie() {
         '  <p class="message-erreur" id="saisie-erreur" role="alert" style="grid-column:1/-1"></p>' +
         '</form>';
 
+    if (plateauSaisie) {
+        plateauSaisie.detruire();
+        plateauSaisie = null;
+    }
+    plateauSaisie = creerEchiquierSaisie(document.getElementById('saisie-echiquier'), {
+        inverser: saisie.couleur === 'black',
+        getEtat: () => saisie,
+        onCoup: (uci) => {
+            saisie.moves.push(uci);
+            apresCoupSaisie(false);
+        },
+    });
+
     document.getElementById('saisie-verification').addEventListener('change', function () {
         saisie.verification = this.checked;
     });
     document.getElementById('s-couleur').addEventListener('change', function () {
         saisie.couleur = this.value;
-        saisie.selection = null;
-        saisie.destinations = [];
-        rafraichirSaisie();
-    });
-    document.getElementById('saisie-echiquier').addEventListener('click', (evenement) => {
-        const cible = evenement.target.closest ? evenement.target.closest('.case') : null;
-        if (cible) { clicCaseSaisie(cible.getAttribute('data-case')); }
+        if (plateauSaisie) {
+            plateauSaisie.inverser(saisie.couleur === 'black');
+        }
     });
     document.getElementById('saisie-form-san').addEventListener('submit', (evenement) => {
         evenement.preventDefault();
@@ -169,8 +185,6 @@ function apresCoupSaisie(recharge) {
     saisie.echec = b.in_check;
     saisie.mat = b.is_checkmate;
     saisie.pat = b.is_stalemate;
-    saisie.selection = null;
-    saisie.destinations = [];
     rafraichirSaisie();
 }
 
@@ -178,7 +192,9 @@ function rafraichirSaisie() {
     const echiquier = document.getElementById('saisie-echiquier');
     if (!echiquier || !saisie.fen) { return; }
     const figee = saisie.invalidPly !== null;
-    echiquier.innerHTML = damierSaisie(saisie.fen, saisie.couleur === 'black', saisie.selection, saisie.destinations);
+    if (plateauSaisie) {
+        plateauSaisie.afficher(saisie.fen, figee);
+    }
     echiquier.classList.toggle('figee', figee);
 
     let html = '<ol>';
@@ -211,83 +227,6 @@ function ligneCoupSaisie(i) {
     const affiche = douteux ? String(saisie.moves[i]) : saisie.san[i];
     return '<li><button type="button" class="coup' + (douteux ? ' douteux' : '') + '" data-tronque="' + i +
         '" title="Retirer à partir de ce coup">' + echapperHtml(affiche) + (douteux ? ' ⚠' : '') + '</button></li>';
-}
-
-function clicCaseSaisie(nom) {
-    if (saisie.invalidPly !== null) {
-        document.getElementById('saisie-statut').textContent =
-            'Position figée au coup douteux : corrige la liste ci-contre pour reprendre.';
-        return;
-    }
-    if (saisie.selection === null) {
-        const carte = fenVersCarte(saisie.fen);
-        const piece = carte[nom];
-        if (!piece) { return; }
-        const estBlanc = piece === piece.toUpperCase();
-        if ((saisie.trait === 'white') !== estBlanc) {
-            document.getElementById('saisie-statut').textContent =
-                'Ce n\'est pas le trait — aux ' + (saisie.trait === 'white' ? 'blancs' : 'noirs') + '.';
-            return;
-        }
-        saisie.destinations = [];
-        saisie.legal.forEach((m) => {
-            if (m.slice(0, 2) === nom && saisie.destinations.indexOf(m.slice(2, 4)) < 0) {
-                saisie.destinations.push(m.slice(2, 4));
-            }
-        });
-        if (saisie.destinations.length === 0) { return; }
-        saisie.selection = nom;
-        rafraichirSaisie();
-        return;
-    }
-    if (saisie.selection === nom) {
-        saisie.selection = null;
-        saisie.destinations = [];
-        rafraichirSaisie();
-        return;
-    }
-    const de = saisie.selection;
-    const candidats = saisie.legal.filter((m) => m.slice(0, 2) === de && m.slice(2, 4) === nom);
-    saisie.selection = null;
-    saisie.destinations = [];
-    if (candidats.length === 0) {
-        const carte = fenVersCarte(saisie.fen);
-        const piece = carte[nom];
-        if (piece && (saisie.trait === 'white') === (piece === piece.toUpperCase())) {
-            saisie.destinations = [];
-            saisie.legal.forEach((m) => {
-                if (m.slice(0, 2) === nom && saisie.destinations.indexOf(m.slice(2, 4)) < 0) {
-                    saisie.destinations.push(m.slice(2, 4));
-                }
-            });
-            if (saisie.destinations.length > 0) {
-                saisie.selection = nom;
-            }
-        }
-        rafraichirSaisie();
-        return;
-    }
-    if (candidats.length === 1) {
-        saisie.moves.push(candidats[0]);
-        apresCoupSaisie(false);
-        return;
-    }
-    const zone = document.getElementById('saisie-promotion');
-    const base = de + nom;
-    zone.innerHTML = ['q', 'r', 'b', 'n'].map((p) => {
-        const pieceChar = saisie.trait === 'white' ? p.toUpperCase() : p;
-        return '<button type="button" class="bouton bouton-secondaire" data-coup="' + base + p + '">' + svgPiece(pieceChar) + '</button>';
-    }).join('');
-    zone.hidden = false;
-    zone.querySelectorAll('button').forEach((bouton) => {
-        bouton.addEventListener('click', () => {
-            zone.hidden = true;
-            zone.innerHTML = '';
-            saisie.moves.push(bouton.getAttribute('data-coup'));
-            apresCoupSaisie(false);
-        });
-    });
-    rafraichirSaisie();
 }
 
 function envoyerSaisie(evenement) {

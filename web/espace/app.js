@@ -5,7 +5,7 @@ import { vueBibliotheque } from './vues/bibliotheque.js';
 import { vueCompte } from './vues/compte.js';
 import { vueConnexion } from './vues/connexion.js';
 import { detacherClavierRejeu, vueRejeu } from './vues/rejeu.js';
-import { vueSaisie } from './vues/saisie.js';
+import { detruirePlateauSaisie, vueSaisie } from './vues/saisie.js';
 import { vueTableauDeBord } from './vues/tableau-de-bord.js';
 
 function aller(hash) {
@@ -20,6 +20,7 @@ function router() {
     const hash = location.hash || '#/';
     document.body.classList.toggle('sans-session', jeton() === null);
     detacherClavierRejeu();
+    detruirePlateauSaisie();
 
     if (jeton() === null && hash !== '#/connexion') {
         location.hash = '#/connexion';
