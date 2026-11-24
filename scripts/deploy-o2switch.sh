@@ -13,6 +13,14 @@
 
 set -euo pipefail
 
+CURRENT_STEP="démarrage"
+trap 'code=$?; echo "ERREUR : le déploiement a échoué à l’étape « $CURRENT_STEP » (code $code). Voir les messages ci-dessus." >&2' ERR
+
+step() {
+    CURRENT_STEP="$1"
+    echo ">>> $1"
+}
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
@@ -28,6 +36,8 @@ WEB_DIR="${WEB_DIR:-}"
 PHP_BIN="${PHP_BIN:-}"
 SKIP_COMPOSER="${SKIP_COMPOSER:-false}"
 SKIP_MIGRATE="${SKIP_MIGRATE:-false}"
+PULL_REPO="${PULL_REPO:-false}"
+STRICT_GIT="${STRICT_GIT:-false}"
 
 usage() {
     cat <<'EOF'
@@ -40,6 +50,8 @@ Options :
   --php=BINAIRE       Chemin explicite vers PHP >= 8.3
   --skip-composer     Ne pas exécuter composer install
   --skip-migrate      Ne pas exécuter php artisan migrate --force
+  --pull              Faire un 'git pull --ff-only' du dépôt source avant de déployer
+  --strict-git        Échouer si le dépôt source n'est pas à jour de son amont
   -h, --help          Afficher cette aide
 EOF
 }
@@ -63,6 +75,12 @@ for arg in "$@"; do
             ;;
         --skip-migrate)
             SKIP_MIGRATE="true"
+            ;;
+        --pull)
+            PULL_REPO="true"
+            ;;
+        --strict-git)
+            STRICT_GIT="true"
             ;;
         -h|--help)
             usage
@@ -125,8 +143,41 @@ if ! PHP_BIN="$(detect_php)"; then
 fi
 echo "PHP utilisé  : $PHP_BIN ($("$PHP_BIN" -r 'echo PHP_VERSION;'))"
 
+# 1b. Garde-fou : le dépôt source est-il réellement à jour ?
+# (« Deploy HEAD Commit » de cPanel ne tire rien : sans « Update from Remote »,
+# on redéploie l'ancien commit en croyant le dépôt à jour.)
+if command -v git >/dev/null 2>&1 && [ -d "$REPO_DIR/.git" ]; then
+    step "Vérification de l'état du dépôt source"
+    UPSTREAM="$(git -C "$REPO_DIR" rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null || true)"
+    if [ -n "$UPSTREAM" ] && [ "$PULL_REPO" = "true" ]; then
+        echo ">>> git pull --ff-only ($UPSTREAM)"
+        git -C "$REPO_DIR" pull --ff-only
+    fi
+    if [ -n "$UPSTREAM" ]; then
+        if ! git -C "$REPO_DIR" fetch --quiet 2>/dev/null; then
+            echo "AVERTISSEMENT : 'git fetch' a échoué (réseau ?) — comparaison sur la dernière réf distante connue." >&2
+        fi
+        LOCAL_HEAD="$(git -C "$REPO_DIR" rev-parse HEAD)"
+        REMOTE_HEAD="$(git -C "$REPO_DIR" rev-parse "$UPSTREAM" 2>/dev/null || true)"
+        if [ -n "$REMOTE_HEAD" ] && [ "$LOCAL_HEAD" != "$REMOTE_HEAD" ]; then
+            echo "AVERTISSEMENT : le dépôt source n'est PAS à jour (HEAD=$LOCAL_HEAD, $UPSTREAM=$REMOTE_HEAD)." >&2
+            echo "Relance avec --pull, ou 'git -C $REPO_DIR pull --ff-only', ou « Update from Remote » dans cPanel." >&2
+            if [ "$STRICT_GIT" = "true" ]; then
+                exit 1
+            fi
+        fi
+    else
+        echo "AVERTISSEMENT : aucune branche amont (HEAD détachée ?) — fraîcheur du dépôt non vérifiable." >&2
+    fi
+    if [ -n "$(git -C "$REPO_DIR" status --porcelain 2>/dev/null)" ]; then
+        echo "AVERTISSEMENT : modifications locales non commitées dans $REPO_DIR (non déployées)." >&2
+    fi
+else
+    echo ">>> Hors dépôt git (ou git absent) : garde-fou dépôt ignoré."
+fi
+
 # 2. Préparation et synchronisation de korrichess-api
-echo ">>> Synchronisation de l'API vers $API_DIR"
+step "Synchronisation de l'API vers $API_DIR"
 mkdir -p "$API_DIR"
 
 if command -v rsync >/dev/null 2>&1; then
@@ -173,6 +224,7 @@ cat > "$API_DIR/.htaccess" <<'HTACCESS'
 HTACCESS
 
 # 3. Initialisation du .env uniquement s'il n'existe pas déjà sur le serveur
+step "Gestion du .env de l'API"
 ENV_CREATED="false"
 if [ -f "$API_DIR/.env" ]; then
     echo ">>> Fichier .env existant conservé : $API_DIR/.env"
@@ -200,7 +252,10 @@ else
 fi
 
 # 4. Dépendances Composer (--no-dev)
-if [ "$SKIP_COMPOSER" != "true" ]; then
+if [ "$SKIP_COMPOSER" = "true" ]; then
+    echo ">>> Composer ignoré (--skip-composer)"
+else
+    step "Dépendances Composer (--no-dev)"
     COMPOSER_CMD=()
     for bin in \
         "$(command -v composer 2>/dev/null || true)" \
@@ -214,31 +269,52 @@ if [ "$SKIP_COMPOSER" != "true" ]; then
         fi
     done
 
-    if [ ${#COMPOSER_CMD[@]} -eq 0 ]; then
-        if [ ! -f "$API_DIR/.composer.phar" ]; then
-            echo ">>> Composer introuvable : téléchargement de composer.phar dans $API_DIR/.composer.phar"
-            "$PHP_BIN" -r "copy('https://getcomposer.org/installer', '$API_DIR/.composer-setup.php');"
-            "$PHP_BIN" "$API_DIR/.composer-setup.php" --install-dir="$API_DIR" --filename=.composer.phar
-            rm -f "$API_DIR/.composer-setup.php"
+    if [ ${#COMPOSER_CMD[@]} -eq 0 ] && [ ! -f "$API_DIR/.composer.phar" ]; then
+        echo ">>> Composer introuvable : téléchargement de composer.phar dans $API_DIR/.composer.phar"
+        if "$PHP_BIN" -r "copy('https://getcomposer.org/installer', '$API_DIR/.composer-setup.php');"; then
+            if "$PHP_BIN" "$API_DIR/.composer-setup.php" --install-dir="$API_DIR" --filename=.composer.phar; then
+                COMPOSER_CMD=("$PHP_BIN" "$API_DIR/.composer.phar")
+            else
+                echo "AVERTISSEMENT : installation de composer.phar échouée." >&2
+            fi
+        else
+            echo "AVERTISSEMENT : téléchargement de l'installeur Composer échoué (allow_url_fopen ? réseau ?)." >&2
         fi
+        rm -f "$API_DIR/.composer-setup.php"
+    elif [ ${#COMPOSER_CMD[@]} -eq 0 ]; then
         COMPOSER_CMD=("$PHP_BIN" "$API_DIR/.composer.phar")
     fi
 
-    echo ">>> Installation des dépendances PHP (--no-dev)"
-    (
+    if [ ${#COMPOSER_CMD[@]} -eq 0 ]; then
+        if [ -f "$API_DIR/vendor/autoload.php" ]; then
+            echo "AVERTISSEMENT : aucun binaire Composer disponible — vendor existant conservé tel quel." >&2
+        else
+            echo "ERREUR : aucun binaire Composer disponible et aucun vendor dans $API_DIR." >&2
+            exit 1
+        fi
+    elif ! (
         cd "$API_DIR"
         "${COMPOSER_CMD[@]}" install --no-dev --no-interaction --prefer-dist --optimize-autoloader
-    )
+    ); then
+        if [ -f "$API_DIR/vendor/autoload.php" ]; then
+            echo "AVERTISSEMENT : 'composer install' a échoué — vendor existant conservé (code/dépendances potentiellement désynchronisés)." >&2
+        else
+            echo "ERREUR : 'composer install' a échoué et aucun vendor existant dans $API_DIR." >&2
+            exit 1
+        fi
+    fi
 fi
 
 # Générer APP_KEY uniquement s'il est vide dans le .env
 if ! grep -qE '^APP_KEY=.+' "$API_DIR/.env"; then
     if [ -f "$API_DIR/vendor/autoload.php" ]; then
         echo ">>> Génération de APP_KEY"
-        (
+        if ! (
             cd "$API_DIR"
             "$PHP_BIN" artisan key:generate --force
-        )
+        ); then
+            echo "AVERTISSEMENT : 'artisan key:generate' a échoué — renseigne APP_KEY dans $API_DIR/.env." >&2
+        fi
     else
         echo ">>> Génération de APP_KEY (sans vendor)"
         NEW_KEY="base64:$("$PHP_BIN" -r 'echo base64_encode(random_bytes(32));')"
@@ -255,6 +331,7 @@ fi
 DB_NAME_VAL="$(grep -E '^DB_DATABASE=' "$API_DIR/.env" | head -n1 | cut -d'=' -f2- | tr -d '\r"' || true)"
 DB_CONN_VAL="$(grep -E '^DB_CONNECTION=' "$API_DIR/.env" | head -n1 | cut -d'=' -f2- | tr -d '\r"' || true)"
 
+step "Migrations et caches Laravel"
 if [ -f "$API_DIR/vendor/autoload.php" ]; then
     if [ "$SKIP_MIGRATE" != "true" ]; then
         if [ "$DB_CONN_VAL" = "mysql" ] && [ -z "$DB_NAME_VAL" ]; then
@@ -269,12 +346,13 @@ if [ -f "$API_DIR/vendor/autoload.php" ]; then
         fi
     fi
 
-    echo ">>> Mise en cache de la configuration et des routes Laravel"
-    (
+    if ! (
         cd "$API_DIR"
         "$PHP_BIN" artisan config:cache
         "$PHP_BIN" artisan route:cache
-    )
+    ); then
+        echo "AVERTISSEMENT : config:cache/route:cache a échoué — Laravel fonctionnera sans cache." >&2
+    fi
 else
     echo ">>> vendor/autoload.php absent : étapes artisan ignorées."
 fi
@@ -282,7 +360,7 @@ fi
 chmod -R u+rwX,go+rX "$API_DIR/storage" "$API_DIR/bootstrap/cache" 2>/dev/null || true
 
 # 6. Synchronisation du site public vers www/
-echo ">>> Publication du site public vers $WEB_DIR"
+step "Publication du site public vers $WEB_DIR"
 mkdir -p "$WEB_DIR"
 
 if command -v rsync >/dev/null 2>&1; then
@@ -296,6 +374,11 @@ if command -v rsync >/dev/null 2>&1; then
         "$REPO_DIR/web/" "$WEB_DIR/"
 else
     tar -C "$REPO_DIR/web" \
+        --exclude='.well-known' \
+        --exclude='cgi-bin' \
+        --exclude='error_log' \
+        --exclude='index.php' \
+        --exclude='.htaccess' \
         --exclude='README.md' \
         -cf - . | tar -C "$WEB_DIR" -xf -
 fi
@@ -340,7 +423,17 @@ SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
 </IfModule>
 HTACCESS
 
+if [ ! -f "$API_DIR/public/index.php" ]; then
+    echo "AVERTISSEMENT : $API_DIR/public/index.php est absent — /api/* et /up renverront une erreur 500." >&2
+fi
+
 echo "=== Déploiement terminé ==="
+if [ -f "$WEB_DIR/index.php" ] && [ -f "$WEB_DIR/.htaccess" ]; then
+    echo "Front controller OK : $WEB_DIR/index.php -> $REL_API_ENTRY"
+else
+    echo "ERREUR : $WEB_DIR/index.php ou .htaccess est manquant — /api/* ne fonctionnera pas." >&2
+fi
+echo "Vérifie ensuite /up et /api/v1/health sur le domaine."
 if [ "$ENV_CREATED" = "true" ]; then
     echo "PROCHAINE ÉTAPE (première installation) :"
     echo "1. Édite $API_DIR/.env pour renseigner APP_URL, DB_DATABASE, DB_USERNAME, DB_PASSWORD."

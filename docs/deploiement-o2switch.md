@@ -85,6 +85,8 @@ Lors de ce premier passage, le script :
 
 Le script met à jour `korrichess-api/` et `www/`, conserve `.env` et `storage/`, exécute `composer install --no-dev`, applique les nouvelles migrations (`artisan migrate --force`) et régénère le cache Laravel.
 
+Le script vérifie d'abord l'état du dépôt source : si le commit local n'est pas celui de l'amont (comparaison après `git fetch`), un `AVERTISSEMENT` s'affiche — relance avec `bash scripts/deploy-o2switch.sh --pull` (fait un `git pull --ff-only`), ou ajoute `--strict-git` pour rendre le déploiement bloquant tant que le dépôt n'est pas à jour. En cas d'échec d'une étape, le script indique explicitement l'étape concernée (trap `ERR`) au lieu de s'arrêter silencieusement avant la publication de `www/`, où il génère `index.php` et `.htaccess`. Si `composer`, `key:generate` ou les caches échouent alors qu'un `vendor/` (ou une clé) existe déjà, le déploiement continue avec un avertissement pour ne pas mettre le site hors ligne.
+
 ## 7. Cas d'un domaine compagnon / sous-domaine
 
 Si le site vit dans un dossier spécifique (ex. `/home/<utilisateur>/korrichess.mondomaine.fr/`), créer le fichier `~/.korrichess-deploy.env` sur le serveur (hors Git) :
