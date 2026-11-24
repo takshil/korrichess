@@ -52,8 +52,17 @@ avant tout rendu.
   (`raw_moves`). Correction possible depuis la bibliothèque (`✎ corriger`,
   `PUT /api/v1/games/{id}/manual`).
 
-L'analyse moteur n'y est pas exposée : les workers de file ne tournent
-pas en mutualisé (ADR-003), le rejeu seul est disponible.
+L'analyse serveur par file (ADR-002) n'y est pas exposée : les workers de file
+ne tournent pas en mutualisé (ADR-003). À la place, le rejeu propose une
+**analyse locale dans le navigateur** (ADR-006) : Stockfish 19 Lite WASM,
+vendored dans `espace/vendor/stockfish/` (build non modifié du paquet npm
+`stockfish@19.0.1`, GPL v3 — voir `Copying.txt` et `SOURCES.md`), lancé dans un
+Web Worker qui parle UCI par `postMessage` (`espace/moteur.js`). Bouton
+« Analyser la partie » sur `#/rejeu/{id}` : barre d'évaluation, meilleur coup
+sur l'échiquier (marqueurs cm-chessboard), verdict par coup (!, ?, ??, ???).
+Profondeur réglable (défaut 12, comme `ANALYSIS_DEFAULT_DEPTH` côté API).
+Le `.wasm` est servi en `application/wasm` via `espace/.htaccess`.
+Tests : `node --test web/tests/moteur.test.mjs`.
 
 ## Déploiement
 

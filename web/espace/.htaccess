@@ -1,0 +1,2 @@
+# Korrichess — sert le binaire WASM de Stockfish avec le bon type MIME (ADR-006).
+AddType application/wasm .wasm
