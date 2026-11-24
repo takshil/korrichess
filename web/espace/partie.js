@@ -85,7 +85,25 @@ export function analyserSaisie(moves) {
 }
 
 /**
- * Construit la séquence { positions, moves_san } pour le rejeu à partir du PGN
+ * Convertit une liste de coups SAN en coups UCI en rejouant la partie.
+ * S'arrête au premier coup illégal.
+ */
+export function uciDepuisSan(moves_san) {
+    const chess = new Chess();
+    const moves_uci = [];
+    const liste = Array.isArray(moves_san) ? moves_san : [];
+    for (const san of liste) {
+        const joue = jouerCoup(chess, san);
+        if (!joue) {
+            break;
+        }
+        moves_uci.push(joue.from + joue.to + (joue.promotion || ''));
+    }
+    return moves_uci;
+}
+
+/**
+ * Construit la séquence { positions, moves_san, moves_uci } pour le rejeu à partir du PGN
  * ou des coups UCI d'une partie. Retourne null si la partie ne peut pas être rejouée.
  */
 export function construireRejeu(detail) {
@@ -102,12 +120,14 @@ export function construireRejeu(detail) {
                 return {
                     positions: [hist[0].before, ...hist.map((m) => m.after)],
                     moves_san: hist.map((m) => m.san),
+                    moves_uci: hist.map((m) => m.from + m.to + (m.promotion || '')),
                 };
             }
             if (!detail.moves_uci || detail.moves_uci.length === 0) {
                 return {
                     positions: [chess.fen()],
                     moves_san: [],
+                    moves_uci: [],
                 };
             }
         } catch {
@@ -119,16 +139,18 @@ export function construireRejeu(detail) {
         const chess = new Chess();
         const positions = [chess.fen()];
         const moves_san = [];
+        const moves_uci = [];
         for (const uci of detail.moves_uci) {
             const joue = jouerCoup(chess, uci);
             if (!joue) {
                 break;
             }
             moves_san.push(joue.san);
+            moves_uci.push(joue.from + joue.to + (joue.promotion || ''));
             positions.push(chess.fen());
         }
         if (moves_san.length > 0) {
-            return { positions, moves_san };
+            return { positions, moves_san, moves_uci };
         }
     }
 

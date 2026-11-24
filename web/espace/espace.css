@@ -130,3 +130,39 @@
 /* Masque la navigation tant qu'on n'est pas connecté. */
 body.sans-session #nav-espace a,
 body.sans-session #nav-espace #deconnexion { display: none; }
+
+/* ---------- Analyse locale du rejeu (ADR-006) ---------- */
+
+.rejeu-ensemble { display: flex; gap: 0.6rem; align-items: stretch; justify-content: center; }
+.rejeu-ensemble .echiquier-cadre { flex: 1 1 auto; min-width: 0; margin: 0; width: auto; }
+.barre-eval {
+    flex: 0 0 auto;
+    width: 0.9rem;
+    border: 1px solid var(--bord);
+    border-radius: 0.45rem;
+    background: #26241c;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column-reverse;
+}
+.barre-eval-blancs { width: 100%; height: 50%; background: #faf6ec; transition: height 0.25s; }
+
+.analyse-panneau {
+    margin-top: 0.9rem;
+    background: var(--carte);
+    border: 1px solid var(--bord);
+    border-radius: 0.8rem;
+    padding: 0.8rem 1rem;
+}
+.analyse-actions { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
+.analyse-profondeur { display: flex; gap: 0.4rem; align-items: center; color: var(--encre-doux); font-size: 0.9rem; }
+.analyse-etat { margin: 0.5rem 0 0; color: var(--encre-doux); font-size: 0.9rem; }
+.analyse-eval { margin: 0.3rem 0 0; font-weight: 700; }
+.analyse-moteur { margin: 0.5rem 0 0; font-size: 0.8rem; color: var(--encre-doux); }
+
+.coups button .avis { font-weight: 700; margin-left: 0.2rem; }
+.coups button.avis-meilleur { color: var(--vert); font-weight: 700; }
+.coups button.avis-bon { color: var(--vert); }
+.coups button.avis-imprecision { color: var(--or); }
+.coups button.avis-erreur { color: var(--or); font-weight: 700; }
+.coups button.avis-gaffe { color: var(--erreur); font-weight: 700; }

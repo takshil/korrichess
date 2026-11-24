@@ -36,6 +36,18 @@ export function creerEchiquierRejeu(conteneur, { fen = FEN.start, inverser = fal
         inverser(estNoir) {
             plateau.setOrientation(estNoir ? COLOR.black : COLOR.white, true);
         },
+        marquerCoup(uci) {
+            plateau.removeMarkers(MARKER_TYPE.circle);
+            plateau.removeMarkers(MARKER_TYPE.dot);
+            if (uci && uci.length >= 4) {
+                plateau.addMarker(MARKER_TYPE.circle, uci.slice(0, 2));
+                plateau.addMarker(MARKER_TYPE.dot, uci.slice(2, 4));
+            }
+        },
+        effacerMarques() {
+            plateau.removeMarkers(MARKER_TYPE.circle);
+            plateau.removeMarkers(MARKER_TYPE.dot);
+        },
         detruire() {
             plateau.destroy();
         },
